@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STRANGER BITS — OFFICIAL WHITEPAPER v3.3</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts for heavy high-contrast typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;800;900&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Strict high-contrast black & white style with heavy bold font */
+    body {
+      background-color: #ffffff;
+      color: #000000;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600; /* Extra bold base weight for extreme readability */
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+    .border-black-thick {
+      border: 4px solid #000000;
+    }
+    .border-black-thin {
+      border: 2px solid #000000;
+    }
+    .lang-section {
+      transition: opacity 0.15s ease-in-out;
+    }
+
+    /* CSS rules for the dedicated X Screenshot Mode */
+    .screenshot-mode-active .screenshot-card {
+      border: 4px solid #000000 !important;
+      padding: 2.5rem !important;
+      margin-top: 3rem !important;
+      margin-bottom: 3rem !important;
+      background-color: #ffffff !important;
+      box-shadow: 12px 12px 0px 0px #000000 !important;
+      border-radius: 12px !important;
+    }
+    .screenshot-mode-active .screenshot-header {
+      display: block !important;
+    }
+  </style>
+</head>
+<body class="min-h-screen antialiased pb-32 selection:bg-black selection:text-white">
+
+  <!-- FLOATING MINIMALIST CONTROL PANEL (LANGUAGE & SCREENSHOT TOGGLE) -->
+  <div class="fixed bottom-6 right-6 z-50 flex flex-col sm:flex-row items-end sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+    <!-- SCREENSHOT MODE TOGGLE -->
+    <button onclick="toggleScreenshotMode()" id="btn-screenshot" class="px-5 py-2.5 text-xs font-mono font-black uppercase rounded-full border-2 border-black bg-white text-black hover:bg-black hover:text-white transition-all shadow-lg">
+      [ X SCREENSHOT MODE ]
+    </button>
+
+    <!-- LANGUAGE SWITCHER -->
+    <div class="bg-black text-white p-1 rounded-full border-2 border-black flex items-center space-x-1 shadow-lg">
+      <button onclick="setLanguage('sk')" id="btn-sk" class="px-4 py-1.5 text-xs font-mono font-black uppercase rounded-full bg-white text-black transition-all">
+        SK
+      </button>
+      <button onclick="setLanguage('en')" id="btn-en" class="px-4 py-1.5 text-xs font-mono font-black uppercase rounded-full text-white hover:text-gray-300 transition-all">
+        EN
+      </button>
+    </div>
+  </div>
+
+  <!-- SLOVAK LANGUAGE CONTENT -->
+  <main id="paper-sk" class="lang-section max-w-4xl mx-auto px-6 py-4 space-y-12">
+    
+    <!-- CARD 1: LORE & TOKENOMICS -->
+    <div class="screenshot-card transition-all duration-200">
+      <div class="screenshot-header hidden font-mono text-xs font-black uppercase tracking-wider border-b-4 border-black pb-2 mb-6 text-black">
+        // SCREENSHOT CARD 1/4: LORE & TOKENOMICS //
+      </div>
+
+      <!-- DOCUMENT HEADER v3.3 -->
+      <header class="pt-6 pb-8 border-b-4 border-black mb-10">
+        <p class="font-mono text-sm uppercase tracking-widest text-black font-extrabold mb-3">// OFFICIAL DOCUMENTATION V3.3 //</p>
+        <h1 class="text-5xl sm:text-7xl font-black tracking-tight uppercase leading-none text-black">
+          STRANGER BITS
+        </h1>
+        <p class="font-mono text-base mt-3 text-black font-extrabold uppercase tracking-wide">
+          REVERSE DIMENSION EXTRACTION PROTOCOL — WHITEPAPER
+        </p>
+      </header>
+
+      <!-- SECTION 1 (SK) -->
+      <section class="border-b-4 border-black pb-8 mb-8">
+        <h2 class="font-mono text-xl font-black text-black uppercase tracking-wider border-b-4 border-black pb-3 mb-6">
+          1. ZÁZNAMY Z HLBÍN (LORE & PRÍBEH)
+        </h2>
+        
+        <div class="space-y-6 text-base sm:text-lg leading-relaxed text-black">
+          <div>
+            <h3 class="font-mono text-sm font-black uppercase text-black mb-1 tracking-wide">// 01 | Utajený projekt: Po Bitcoine prišla Realita</h3>
+            <p>
+              Keď Satoshi Nakamoto v roku 2011 zmizol, svet si myslel, že jeho práca skončila. Pravda je však taká, že Bitcoin bol len verejný záťažový test. Satoshi si uvedomil limity lineárnych blockchainov a zvyšok života zasvätil vývoju STRANGER BITS – projektu, ktorý nebeží na našich serveroch. Objavil trhlinu v základnom protokole internetu, pod ktorou sa nachádza Reverzná dimenzia dát. Je to vrstva, kde dáta nezanikajú, ale hromadia sa v surovej forme ako Stranger Minerals.
+            </p>
+          </div>
+
+          <div>
+            <h3 class="font-mono text-sm font-black uppercase text-black mb-1 tracking-wide">// 02 | Dátové monštrá: The Glitch-Plants</h3>
+            <p>
+              V tejto dimenzii narazil na Mäsožravé rastliny (The Glitch-Plants). Sú to najagresívnejšie entity v digitálnom cyberspace, fungujúce ako organické firewally. Tieto rastliny sa živia práve spomínanými Stranger Minerals – nasávajú útržky surového kódu z bežného internetu, ktoré prepadli cez trhlinu. Procesom vnútornej dátovej syntézy tieto minerály transformujú a po čase vylučujú Stranger Bits — takzvané STARBITS – kryštalizované bloky dát s extrémne vysokou hustotou informácií. Glitch-Plants sú však vysoko teritoriálne a akýkoľvek pokus o odber ich potravy okamžite trestajú totálnym vymazaním cudzieho signálu.
+            </p>
+          </div>
+
+          <div>
+            <h3 class="font-mono text-sm font-black uppercase text-black mb-1 tracking-wide">// 03 | Objav v štruktúre peňaženky (Pred 3 mesiacmi)</h3>
+            <p>
+              Celý svet sledoval Satoshiho legendárnu peňaženku s tisíckami nehybných Bitcoinov a čakal na ich pohyb. My sme na to išli inak. Pri pokuse o hĺbkovú dešifrovaciu analýzu štruktúry samotnej adresy sme nenarazili na privátny kľúč – ten zostáva neprelomený. Našli sme však utajený kód v kontrolnom súčte adresy. Satoshi na nej nenechal peniaze, ale prístupový protokol. Objavili sme fragmenty kódu, ktoré slúžia ako súradnice k reverznej dimenzii a technickú schému na zostrojenie extraktorov. Na základe tohto objavu sme oživili jeho technológiu a vytvorili jediný legitímny Black Market na svete.
+            </p>
+          </div>
+
+          <div>
+            <h3 class="font-mono text-sm font-black uppercase text-black mb-1 tracking-wide">// 04 | STARBIT: Viac než len token</h3>
+            <p>
+              STARBIT (rubínový dátový kryštál) je výsledkom tejto unikátnej transformácie dát. Obsahuje v sebe čistú esenciu z hlbín reverzného internetu – kód, ktorý sa dokáže sám prepisovať a vyvíjať. Satoshi do týchto kryštálov vložil mechanizmus, ktorý má potenciál redefinovať samotnú podstatu digitálneho ownershipu. Pravda o tom, čo sa stane, keď sa nazbiera kritické množstvo STARBITS, zostáva pod prísnym utajením. Dovtedy je STARBIT najvzácnejším artiklom na čiernom trhu – je to kľúč k novej architektúre sveta.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3 (SK) -->
+      <section class="pb-4">
+        <h2 class="font-mono text-xl font-black text-black uppercase tracking-wider border-b-4 border-black pb-3 mb-6">
+          2. TOKENOMIKA & STRATÉGIA SPUSTENIA (RAYDIUM LAUNCHPAD)
+        </h2>
+        <p class="text-base sm:text-lg mb-6 leading-relaxed text-black">
+          Distribúcia zásob tokenu STARBIT je navrhnutá pre maximálnu udržateľnosť ekonomiky a ochranu liquidity poolu.
+        </p>
+        <div class="space-y-4 font-mono text-sm text-black">
+          <div class="border-4 border-black p-5">
+            <span class="text-black font-black text-base">[ 55% — Bonding Curve Fáza ]</span>
+            <p class="text-black font-semibold mt-2 text-base">Počiatočná generatívna likvidita pre férové spustenie na trh a organickú cenotvorbu.</p>
+          </div>
+          
+          <div class="border-4 border-black p-5">
+            <span class="text-black font-black text-base">[ 25% — Alokácia Tímu & Ekosystému ]</span>
+            <ul class="list-disc pl-5 mt-3 text-black font-semibold space-y-2 text-base">
+              <li>20% sa presúva okamžite pri launchi do MAIN POOLU ako krytie ťažobných odmien pre prvé cykly extraktorov.</li>
+              <li>5% je alokovaných pre vývojový tím. Tieto tokeny sú uzamknuté v smart kontrakte na 7 dní od úspešného ukončenia bonding curve fázy.</li>
+            </ul>
+          </div>
+
+          <div class="border-4 border-black p-5">
+            <span class="text-black font-black text-base">[ 20% — Raydium Liquidity Pool ]</span>
+            <p class="text-black font-semibold mt-2 text-base">Automaticky uzamknutá likvidita na Raydium AMM po završení bonding curve.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- CARD 2: HARDWARE, AIRDROP & BASE MATRICES -->
+    <div class="screenshot-card transition-all duration-200">
+      <div class="screenshot-header hidden font-mono text-xs font-black uppercase tracking-wider border-b-4 border-black pb-2 mb-6 text-black">
+        // SCREENSHOT CARD 2/4: HARDWARE, AIRDROP & BASE MATRICES //
+      </div>
+
+      <!-- SECTION 2 (SK) -->
+      <section class="border-b-4 border-black pb-8 mb-8">
+        <h2 class="font-mono text-xl font-black text-black uppercase tracking-wider border-b-4 border-black pb-3 mb-6">
+          3. TECHNICKÁ ŠPECIFIKÁCIA EXTRAKTOROV
+        </h2>
+        <div class="space-y-6 font-mono text-sm text-black">
+          <div class="border-4 border-black p-5">
+            <span class="text-black font-black uppercase text-base">[ WALKIE-TALKIE (Signal Mimic) ]</span>
+            <p class="text-black font-semibold mt-2 text-base leading-relaxed">
+              Využíva modifikovanú frekvenciu nájdenú v kóde peňaženky. Vysiela signál, ktorý simuluje šum Stranger Minerals. Rastlina si myslí, že sa len kŕmi, zatiaľ čo prístroj potichu zbiera hotové STARBITS.
+            </p>
+          </div>
+
+          <div class="border-4 border-black p-5">
+            <span class="text-black font-black uppercase text-base">[ LASER-DRILL (Phase Shifter) ]</span>
+            <p class="text-black font-semibold mt-2 text-base leading-relaxed">
+              Tento nástroj fázovo posúva realitu extraktora. Dokáže odobrať kryštál z vnútra rastliny v inom časovom intervale, takže rastlina nezaregistruje žiadny úbytok dát v prítomnosti.
+            </p>
+          </div>
+
+          <div class="border-4 border-black p-5 bg-black text-white">
+            <span class="text-white font-black uppercase text-base flex items-center justify-between">
+              <span>[ DARK-RIFT (Void Harvester + Dimensionity Protocol) ]</span>
+              <span class="text-xs border-2 border-white px-2 py-0.5 font-black bg-white text-black">ACTIVE POOL REAPING</span>
+            </span>
+            <p class="text-gray-200 font-semibold mt-2 text-base leading-relaxed">
+              Vytvára mikroskopický tunel z temnej reverznej hmoty priamo k jadru Glitch-Plant. Navyše disponuje protokolom <strong>Dimensionity (pôvodne Parasite)</strong>: hoci nemá denný WinWill jackpot, pasívne vysáva dedikovaný Dark-Rift Pool (5% z predajov, 3% z upgradov, 3% z prenájmov a secondary poplatkov) a rovnomerne ho delí medzi všetkých držiteľov Dark-Rift extraktorov v danom čase.
+            </p>
+          </div>
+
+          <div class="border-4 border-black p-5 bg-stone-100 text-black">
+            <span class="text-black font-black uppercase text-base flex items-center justify-between">
+              <span>[ SATOSHI-DREAM (Mýtická Legenda) ]</span>
+              <span class="text-xs border-2 border-black px-2 py-0.5 font-black">RESTRICTED PROTOCOL</span>
+            </span>
+            <p class="text-black font-semibold mt-2 text-base leading-relaxed">
+              Absolútny vrchol reverznej technológie. Ide o tajný prototyp vygenerovaný zo zachránených Satoshiho dátových fragmentov. Tento model nepodlieha bežnej modulárnej konštrukcii a disponuje unikátnou rezonančnou frekvenciou, ktorá odoberá STARBITS priamo z najhlbšieho jadru Glitch-Plants bez akéhokoľvek odporu.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 4 (SK) -->
+      <section class="border-b-4 border-black pb-8 mb-8">
+        <h2 class="font-mono text-xl font-black text-black uppercase tracking-wider border-b-4 border-black pb-3 mb-6">
+          4. AIRDROP PRE „DIAMOND HANDS“ INVESTOROV
+        </h2>
+        <p class="text-base sm:text-lg mb-6 leading-relaxed text-black">
+          Aby sme eliminovali okamžitý dumping počas bonding curve fázy, implementujeme on-chain mechanizmus odmien. Peňaženky, ktoré nakúpia počas úvodnej krivky a nepredajú ani jeden token, získajú bezplatné ťažobné NFT.
+        </p>
+        
+        <h3 class="font-mono text-xs font-black text-black mb-3 uppercase tracking-widest">// Distribúcia odmien podľa objemu nákupu:</h3>
+        <div class="border-4 border-black p-6 font-mono text-sm mb-8 space-y-4 text-black">
+          <div class="flex flex-col sm:flex-row justify-between border-b-2 border-black pb-2">
+            <span class="font-bold">Nákup za min. 1 SOL</span>
+            <span class="font-black">2× WALKIE-TALKIE (Hodnota 6,000,000 STARBIT)</span>
+          </div>
+          <div class="flex flex-col sm:flex-row justify-between border-b-2 border-black pb-2">
+            <span class="font-bold">Nákup za min. 2 SOL</span>
+            <span class="font-black">2× LASER-DRILL (Hodnota 12,000,000 STARBIT)</span>
+          </div>
+          <div class="flex flex-col sm:flex-row justify-between">
+            <span class="font-bold">Nákup za min. 3 SOL</span>
+            <span class="font-black">2× DARK-RIFT (Hodnota 18,000,000 STARBIT)</span>
+          </div>
+        </div>
+
+        <h3 class="font-mono text-xs font-black text-black mb-3 uppercase tracking-widest">// Protokol overenia (X / Twitter):</h3>
+        <ol class="list-decimal pl-6 text-sm font-mono space-y-3 font-semibold leading-relaxed text-black">
+          <li>Užívateľ vykoná nákup na Raydium bonding curve.</li>
+          <li>Odfotí screenshot transakcie a pridá ho ako odpoveď pod oficiálny Tweet o launchi.</li>
+          <li>Po skončení bonding curve náš tím a audit-bot preveria kompletnú on-chain históriu walletky.</li>
+          <li>Ak peňaženka nepredala žiadny STARBIT počas celej bonding curve fázy, admin odošle pod tweet potvrdenie.</li>
+          <li><strong>Doručenie:</strong> Validované NFT extraktory budú odoslané na walletku kupujúceho do 30 dní od úspešného ukončenia bonding curve fázy (zobrazia sa priamo v Dashboarde na strangerbits.com v momente prechodu na Mainnet).</li>
+        </ol>
+      </section>
+
+      <!-- SECTION 5 (SK) -->
+      <section class="pb-4">
+        <h2 class="font-mono text-xl font-black text-black uppercase tracking-wider border-b-4 border-black pb-3 mb-6">
+          5. PRODUKČNÁ MATRICA EXTRAKTOROV (ZÁKLAD - LVL 0)
+        </h2>
+        
+        <div class="overflow-x-auto border-4 border-black">
+          <table class="w-full text-left font-mono text-sm text-black bg-white min-w-[650px]">
+            <thead>
+              <tr class="border-b-4 border-black bg-black text-white">
+                <th class="p-4 font-black">Parameter / Stroj</th>
+                <th class="p-4 text-center font-black">WALKIE-TALKIE</th>
+                <th class="p-4 text-center font-black">LASER-DRILL</th>
+                <th class="p-4 text-center font-black">DARK-RIFT</th>
+                <th class="p-4 text-center font-black underline">SATOSHI-DREAM</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y-2 divide-black">
+              <tr>
+                <td class="p-4 font-black">Nákupná cena</td>
+                <td class="p-4 text-center font-semibold">3,000,000 SB</td>
+                <td class="p-4 text-center font-semibold">6,000,000 SB</td>
+                <td class="p-4 text-center font-semibold">9,000,000 SB</td>
+                <td class="p-4 text-center font-black">Nedá sa kúpiť</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-black">Základná ťažba (LVL 0)</td>
+                <td class="p-4 text-center font-semibold">33,333 SB / deň</td>
+                <td class="p-4 text-center font-semibold">75,000 SB / deň</td>
+                <td class="p-4 text-center font-semibold">128,571 SB / deň</td>
+                <td class="p-4 text-center font-black">385,713 SB / deň</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-black">Hrubý výnos (180 dní)</td>
+                <td class="p-4 text-center font-semibold">5,999,940 SB</td>
+                <td class="p-4 text-center font-semibold">13,500,000 SB</td>
+                <td class="p-4 text-center font-semibold">23,142,780 SB</td>
+                <td class="p-4 text-center font-black">69,428,340 SB</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-black">Doba návratnosti (ROI)</td>
+                <td class="p-4 text-center font-semibold">90 dní</td>
+                <td class="p-4 text-center font-semibold">80 dní</td>
+                <td class="p-4 text-center font-semibold">70 dní</td>
+                <td class="p-4 text-center font-black">Bez počiatočnej ceny</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-black">Licencia cyklu</td>
+                <td class="p-4 text-center font-semibold">180 dní</td>
+                <td class="p-4 text-center font-semibold">180 dní</td>
+                <td class="p-4 text-center font-semibold">180 dní</td>
+                <td class="p-4 text-center font-semibold">180 dní</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-black">WinWill Šanca (24h)</td>
+                <td class="p-4 text-center font-semibold">3%</td>
+                <td class="p-4 text-center font-semibold">6%</td>
+                <td class="p-4 text-center font-black bg-red-100 text-red-600 text-xs leading-tight max-w-[200px]">0% (Dimensionity systém odčerpáva s dark rift pool a rozdelju medzi uzivatelov vsetkych co vlastnia dark rifty)</td>
+                <td class="p-4 text-center font-black">9%</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-black">Možnosť Upgradu</td>
+                <td class="p-4 text-center font-semibold">Áno (LVL 1-3)</td>
+                <td class="p-4 text-center font-semibold">Áno (LVL 1-3)</td>
+                <td class="p-4 text-center font-semibold">Áno (LVL 1-3)</td>
+                <td class="p-4 text-center font-black">Zablokované (Maxed)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-black">Max Supply (Limit)</td>
+                <td class="p-4 text-center font-semibold">20,000 NFT</td>
+                <td class="p-4 text-center font-semibold">15,000 NFT</td>
+                <td class="p-4 text-center font-semibold">10,000 NFT</td>
+                <td class="p-4 text-center font-black">Unikátny drop (1%)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- CARD 3: UPGRADES, REVERSE MARKET & GAME THEORY -->
+    <div class="screenshot-card transition-all duration-200">
+      <div class="screenshot-header hidden font-mono text-xs font-black uppercase tracking-wider border-b-4 border-black pb-2 mb-6 text-black">
+        // SCREENSHOT CARD 3/4: UPGRADES, REVERSE MARKET & GAME THEORY //
+      </div>
+
+      <!-- SECTION 6 (SK) -->
+      <section class="border-b-4 border-black pb-8 mb-8">
+        <h2 class="font-mono text-xl font-black text-black uppercase tracking-wider border-b-4 border-black pb-3 mb-6">
+          6. UPGRADE SYSTEM (SUPER YIELD MECHANICS)
+        </h2>
+        <p class="text-base sm:text-lg mb-6 leading-relaxed text-black">
+          Úpravy NFT kontraktov sú permanentné. Vykonávajú sa priamo na blockchaine s fixnou šancou. Mýtický model <span class="font-black">SATOSHI-DREAM</span> nie je možné upgradovať, nakoľko disponuje maximálnym možným hardvérovým limitom už v základe.
+        </p>
+
+        <div class="border-4 border-black p-5 font-mono text-sm mb-6 font-semibold text-black">
+          <span class="text-black font-black uppercase text-base block">// Sieťová synergia (Pravdepodobnosť)</span>
+          <ul class="list-disc pl-5 mt-2 space-y-1 text-base">
+            <li><strong>Základná šanca na úspech:</strong> 50%</li>
+            <li><strong>Whale Boost:</strong> +5% k šanci za každý ďalší extraktor rovnakého typu na danej peňaženke (Max. limit 90%).</li>
+          </ul>
+        </div>
+
+        <h3 class="font-mono text-xs font-black text-black mb-3 uppercase tracking-widest">// Úrovne Super Výťažnosti (+20% / +40% / +60% k základnej ťažbe)</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-sm text-black">
+          
+          <div class="border-4 border-black p-5 font-semibold">
+            <span class="text-black font-black uppercase block text-base">A. WALKIE-TALKIE</span>
+            <p class="text-xs font-black mt-1">+6,666 STARBIT / deň za LVL</p>
+            <ul class="mt-3 space-y-1.5 text-black text-base">
+              <li><span class="font-black">LVL 1 (Cena: 300k SB)</span> -> 39,999 SB</li>
+              <li><span class="font-black">LVL 2 (Cena: 600k SB)</span> -> 46,665 SB</li>
+              <li><span class="font-black">LVL 3 (Cena: 900k SB)</span> -> 53,331 SB</li>
+            </ul>
+          </div>
+
+          <div class="border-4 border-black p-5 font-semibold">
+            <span class="text-black font-black uppercase block text-base">B. LASER-DRILL</span>
+            <p class="text-xs font-black mt-1">+15,000 STARBIT / deň za LVL</p>
+            <ul class="mt-3 space-y-1.5 text-black text-base">
+              <li><span class="font-black">LVL 1 (Cena: 600k SB)</span> -> 90,000 SB</li>
+              <li><span class="font-black">LVL 2 (Cena: 1.2M SB)</span> -> 105,000 SB</li>
+              <li><span class="font-black">LVL 3 (Cena: 1.8M SB)</span> -> 120,000 SB</li>
+            </ul>
+          </div>
+
+          <div class="border-4 border-black p-5 font-semibold">
+            <span class="text-black font-black uppercase block text-base">C. DARK-RIFT</span>
+            <p class="text-xs font-black mt-1">+25,714 STARBIT / deň za LVL</p>
+            <ul class="mt-3 space-y-1.5 text-black text-base">
+              <li><span class="font-black">LVL 1 (Cena: 900k SB)</span> -> 154,285 SB</li>
+              <li><span class="font-black">LVL 2 (Cena: 1.8M SB)</span> -> 180,000 SB</li>
+              <li><span class="font-black">LVL 3 (Cena: 2.7M SB)</span> -> 205,714 SB</li>
+            </ul>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SECTION 7 (SK) -->
+      <section class="pb-4">
+        <h2 class="font-mono text-xl font-black text-black uppercase tracking-wider border-b-4 border-black pb-3 mb-6">
+          7. REVERSE MARKET & SÚSTAVA STAREWARDS (DUÁLNY HODL BONUS)
+        </h2>
+        <p class="text-base sm:text-lg mb-6 leading-relaxed text-black">
+          Uzamknutím STARBITS v hernom module Starewards na stránke sa aktivuje reverzná syntéza dát. Pôvodné tokeny zostávajú v bezpečí, nedotknuté a po 30 dňoch sa odomknú. Tento proces odmení HODLera (Starbitera) <span class="font-black">dvoma nezávislými aktívami naraz — ZÍSKAVAŠ OBOJE SÚČASNE!</span>
+        </p>
+
+        <!-- DUAL REWARD HIGHLIGHT BANNER -->
+        <div class="border-4 border-black bg-black text-white p-4 font-mono text-sm mb-6 uppercase tracking-wider font-black text-center">
+          HODL SYNERGIA: ZA KAŽDÝ UZAMKNUTÝ BALÍK ZÍSKAVAŠ ROVNO OBOJE — REVERSE EXTRAKTOR (PASÍVNY PRENÁJOM) + BONUSOVÝ TRADING BITICKET!
+        </div>
+
+        <h3 class="font-mono text-xs font-black text-black mb-3 uppercase tracking-widest">// Duálny systém odmien pre HODLera:</h3>
+        <div class="space-y-4 text-base mb-6 text-black">
+          <div class="border-l-8 border-black p-5 bg-stone-50">
+            <span class="font-mono text-sm font-black uppercase block mb-1">[ 1. REVERSE EXTRAKTOR (Určený výhradne na PRENÁJOM) ]</span>
+            <p class="text-black font-semibold text-base leading-relaxed">
+              Zariadenie vygenerované on-chain na základe tvojej úrovne stakingu a pripísané do užívateľského rozhrania. Držiteľ ho nemôže sám predávať ani rozobrať, slúži výhradne na prenájom. Nájomca (Starbitian) zloží vopred 55% z nákupnej ceny daného modelu. Smart kontrakt okamžite pripíše 40% z nákupnej ceny stroja priamo na peňaženku majiteľa (Starbitera). Zvyšných 15% prejde platformovým smerovaním poplatkov (Fee Routing D). Nájomca získava 100% ťažby stroja počas 180 dní s masívnym ROI.
+            </p>
+          </div>
+          <div class="border-l-8 border-black p-5 bg-black text-white">
+            <span class="font-mono text-sm font-black uppercase block text-white mb-1">[ 2. 1× BITICKET (Určený výhradne na PREDAJ) ]</span>
+            <p class="text-gray-200 font-semibold text-base leading-relaxed">
+              Unikátny, zapečatený dátový balíček (SPL NFT), ktorý HODLer obdrží k prenájmu ako mýtický bonus. Pôvodný majiteľ (Starbiter) tento lístok nemôže sám dešifrovať a otvoriť. Jedinou legálnou možnosťou je jeho predaj na sekundárnom čiernom trhu pre ostatných hráčov a špekulantov, čo predstavuje čistý, bezrizikový zisk.
+            </p>
+          </div>
+        </div>
+
+        <h3 class="font-mono text-xs font-black text-black mb-3 uppercase tracking-widest">// DISTRIBÚCIA PODĽA STAKING BALÍKOV:</h3>
+        <div class="overflow-x-auto border-4 border-black mb-8">
+          <table class="w-full text-left font-mono text-sm text-black bg-white min-w-[500px]">
+            <thead>
+              <tr class="border-b-4 border-black bg-black text-white">
+                <th class="p-4 font-black">Uzamknutá suma STARBITS</th>
+                <th class="p-4 font-black">Generovaný stroj na prenájom (Šanca na drop)</th>
+                <th class="p-4 font-black">Bonusový trading lístok</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y-2 divide-black">
+              <tr>
+                <td class="p-4 font-black">10M - 30M SB</td>
+                <td class="p-4">
+                  <div class="space-y-1 font-semibold text-xs sm:text-sm text-black">
+                    <div><span class="font-black">70%</span> šanca: Reverse WALKIE-TALKIE</div>
+                    <div><span class="font-black">20%</span> šanca: Reverse LASER-DRILL</div>
+                    <div><span class="font-black">10%</span> šanca: Reverse DARK-RIFT</div>
+                  </div>
+                </td>
+                <td class="p-4 font-black text-center text-black">1× BiTicket (Random Drop)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-black">30M - 60M SB</td>
+                <td class="p-4">
+                  <div class="space-y-1 font-semibold text-xs sm:text-sm text-black">
+                    <div><span class="font-black">25%</span> šanca: Reverse WALKIE-TALKIE</div>
+                    <div><span class="font-black">50%</span> šanca: Reverse LASER-DRILL</div>
+                    <div><span class="font-black">25%</span> šanca: Reverse DARK-RIFT</div>
+                  </div>
+                </td>
+                <td class="p-4 font-black text-center text-black">1× BiTicket (Random Drop)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-black">60M+ SB</td>
+                <td class="p-4">
+                  <div class="space-y-1 font-semibold text-xs sm:text-sm text-black">
+                    <div><span class="font-black">15%</span> šanca: Reverse WALKIE-TALKIE</div>
+                    <div><span class="font-black">30%</span> šanca: Reverse LASER-DRILL</div>
+                    <div><span class="font-black">55%</span> šanca: Reverse DARK-RIFT</div>
+                  </div>
+                </td>
+                <td class="p-4 font-black text-center text-black">1× BiTicket (Random Drop)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- BITICKET GAMBLING MATRIX (SK) -->
+        <div class="border-4 border-black p-6 mb-8 text-black">
+          <h3 class="font-mono text-base font-black uppercase mb-4 flex items-center justify-between">
+            <span>MATRICA BITICKET HAZARDU (Otváracie šance)</span>
+            <span class="text-xs border-2 border-black px-2 py-0.5 font-black bg-black text-white">PROBABILITIES</span>
+          </h3>
+          <p class="text-sm text-black font-semibold mb-4">
+            Keď špekulant zakúpi BiTicket na sekundárnom trhu a klikne na webe na tlačidlo „Open“, tiket sa navždy spáli (BURN) a smart kontrakt vygeneruje náhodnú on-chain odmenu podľa týchto percentuálnych šancí:
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-5 gap-4 font-mono text-sm text-center font-bold">
+            <div class="border-4 border-black p-4 bg-gray-100">
+              <span class="font-black block text-2xl">20.0%</span>
+              <span class="text-xs uppercase tracking-wider block mt-1">System Glitch</span>
+              <span class="text-[10px] text-black font-black block mt-1">(NOTHING)</span>
+            </div>
+            <div class="border-4 border-black p-4 bg-white">
+              <span class="font-black block text-2xl">40.0%</span>
+              <span class="text-xs uppercase tracking-wider block mt-1">Walkie-Talkie</span>
+              <span class="text-[10px] text-black font-black block mt-1">(3M SB Value)</span>
+            </div>
+            <div class="border-4 border-black p-4 bg-white">
+              <span class="font-black block text-2xl">24.0%</span>
+              <span class="text-xs uppercase tracking-wider block mt-1">Laser-Drill</span>
+              <span class="text-[10px] text-black font-black block mt-1">(6M SB Value)</span>
+            </div>
+            <div class="border-4 border-black p-4 bg-white">
+              <span class="font-black block text-2xl">15.0%</span>
+              <span class="text-xs uppercase tracking-wider block mt-1">Dark-Rift</span>
+              <span class="text-[10px] text-black font-black block mt-1">(9M SB Value)</span>
+            </div>
+            <div class="border-4 border-black p-4 bg-black text-white">
+              <span class="font-black block text-2xl">1.0%</span>
+              <span class="text-xs uppercase tracking-wider block mt-1 font-black">Satoshi-Dream</span>
+              <span class="text-[10px] text-white/90 block mt-1 font-semibold">(Legendary)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- REAL RENTAL CALCULATIONS -->
+        <h3 class="font-mono text-xs font-black text-black mb-3 uppercase tracking-widest">// REÁLNY PREPOČET PRENÁJMOV (Pre overenie matematiky)</h3>
+        <div class="overflow-x-auto border-4 border-black">
+          <table class="w-full text-left font-mono text-sm text-black bg-white min-w-[600px]">
+            <thead>
+              <tr class="border-b-4 border-black bg-black text-white">
+                <th class="p-4 font-black">Model stroja</th>
+                <th class="p-4 text-center font-black">Nájomca zaplatí (55% ceny)</th>
+                <th class="p-4 text-center font-black">Majiteľ dostane (40% ceny)</th>
+                <th class="p-4 text-center font-black">Hrubý výnos stroja (180 dní)</th>
+                <th class="p-4 text-center font-black">Čistý zisk nájomcu</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y-2 divide-black">
+              <tr>
+                <td class="p-4 font-black">REVERSE WALKIE</td>
+                <td class="p-4 text-center font-semibold">1,650,000 SB</td>
+                <td class="p-4 text-center font-semibold">1,200,000 SB</td>
+                <td class="p-4 text-center font-semibold">5,999,940 SB</td>
+                <td class="p-4 text-center font-black">+4,349,940 SB</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-black">REVERSE LASER</td>
+                <td class="p-4 text-center font-semibold">3,300,000 SB</td>
+                <td class="p-4 text-center font-semibold">2,400,000 SB</td>
+                <td class="p-4 text-center font-semibold">13,500,000 SB</td>
+                <td class="p-4 text-center font-black">+10,200,000 SB</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-black">REVERSE DARK-RIFT</td>
+                <td class="p-4 text-center font-semibold">4,950,000 SB</td>
+                <td class="p-4 text-center font-semibold">3,600,000 SB</td>
+                <td class="p-4 text-center font-semibold">23,142,780 SB</td>
+                <td class="p-4 text-center font-black">+18,192,780 SB</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- CARD 4: JACKPOTS, FLOW ROUTING & OPERATIONAL ROADMAP -->
+    <div class="screenshot-card transition-all duration-200">
+      <div class="screenshot-header hidden font-mono text-xs font-black uppercase tracking-wider border-b-4 border-black pb-2 mb-6 text-black">
+        // SCREENSHOT CARD 4/4: JACKPOTS, FLOW ROUTING & OPERATIONAL ROADMAP //
+      </div>
+
+      <!-- SECTION 8 (SK) -->
+      <section class="border-b-4 border-black pb-8 mb-8">
+        <h2 class="font-mono text-xl font-black text-black uppercase tracking-wider border-b-4 border-black pb-3 mb-6">
+          8. BLOCKCHAINOVÉ JACKPOTY, POOL REAPING & LICENCIE
+        </h2>
+        <div class="space-y-6 text-sm text-black">
+          <div>
+            <span class="font-mono text-sm font-black text-black block uppercase">// WinWill Jackpot (Každých 24 hodín)</span>
+            <p class="text-sm text-black font-semibold mt-1 mb-3">
+              Automatický on-chain roll prístupný pre aktívne stroje. Výhra predstavuje fixných 30% zo 180-dňovej produkcie daného modelu, čerpaná priamo z Main Poolu:
+            </p>
+            <div class="border-4 border-black p-5 font-mono text-sm space-y-2 font-semibold">
+              <div class="flex justify-between border-b-2 border-black pb-1">
+                <span>Walkie-Talkie Jackpot:</span>
+                <span class="font-black">+1,799,982 STARBIT (Šanca: 3%)</span>
+              </div>
+              <div class="flex justify-between border-b-2 border-black pb-1">
+                <span>Laser-Drill Jackpot:</span>
+                <span class="font-black">+4,050,000 STARBIT (Šanca: 6%)</span>
+              </div>
+              <div class="flex flex-col sm:flex-row sm:justify-between border-b-2 border-black pb-1 bg-red-100 p-2 text-red-700 text-xs sm:text-sm">
+                <span class="font-black">Dark-Rift Jackpot (Protokol Dimensionity):</span>
+                <span class="font-black text-left sm:text-right">0% (Dimensionity systém odčerpáva s dark rift pool a rozdelju medzi uzivatelov vsetkych co vlastnia dark rifty)</span>
+              </div>
+              <div class="flex justify-between font-black text-base text-black pt-1">
+                <span>Satoshi-Dream Jackpot:</span>
+                <span>+20,828,502 STARBIT (Šanca: 9%)</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <span class="font-mono text-sm font-black text-black block uppercase">// Obnova Licencie</span>
+            <p class="text-sm text-black font-semibold mt-1">
+              Po 180 dňoch stroj zamrzne; úroveň upgradu na NFT sa kompletne zachováva.
+            </p>
+            <ul class="list-disc pl-6 text-sm text-black font-semibold mt-2 space-y-2 font-mono">
+              <li><strong>Origin Extraktory:</strong> Obnova stojí 20% z pôvodnej ceny stroja.</li>
+              <li><strong>Reverse Extraktory:</strong> Obnova stojí 10% z celkového výnosu daného cyklu.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 9 (SK) -->
+      <section class="border-b-4 border-black pb-8 mb-8">
+        <h2 class="font-mono text-xl font-black text-black uppercase tracking-wider border-b-4 border-black pb-3 mb-6">
+          9. TOKY V EKOSYSTÉME (FEE ROUTING)
+        </h2>
+        
+        <div class="font-mono text-sm text-black overflow-x-auto p-5 border-4 border-black font-semibold">
+<pre class="bg-transparent p-0 border-0">
+A. NÁKUP ORIGIN EXTRAKTORA V OBCHODE:
+├── 88% ──> MAIN POOL 
+├──  5% ──> DARK-RIFT POOL (Určený výhradne na prerozdelenie držiteľom cez Dimensionity!)
+├──  5% ──> DEV WALLET 
+└──  2% ──> BURN 
+
+B. POKUS O UPGRADE (LVL 1, 2, 3 - Úspech aj Neúspech):
+├── 90% ──> MAIN POOL
+├──  3% ──> DARK-RIFT POOL (Prerozdeľovaný držiteľom!)
+├──  3% ──> DEV WALLET
+└──  3% ──> BURN
+
+C. OBCHODOVANIE NA SEKUNDÁRNOM TRHU (15% MARKET FEE Pre Origin Extraktory):
+├── 10% ──> MAIN POOL
+├──  3% ──> DARK-RIFT POOL (Prerozdeľovaný držiteľom!)
+├──  1% ──> DEV WALLET
+└──  1% ──> BURN
+
+D. PLATBA ZA PRENÁJOM NA REVERSE MARKET (55% OD NÁJOMCU):
+├── 40% ──> STARBITER (MAJITEĽ)
+├──  9% ──> MAIN POOL
+├──  3% ──> DARK-RIFT POOL (Prerozdeľovaný držiteľom!)
+├──  2% ──> DEV WALLET
+└──  1% ──> BURN
+
+E. PREDAJ BITICKETU NA SEKUNDÁRNOM TRHU (100% Z PREDAJNEJ CENY LÍSTKA):
+├── 40% ──> STARBITER (PREDAJCA / HODLER)
+├── 50% ──> MAIN POOL
+├──  3% ──> DEV WALLET
+├──  3% ──> DARK-RIFT POOL (Prerozdeľovaný držiteľom!)
+└──  4% ──> BURN
+</pre>
+        </div>
+      </section>
+
+      <!-- SECTION 10 (SK) -->
+      <section class="pb-6">
+        <h2 class="font-mono text-xl font-black text-black uppercase tracking-wider border-b-4 border-black pb-3 mb-6">
+          10. OPERAČNÁ ROADMAPA & AKTUÁLNY STATUS VÝVOJA
+        </h2>
+        <p class="text-base sm:text-lg mb-6 leading-relaxed text-black">
+          Stranger Bits prináša inteligentnú formu ťažby – nepotrebuješ hučiaci, predražený hardvér. Všetko prebieha formou decentralizovanej syntézy dát priamo na sieti Solana.
+        </p>
+
+        <div class="space-y-6 font-mono text-sm text-black">
+          <div class="border-4 border-black p-5 font-semibold">
+            <span class="text-black font-black block uppercase text-base">// Čo sa deje PRÁVE TERAZ:</span>
+            <ul class="list-decimal pl-6 text-black mt-2 space-y-4 text-base">
+              <li>
+                <strong class="text-black uppercase font-black">Frontend, UI/UX & Lokalizácia:</strong> 
+                Prebiehajú intenzívne dokončovacie práce a detailné ladenie grafického rozhrania. Cieľom je dosiahnuť vizuálne dokonalý a plne pohlcujúci dizajn, ktorý používateľovi sprostredkuje nezameniteľnú, surovú atmosféru Stranger Bits. Do systému sa implementujú ďalšie svetové jazyky, aby bola zabezpečená hladká globálna expanzia hneď od spustenia. Dolaďujú sa jednotlivé herné kategórie a nadväzujúce mechanizmy pre maximálny používateľský komfort.
+              </li>
+              <li>
+                <strong class="text-black uppercase font-black">Devnet testovanie kompletného systému (Fáza hotová na 80%):</strong> 
+                Všetky kľúčové smart kontrakty sú kompletne vytvorené a momentálne prechádzajú fázou dôkladného testovania na Solana Devnete. Celý systém beží v pozadí stabilne, hladko a bezchybne. Testovanie pokrýva absolútne všetky on-chain smart kontrakty, herné slučky a bezpečnostné protokoly potrebné na to, aby bolo používanie celej dAppky pre komunitu stopercentne bezpečné, plynulé a nepriestrelné. Devnet fáza je aktuálne hotová už na 80% – komunita sa má naozaj na čo tešiť!
+              </li>
+            </ul>
+          </div>
+
+          <!-- Deployment Timeline Map -->
+          <div>
+            <span class="text-black font-black block uppercase mb-3 text-base">// Časový harmonogram nasadenia (T+ dni od štartu):</span>
+            <div class="bg-black text-white p-5 font-black text-center border-4 border-black mb-5 text-sm sm:text-base tracking-wider leading-relaxed">
+              [ DEŇ X: SPUSTENIE ] ──> [ DO 15 DNÍ: PREPOJENIE UI ] ──> [ DO 90 DNÍ: STRANGER MAINNET ]
+            </div>
+            <div class="space-y-4 text-black leading-relaxed text-base font-semibold">
+              <p>
+                <strong class="text-black font-black text-base">FÁZA 0 (Deň X): Spustenie Raydium Launchpad</strong><br>
+                Aktivácia Bonding Curve a štart airdrop kampane na sieti X (Twitter).
+              </p>
+              <p>
+                <strong class="text-black font-black text-base">FÁZA 1 (Do 15 dní od ukončenia Bonding Curve): Prepojenie architektúry</strong><br>
+                Integrácia otestovaných devnet smart kontraktov vrátane BiTicketov a P2P prenájmov priamo do responzívneho prostredia strangerbits.com.
+              </p>
+              <p>
+                <strong class="text-black font-black text-base">FÁZA 2 (Do 90 dní od ukončenia Bonding Curve): Štart Globálneho Mainnetu & Odovzdanie</strong><br>
+                Prechod celej platformy na Solana Mainnet, uvoľnenie zaslúžených airdropov pre verných investorov, aktivácia ťažobných slotov, dennej Win Will lotérie a staking modulu Starewards.
+              </p>
+            </div>
+          </div>
+
+          <div class="border-4 border-black p-5 text-center bg-black text-white font-black text-base tracking-wide">
+            Celkový produkčný čas: Do 90 dní do kompletného, stopercentného odovzdania celého herného a ekonomického ekosystému.
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer Seal -->
+      <div class="border-t-4 border-black pt-8 mt-8 text-center font-mono text-sm font-black text-black">
+        ** DOKUMENT UZAMKNUTÝ. ZÁPIS NA BLOCKCHAINE COMPLETED. KÓD JE ZÁKON. **
+      </div>
+    </div>
+  </main>
+
+  <!-- ENGLISH LANGUAGE CONTENT -->
+  <main id="paper-en" class="lang-section hidden max-w-4xl mx-auto px-6 py-4 space-y-12">
+    
+    <!-- CARD 1: LORE & TOKENOMICS -->
+    <div class="screenshot-card transition-all duration-200">
+      <div class="screenshot-header hidden font-mono text-xs font-black uppercase tracking-wider border-b-4 border-black pb-2 mb-6 text-black">
+        // SCREENSHOT CARD 1/4: LORE & TOKENOMICS //
+      </div>
+
+      <!-- DOCUMENT HEADER v3.3 -->
+      <header class="pt-6 pb-8 border-b-4 border-black mb-10">
+        <p class="font-mono text-sm uppercase tracking-widest text-black font-extrabold mb-3">// OFFICIAL DOCUMENTATION V3.3 //</p>
+        <h1 class="text-5xl sm:text-7xl font-black tracking-tight uppercase leading-none text-black">
+          STRANGER BITS
+        </h1>
+        <p class="font-mono text-base mt-3 text-black font-extrabold uppercase tracking-wide">
+          REVERSE DIMENSION EXTRACTION PROTOCOL — WHITEPAPER
+        </p>
+      </header>
+
+      <!-- SECTION 1 (EN) -->
+      <section class="border-b-4 border-black pb-8 mb-8">
+        <h2 class="font-mono text-xl font-black text-black uppercase tracking-wider border-b-4 border-black pb-3 mb-6">
+          1. RECORDS FROM THE ABYSS (LORE & STORY)
+        </h2>
+        
+        <div class="space-y-6 text-base sm:text-lg leading-relaxed text-black">
+          <div>
+            <h3 class="font-mono text-sm font-black uppercase text-black mb-1 tracking-wide">// 01 | Classified Project: Reality After Bitcoin</h3>
+            <p>
+              When Satoshi Nakamoto disappeared in 2011, the world thought his work was finished. The truth, however, is that Bitcoin was merely a public stress test. Satoshi realized the limitations of linear blockchains and dedicated the rest of his life to developing STRANGER BITS — a project that does not run on our servers. He discovered a rift in the core protocol of the internet, beneath which lies the Reverse Data Dimension. It is a layer where data does not perish, but accumulates in its raw form as Stranger Minerals.
+            </p>
+          </div>
+
+          <div>
+            <h3 class="font-mono text-sm font-black uppercase text-black mb-1 tracking-wide">// 02 | Data Monsters: The Glitch-Plants</h3>
+            <p>
+              In this dimension, he encountered Carnivorous Plants (The Glitch-Plants). These are the most aggressive entities in digital cyberspace, operating as organic firewalls. These plants feed precisely on the aforementioned Stranger Minerals — sucking in fragments of raw code from the regular internet that slipped through the rift. Through a process of internal data synthesis, they transform these minerals and, over time, secrete Stranger Bits — known as STARBITS – crystallized data blocks with extremely high information density. However, Glitch-Plants are highly territorial, and any attempt to harvest their food is instantly punished by the total wipeout of the intruder's signal.
+            </p>
+          </div>
+
+          <div>
+            <h3 class="font-mono text-sm font-black uppercase text-black mb-1 tracking-wide">// 03 | Discovery in the Wallet Structure (3 Months Ago)</h3>
+            <p>
+              The entire world watched Satoshi's legendary wallet with thousands of motionless Bitcoins, waiting for them to move. We approached it differently. During our deep decryption analysis of the address structure itself, we did not stumble upon the private key — that remains unbroken. Instead, we found a classified code hidden in the address checksum. Satoshi did not leave money there, but an access protocol. We discovered code fragments serving as coordinates to the reverse dimension and a technical blueprint for constructing extractors. Based on this discovery, we resurrected his technology and established the only legitimate Black Market in the world.
+            </p>
+          </div>
+
+          <div>
+            <h3 class="font-mono text-sm font-black uppercase text-black mb-1 tracking-wide">// 04 | STARBIT: More Than Just a Token</h3>
+            <p>
+              STARBIT (the ruby data crystal) is the result of this unique data transformation. It contains the pure essence from the depths of the reverse internet — code capable of self-rewriting and evolving. Satoshi embedded a mechanism into these crystals that has the potential to redefine the very nature of digital ownership. The truth about what happens once a critical mass of STARBITS is gathered remains strictly classified. Until then, STARBIT is the most valuable commodity on the black market — the key to a new world architecture.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3 (EN) -->
+      <section class="pb-4">
+        <h2 class="font-mono text-xl font-black text-black uppercase tracking-wider border-b-4 border-black pb-3 mb-6">
+          2. TOKENOMICS & LAUNCH STRATEGY (RAYDIUM LAUNCHPAD)
+        </h2>
+        <p class="text-base sm:text-lg mb-6 leading-relaxed text-black">
+          The distribution of the STARBIT token supply is designed for maximum economic sustainability and liquidity pool protection.
+        </p>
+        <div class="space-y-4 font-mono text-sm text-black">
+          <div class="border-4 border-black p-5">
+            <span class="text-black font-black text-base">[ 55% — Bonding Curve Phase ]</span>
+            <p class="text-black font-semibold mt-2 text-base">Initial generative liquidity for a fair launch and organic price discovery.</p>
+          </div>
+          
+          <div class="border-4 border-black p-5">
+            <span class="text-black font-black text-base">[ 25% — Team & Ecosystem Allocation ]</span>
+            <ul class="list-disc pl-5 mt-3 text-black font-semibold space-y-2 text-base">
+              <li>20% is moved instantly at launch to the MAIN POOL to cover mining rewards for the initial extractor cycles.</li>
+              <li>5% is allocated to the development team. These tokens are locked in a smart contract for 7 days from the successful completion of the bonding curve phase.</li>
+            </ul>
+          </div>
+
+          <div class="border-4 border-black p-5">
+            <span class="text-black font-black text-base">[ 20% — Raydium Liquidity Pool ]</span>
+            <p class="text-black font-semibold mt-2 text-base">Automatically locked liquidity on Raydium AMM after finalizing the bonding curve.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- CARD 2: HARDWARE, AIRDROP & BASE MATRICES (EN) -->
+    <div class="screenshot-card transition-all duration-200">
+      <div class="screenshot-header hidden font-mono text-xs font-black uppercase tracking-wider border-b-4 border-black pb-2 mb-6 text-black">
+        // SCREENSHOT CARD 2/4: HARDWARE, AIRDROP & BASE MATRICES //
+      </div>
+
+      <!-- SECTION 2 (EN) -->
+      <section class="border-b-4 border-black pb-8 mb-8">
+        <h2 class="font-mono text-xl font-black text-black uppercase tracking-wider border-b-4 border-black pb-3 mb-6">
+          3. TECHNICAL SPECIFICATIONS OF EXTRACTORS
+        </h2>
+        <div class="space-y-6 font-mono text-sm text-black">
+          <div class="border-4 border-black p-5">
+            <span class="text-black font-black uppercase text-base">[ WALKIE-TALKIE (Signal Mimic) ]</span>
+            <p class="text-black font-semibold mt-2 text-base leading-relaxed">
+              Utilizes a modified frequency found in the wallet code. It broadcasts a signal that mimics the hum of Stranger Minerals. The plant believes it is merely feeding, while the device quietly harvests matured STARBITS.
+            </p>
+          </div>
+
+          <div class="border-4 border-black p-5">
+            <span class="text-black font-black uppercase text-base">[ LASER-DRILL (Phase Shifter) ]</span>
+            <p class="text-black font-semibold mt-2 text-base leading-relaxed">
+              This tool phase-shifts the extractor's reality. It can harvest the crystal from inside the plant in a different time interval, so the plant registers no loss of data in the present.
+            </p>
+          </div>
+
+          <div class="border-4 border-black p-5 bg-black text-white">
+            <span class="text-white font-black uppercase text-base flex items-center justify-between">
+              <span>[ DARK-RIFT (Void Harvester + Dimensionity Protocol) ]</span>
+              <span class="text-xs border-2 border-white px-2 py-0.5 font-black bg-white text-black">ACTIVE POOL REAPING</span>
+            </span>
+            <p class="text-gray-200 font-semibold mt-2 text-base leading-relaxed">
+              Creates a microscopic wormhole of dark reverse matter leading directly to the core of the Glitch-Plant. Additionally features the <strong>Dimensionity (formerly Parasite)</strong> protocol: although it lacks a daily WinWill jackpot, it passively drains the dedicated Dark-Rift Pool (5% of sales, 3% of upgrades, 3% of rentals, and market transaction fees) and distributes it equally among all active Dark-Rift holders.
+            </p>
+          </div>
+
+          <div class="border-4 border-black p-5 bg-stone-100 text-black">
+            <span class="text-black font-black uppercase text-base flex items-center justify-between">
+              <span>[ SATOSHI-DREAM (Mythic Legend) ]</span>
+              <span class="text-xs border-2 border-black px-2 py-0.5 font-bold">RESTRICTED PROTOCOL</span>
+            </span>
+            <p class="text-black font-semibold mt-2 text-base leading-relaxed">
+              The absolute pinnacle of reverse technology. A secret prototype generated from salvaged Satoshi data fragments. This model is not subject to standard modular construction and possesses a unique resonance frequency that harvests STARBITS directly from the deepest core of Glitch-Plants without any resistance.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 4 (EN) -->
+      <section class="border-b-4 border-black pb-8 mb-8">
+        <h2 class="font-mono text-xl font-black text-black uppercase tracking-wider border-b-4 border-black pb-3 mb-6">
+          4. AIRDROP FOR "DIAMOND HANDS" INVESTORS
+        </h2>
+        <p class="text-base sm:text-lg mb-6 leading-relaxed text-black">
+          To eliminate instant dumping during the bonding curve phase, we are implementing an on-chain reward mechanism. Wallets that buy during the initial curve and do not sell a single token will receive free mining NFTs.
+        </p>
+        
+        <h3 class="font-mono text-xs font-black text-black mb-3 uppercase tracking-widest">// Reward Distribution by Volume:</h3>
+        <div class="border-4 border-black p-6 font-mono text-sm mb-8 space-y-4 text-black">
+          <div class="flex flex-col sm:flex-row justify-between border-b-2 border-black pb-2">
+            <span class="font-bold">Buy of min. 1 SOL</span>
+            <span class="font-black">2× WALKIE-TALKIE (Value of 6,000,000 STARBIT)</span>
+          </div>
+          <div class="flex flex-col sm:flex-row justify-between border-b-2 border-black pb-2">
+            <span class="font-bold">Buy of min. 2 SOL</span>
+            <span class="font-black">2× LASER-DRILL (Value of 12,000,000 STARBIT)</span>
+          </div>
+          <div class="flex flex-col sm:flex-row justify-between">
+            <span class="font-bold">Buy of min. 3 SOL</span>
+            <span class="font-black">2× DARK-RIFT (Value of 18,000,000 STARBIT)</span>
+          </div>
+        </div>
+
+        <h3 class="font-mono text-xs font-black text-black mb-3 uppercase tracking-widest">// Verification Protocol (X / Twitter):</h3>
+        <ol class="list-decimal pl-6 text-sm font-mono space-y-3 font-semibold leading-relaxed text-black">
+          <li>The user makes a purchase on the Raydium bonding curve.</li>
+          <li>Takes a screenshot of the transaction and posts it as a reply under the official launch Tweet.</li>
+          <li>After the bonding curve ends, our team and audit-bot will verify the complete on-chain history of the wallet.</li>
+          <li>If the wallet did not sell any STARBIT during the entire bonding curve phase, an admin will post a confirmation under the tweet.</li>
+          <li><strong>Delivery:</strong> Validated NFT extractors will be sent to the buyer's wallet within 30 days from the successful completion of the bonding curve phase (they will appear directly in the Dashboard on strangerbits.com upon transitioning to the Mainnet).</li>
+        </ol>
+      </section>
+
+      <!-- SECTION 5 (EN) -->
+      <section class="pb-4">
+        <h2 class="font-mono text-xl font-black text-black uppercase tracking-wider border-b-4 border-black pb-3 mb-6">
+          5. EXTRACTOR PRODUCTION MATRIX (BASE - LVL 0)
+        </h2>
+        
+        <div class="overflow-x-auto border-4 border-black">
+          <table class="w-full text-left font-mono text-sm text-black bg-white min-w-[650px]">
+            <thead>
+              <tr class="border-b-4 border-black bg-black text-white">
+                <th class="p-4 font-black">Parameter / Machine</th>
+                <th class="p-4 text-center font-black">WALKIE-TALKIE</th>
+                <th class="p-4 text-center font-black">LASER-DRILL</th>
+                <th class="p-4 text-center font-black">DARK-RIFT</th>
+                <th class="p-4 text-center font-black underline">SATOSHI-DREAM</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y-2 divide-black">
+              <tr>
+                <td class="p-4 font-black">Purchase Price</td>
+                <td class="p-4 text-center font-semibold">3,000,000 SB</td>
+                <td class="p-4 text-center font-semibold">6,000,000 SB</td>
+                <td class="p-4 text-center font-semibold">9,000,000 SB</td>
+                <td class="p-4 text-center font-black">Cannot Purchase</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-black">Base Mining (LVL 0)</td>
+                <td class="p-4 text-center font-semibold">33,333 SB / day</td>
+                <td class="p-4 text-center font-semibold">75,000 SB / day</td>
+                <td class="p-4 text-center font-semibold">128,571 SB / day</td>
+                <td class="p-4 text-center font-black">385,713 SB / day</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-black">Gross Yield (180 days)</td>
+                <td class="p-4 text-center font-semibold">5,999,940 SB</td>
+                <td class="p-4 text-center font-semibold">13,500,000 SB</td>
+                <td class="p-4 text-center font-semibold">23,142,780 SB</td>
+                <td class="p-4 text-center font-black">69,428,340 SB</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-black">Payback Period (ROI)</td>
+                <td class="p-4 text-center font-semibold">90 days</td>
+                <td class="p-4 text-center font-semibold">80 days</td>
+                <td class="p-4 text-center font-semibold">70 days</td>
+                <td class="p-4 text-center font-black">No initial cost</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-black">Cycle License</td>
+                <td class="p-4 text-center font-semibold">180 days</td>
+                <td class="p-4 text-center font-semibold">180 days</td>
+                <td class="p-4 text-center font-semibold">180 days</td>
+                <td class="p-4 text-center font-semibold">180 days</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-black">WinWill Chance (24h)</td>
+                <td class="p-4 text-center font-semibold">3%</td>
+                <td class="p-4 text-center font-semibold">6%</td>
+                <td class="p-4 text-center font-black bg-red-100 text-red-600 text-xs leading-tight max-w-[200px]">0% (Dimensionity system drains Dark-Rift Pool and distributes it among all holders)</td>
+                <td class="p-4 text-center font-black">9%</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-black">Upgrade Option</td>
+                <td class="p-4 text-center font-semibold">Yes (LVL 1-3)</td>
+                <td class="p-4 text-center font-semibold">Yes (LVL 1-3)</td>
+                <td class="p-4 text-center font-semibold">Yes (LVL 1-3)</td>
+                <td class="p-4 text-center font-black">Locked (Maxed)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-black">Max Supply (Limit)</td>
+                <td class="p-4 text-center font-semibold">20,000 NFT</td>
+                <td class="p-4 text-center font-semibold">15,000 NFT</td>
+                <td class="p-4 text-center font-semibold">10,000 NFT</td>
+                <td class="p-4 text-center font-black">Unique drop (1%)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- CARD 3: UPGRADES, REVERSE MARKET & GAME THEORY (EN) -->
+    <div class="screenshot-card transition-all duration-200">
+      <div class="screenshot-header hidden font-mono text-xs font-black uppercase tracking-wider border-b-4 border-black pb-2 mb-6 text-black">
+        // SCREENSHOT CARD 3/4: UPGRADES, REVERSE MARKET & GAME THEORY //
+      </div>
+
+      <!-- SECTION 6 (EN) -->
+      <section class="border-b-4 border-black pb-8 mb-8">
+        <h2 class="font-mono text-xl font-black text-black uppercase tracking-wider border-b-4 border-black pb-3 mb-6">
+          6. UPGRADE SYSTEM (SUPER YIELD MECHANICS)
+        </h2>
+        <p class="text-base sm:text-lg mb-6 leading-relaxed text-black">
+          NFT contract modifications are permanent. They are executed directly on the blockchain with a fixed success rate. The mythic <span class="font-black">SATOSHI-DREAM</span> model cannot be upgraded, as it already operates at its maximum hardware limit from the start.
+        </p>
+
+        <div class="border-4 border-black p-5 font-mono text-sm mb-6 font-semibold text-black">
+          <span class="text-black font-black uppercase text-base block">// Network Synergy (Probability)</span>
+          <ul class="list-disc pl-5 mt-2 space-y-1 text-base">
+            <li><strong>Base Success Chance:</strong> 50%</li>
+            <li><strong>Whale Boost:</strong> +5% to the success chance for each additional extractor of the same type held in the same wallet (Max limit 90%).</li>
+          </ul>
+        </div>
+
+        <h3 class="font-mono text-xs font-black text-black mb-3 uppercase tracking-widest">// Super Yield Levels (+20% / +40% / +60% to base mining)</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-sm text-black">
+          
+          <div class="border-4 border-black p-5 font-semibold">
+            <span class="text-black font-black uppercase block text-base">A. WALKIE-TALKIE</span>
+            <p class="text-xs font-black mt-1">+6,666 STARBIT / day per LVL</p>
+            <ul class="mt-3 space-y-1.5 text-black text-base">
+              <li><span class="font-black">LVL 1 (Cost: 300k SB)</span> -> 39,999 SB</li>
+              <li><span class="font-black">LVL 2 (Cost: 600k SB)</span> -> 46,665 SB</li>
+              <li><span class="font-black">LVL 3 (Cost: 900k SB)</span> -> 53,331 SB</li>
+            </ul>
+          </div>
+
+          <div class="border-4 border-black p-5 font-semibold">
+            <span class="text-black font-black uppercase block text-base">B. LASER-DRILL</span>
+            <p class="text-xs font-black mt-1">+15,000 STARBIT / day per LVL</p>
+            <ul class="mt-3 space-y-1.5 text-black text-base">
+              <li><span class="font-black">LVL 1 (Cost: 600k SB)</span> -> 90,000 SB</li>
+              <li><span class="font-black">LVL 2 (Cost: 1.2M SB)</span> -> 105,000 SB</li>
+              <li><span class="font-black">LVL 3 (Cost: 1.8M SB)</span> -> 120,000 SB</li>
+            </ul>
+          </div>
+
+          <div class="border-4 border-black p-5 font-semibold">
+            <span class="text-black font-black uppercase block text-base">C. DARK-RIFT</span>
+            <p class="text-xs font-black mt-1">+25,714 STARBIT / day per LVL</p>
+            <ul class="mt-3 space-y-1.5 text-black text-base">
+              <li><span class="font-black">LVL 1 (Cost: 900k SB)</span> -> 154,285 SB</li>
+              <li><span class="font-black">LVL 2 (Cost: 1.8M SB)</span> -> 180,000 SB</li>
+              <li><span class="font-black">LVL 3 (Cost: 2.7M SB)</span> -> 205,714 SB</li>
+            </ul>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SECTION 7 (EN) -->
+      <section class="pb-4">
+        <h2 class="font-mono text-xl font-black text-black uppercase tracking-wider border-b-4 border-black pb-3 mb-6">
+          7. REVERSE MARKET & STAREWARDS SYSTEM (DUAL HODL BONUS)
+        </h2>
+        <p class="text-base sm:text-lg mb-6 leading-relaxed text-black">
+          Locking STARBITS in the Starewards gaming module on the website triggers reverse data synthesis. Your original tokens remain safe and untouched, unlocking after 30 days. This process rewards the HODLer (Starbiter) with <span class="font-black">two independent assets at the same time — YOU RECEIVE BOTH SIMULTANEOUSLY!</span>
+        </p>
+
+        <!-- DUAL REWARD HIGHLIGHT BANNER -->
+        <div class="border-4 border-black bg-black text-white p-4 font-mono text-sm mb-6 uppercase tracking-wider font-black text-center">
+          HODL SYNERGY: FOR EVERY LOCKED BUNDLE YOU RECEIVE BOTH AT ONCE — A REVERSE EXTRACTOR (PASSIVE RENTAL) + A BONUS TRADING BITICKET!
+        </div>
+
+        <h3 class="font-mono text-xs font-black text-black mb-3 uppercase tracking-widest">// Dual Reward System for the HODLer:</h3>
+        <div class="space-y-4 text-base mb-6 text-black">
+          <div class="border-l-8 border-black p-5 bg-stone-50">
+            <span class="font-mono text-sm font-black uppercase block mb-1">[ 1. REVERSE EXTRACTOR (Designed Exclusively for RENTING) ]</span>
+            <p class="text-black font-semibold text-base leading-relaxed">
+              A randomized Reverse machine generated on-chain and credited to your user dashboard based on the probability matrix of your staking tier. The tenant (Starbitian) pays 55% of the machine's purchase price upfront. Smart contract credits 40% of the price directly to the owner's (Starbiter) wallet instantly. Remaining 15% routing via Fee Routing D. The tenant receives 100% of mining output for 180 days with massive ROI.
+            </p>
+          </div>
+          <div class="border-l-8 border-black p-5 bg-black text-white">
+            <span class="font-mono text-sm font-black uppercase block text-white mb-1">[ 2. 1× BITICKET (Designed Exclusively for SELLING) ]</span>
+            <p class="text-gray-200 font-semibold text-base leading-relaxed">
+              A unique, sealed data package (SPL NFT) that the HODLer receives alongside the rental machine as a mythic bonus. The original owner cannot open this ticket. The only option is to sell it on the secondary black market to other players representing pure, instant profit.
+            </p>
+          </div>
+        </div>
+
+        <h3 class="font-mono text-xs font-black text-black mb-3 uppercase tracking-widest">// DISTRIBUTION BY STAKING PACKAGES:</h3>
+        <div class="overflow-x-auto border-4 border-black mb-8">
+          <table class="w-full text-left font-mono text-sm text-black bg-white min-w-[500px]">
+            <thead>
+              <tr class="border-b-4 border-black bg-black text-white">
+                <th class="p-4 font-black">Locked Sum of STARBITS</th>
+                <th class="p-4 font-black">Generated Rental Machine (Drop Probability)</th>
+                <th class="p-4 font-black">Bonus Trading Ticket</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y-2 divide-black">
+              <tr>
+                <td class="p-4 font-black">10M - 30M SB</td>
+                <td class="p-4">
+                  <div class="space-y-1 font-semibold text-xs sm:text-sm text-black">
+                    <div><span class="font-black">70%</span> chance: Reverse WALKIE-TALKIE</div>
+                    <div><span class="font-black">20%</span> chance: Reverse LASER-DRILL</div>
+                    <div><span class="font-black">10%</span> chance: Reverse DARK-RIFT</div>
+                  </div>
+                </td>
+                <td class="p-4 font-black text-center text-black">1× BiTicket (Random Drop)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-black">30M - 60M SB</td>
+                <td class="p-4">
+                  <div class="space-y-1 font-semibold text-xs sm:text-sm text-black">
+                    <div><span class="font-black">25%</span> chance: Reverse WALKIE-TALKIE</div>
+                    <div><span class="font-black">50%</span> chance: Reverse LASER-DRILL</div>
+                    <div><span class="font-black">25%</span> chance: Reverse DARK-RIFT</div>
+                  </div>
+                </td>
+                <td class="p-4 font-black text-center text-black">1× BiTicket (Random Drop)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-black">60M+ SB</td>
+                <td class="p-4">
+                  <div class="space-y-1 font-semibold text-xs sm:text-sm text-black">
+                    <div><span class="font-black">15%</span> chance: Reverse WALKIE-TALKIE</div>
+                    <div><span class="font-black">30%</span> chance: Reverse LASER-DRILL</div>
+                    <div><span class="font-black">55%</span> chance: Reverse DARK-RIFT</div>
+                  </div>
+                </td>
+                <td class="p-4 font-black text-center text-black">1× BiTicket (Random Drop)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- BITICKET GAMBLING MATRIX (EN) -->
+        <div class="border-4 border-black p-6 mb-8 text-black">
+          <h3 class="font-mono text-base font-black uppercase mb-4 flex items-center justify-between">
+            <span>BITICKET GAMBLING MATRIX (Opening Chances)</span>
+            <span class="text-xs border-2 border-black px-2 py-0.5 font-black bg-black text-white">PROBABILITIES</span>
+          </h3>
+          <p class="text-sm text-black font-semibold mb-4">
+            When a speculator purchases a BiTicket on the secondary market and opens it, the ticket is permanently burned. The smart contract generates a random on-chain reward according to these percentages:
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-5 gap-4 font-mono text-sm text-center font-bold">
+            <div class="border-4 border-black p-4 bg-gray-100">
+              <span class="font-black block text-2xl">20.0%</span>
+              <span class="text-xs uppercase tracking-wider block mt-1">System Glitch</span>
+              <span class="text-[10px] text-black font-black block mt-1">(NOTHING)</span>
+            </div>
+            <div class="border-4 border-black p-4 bg-white">
+              <span class="font-black block text-2xl">40.0%</span>
+              <span class="text-xs uppercase tracking-wider block mt-1">Walkie-Talkie</span>
+              <span class="text-[10px] text-black font-black block mt-1">(3M SB Value)</span>
+            </div>
+            <div class="border-4 border-black p-4 bg-white">
+              <span class="font-black block text-2xl">24.0%</span>
+              <span class="text-xs uppercase tracking-wider block mt-1">Laser-Drill</span>
+              <span class="text-[10px] text-black font-black block mt-1">(6M SB Value)</span>
+            </div>
+            <div class="border-4 border-black p-4 bg-white">
+              <span class="font-black block text-2xl">15.0%</span>
+              <span class="text-xs uppercase tracking-wider block mt-1">Dark-Rift</span>
+              <span class="text-[10px] text-black font-black block mt-1">(9M SB Value)</span>
+            </div>
+            <div class="border-4 border-black p-4 bg-black text-white">
+              <span class="font-black block text-2xl">1.0%</span>
+              <span class="text-xs uppercase tracking-wider block mt-1 font-black">Satoshi-Dream</span>
+              <span class="text-[10px] text-white/90 block mt-1 font-semibold">(Legendary)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- REAL RENTAL CALCULATIONS -->
+        <h3 class="font-mono text-xs font-black text-black mb-3 uppercase tracking-widest">// REAL RENTAL CALCULATIONS</h3>
+        <div class="overflow-x-auto border-4 border-black">
+          <table class="w-full text-left font-mono text-sm text-black bg-white min-w-[600px]">
+            <thead>
+              <tr class="border-b-4 border-black bg-black text-white">
+                <th class="p-4 font-black">Machine Model</th>
+                <th class="p-4 text-center font-black">Tenant Pays (55% of Price)</th>
+                <th class="p-4 text-center font-black">Owner Receives (40% of Price)</th>
+                <th class="p-4 text-center font-black">Gross Yield (180 days)</th>
+                <th class="p-4 text-center font-black">Tenant Net Profit</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y-2 divide-black">
+              <tr>
+                <td class="p-4 font-black">REVERSE WALKIE</td>
+                <td class="p-4 text-center font-semibold">1,650,000 SB</td>
+                <td class="p-4 text-center font-semibold">1,200,000 SB</td>
+                <td class="p-4 text-center font-semibold">5,999,940 SB</td>
+                <td class="p-4 text-center font-black">+4,349,940 SB</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-black">REVERSE LASER</td>
+                <td class="p-4 text-center font-semibold">3,300,000 SB</td>
+                <td class="p-4 text-center font-semibold">2,400,000 SB</td>
+                <td class="p-4 text-center font-semibold">13,500,000 SB</td>
+                <td class="p-4 text-center font-black">+10,200,000 SB</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-black">REVERSE DARK-RIFT</td>
+                <td class="p-4 text-center font-semibold">4,950,000 SB</td>
+                <td class="p-4 text-center font-semibold">3,600,000 SB</td>
+                <td class="p-4 text-center font-semibold">23,142,780 SB</td>
+                <td class="p-4 text-center font-black">+18,192,780 SB</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- CARD 4: JACKPOTS, FLOW ROUTING & ROADMAP (EN) -->
+    <div class="screenshot-card transition-all duration-200">
+      <div class="screenshot-header hidden font-mono text-xs font-black uppercase tracking-wider border-b-4 border-black pb-2 mb-6 text-black">
+        // SCREENSHOT CARD 4/4: JACKPOTS, FLOW ROUTING & ROADMAP //
+      </div>
+
+      <!-- SECTION 8 (EN) -->
+      <section class="border-b-4 border-black pb-8 mb-8">
+        <h2 class="font-mono text-xl font-black text-black uppercase tracking-wider border-b-4 border-black pb-3 mb-6">
+          8. BLOCKCHAIN JACKPOTS, POOL REAPING & LICENSE RENEWALS
+        </h2>
+        <div class="space-y-6 text-sm text-black">
+          <div>
+            <span class="font-mono text-sm font-black text-black block uppercase">// WinWill Jackpot (Every 24 Hours)</span>
+            <p class="text-sm text-black font-semibold mt-1 mb-3">
+              An automatic on-chain roll accessible to active machines. The prize represents a fixed 30% of the 180-day production of the respective model, drawn directly from the Main Pool:
+            </p>
+            <div class="border-4 border-black p-5 font-mono text-sm space-y-2 bg-white font-semibold">
+              <div class="flex justify-between border-b-2 border-black pb-1">
+                <span>Walkie-Talkie Jackpot:</span>
+                <span class="font-black">+1,799,982 STARBIT (Chance: 3%)</span>
+              </div>
+              <div class="flex justify-between border-b-2 border-black pb-1">
+                <span>Laser-Drill Jackpot:</span>
+                <span class="font-black">+4,050,000 STARBIT (Chance: 6%)</span>
+              </div>
+              <div class="flex flex-col sm:flex-row sm:justify-between border-b-2 border-black pb-1 bg-red-100 p-2 text-red-700 text-xs sm:text-sm">
+                <span class="font-black">Dark-Rift Jackpot (Dimensionity Protocol):</span>
+                <span class="font-black text-left sm:text-right">0% (Dimensionity system drains Dark-Rift Pool and distributes it among all holders)</span>
+              </div>
+              <div class="flex justify-between font-black text-base text-black pt-1">
+                <span>Satoshi-Dream Jackpot:</span>
+                <span>+20,828,502 STARBIT (Chance: 9%)</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <span class="font-mono text-sm font-black text-black block uppercase">// License Renewal</span>
+            <p class="text-sm text-black font-semibold mt-1">
+              After 180 days, the machine freezes; the upgrade level on the NFT is preserved.
+            </p>
+            <ul class="list-disc pl-6 text-sm text-black font-semibold mt-2 space-y-2 font-mono">
+              <li><strong>Origin Extractors:</strong> Renewal costs 20% of the machine's original purchase price.</li>
+              <li><strong>Reverse Extractors:</strong> Renewal costs 10% of the total yield generated during that cycle.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 9 (EN) -->
+      <section class="border-b-4 border-black pb-8 mb-8">
+        <h2 class="font-mono text-xl font-black text-black uppercase tracking-wider border-b-4 border-black pb-3 mb-6">
+          9. ECOSYSTEM FLOWS (FEE ROUTING)
+        </h2>
+        
+        <div class="font-mono text-sm text-black overflow-x-auto p-5 border-4 border-black font-semibold">
+<pre class="bg-transparent p-0 border-0">
+A. PURCHASE OF ORIGIN EXTRACTOR IN SHOP:
+├── 88% ──> MAIN POOL 
+├──  5% ──> DARK-RIFT POOL (Exclusively distributed to Dark-Rift holders via Dimensionity!)
+├──  5% ──> DEV WALLET 
+└──  2% ──> BURN 
+
+B. UPGRADE ATTEMPT (LVL 1, 2, 3 - Success & Failure):
+├── 90% ──> MAIN POOL
+├──  3% ──> DARK-RIFT POOL (Distributed to holders!)
+├──  3% ──> DEV WALLET
+└──  3% ──> BURN
+
+C. TRADING ON SECONDARY MARKET (15% MARKET FEE For Origin Extractors):
+├── 10% ──> MAIN POOL
+├──  3% ──> DARK-RIFT POOL (Distributed to holders!)
+├──  1% ──> DEV WALLET
+└──  1% ──> BURN
+
+D. RENTAL PAYMENT ON REVERSE MARKET (55% FROM TENANT):
+├── 40% ──> STARBITER (OWNER)
+├──  9% ──> MAIN POOL
+├──  3% ──> DARK-RIFT POOL (Distributed to holders!)
+├──  2% ──> DEV WALLET
+└──  1% ──> BURN
+
+E. BITICKET SALE ON SECONDARY MARKET (100% OF TICKET SALES PRICE):
+├── 40% ──> STARBITER (SELLER / HODLER)
+├── 50% ──> MAIN POOL
+├──  3% ──> DEV WALLET
+├──  3% ──> DARK-RIFT POOL (Distributed to holders!)
+└──  4% ──> BURN
+</pre>
+        </div>
+      </section>
+
+      <!-- SECTION 10 (EN) -->
+      <section class="pb-6">
+        <h2 class="font-mono text-xl font-black text-black uppercase tracking-wider border-b-4 border-black pb-3 mb-6">
+          10. OPERATIONAL ROADMAP & CURRENT DEVELOPMENT STATUS
+        </h2>
+        <p class="text-base sm:text-lg mb-6 leading-relaxed text-black">
+          Stranger Bits introduces smart mining — no noisy, overpriced hardware required. Everything runs via decentralized data synthesis directly on the Solana network.
+        </p>
+
+        <div class="space-y-6 font-mono text-sm text-black">
+          <div class="border-4 border-black p-5 font-semibold">
+            <span class="text-black font-black block uppercase text-base">// What is happening RIGHT NOW:</span>
+            <ul class="list-decimal pl-6 text-black mt-2 space-y-4 text-base">
+              <li>
+                <strong class="text-black uppercase font-black">Frontend, UI/UX & Localization:</strong> 
+                Intense finalization work and detailed visual polishing of the graphical interface are underway. The goal is to achieve a visually flawless and fully immersive design that delivers the unmistakable, raw Stranger Bits atmosphere to the user. Additional global languages are being implemented into the system to ensure smooth global expansion right from launch. Individual game categories and connecting mechanisms are being polished for maximum user comfort.
+              </li>
+              <li>
+                <strong class="text-black uppercase font-black">Devnet Testing of the Complete System (80% Complete Phase):</strong> 
+                All key smart contracts are fully developed and currently undergoing rigorous testing on the Solana Devnet. The entire system is running stably, smoothly, and flawlessly in the background. Testing covers absolutely all on-chain smart contracts, game loops, and security protocols required to make using the dApp 100% safe, smooth, and bulletproof for the community. The Devnet phase is currently already 80% complete — the community truly has a lot to look forward to!
+              </li>
+            </ul>
+          </div>
+
+          <!-- Deployment Timeline Map -->
+          <div>
+            <span class="text-black font-black block uppercase mb-3 text-base">// Deployment Timeline (T+ days from launch):</span>
+            <div class="bg-black text-white p-5 font-black text-center border-4 border-black mb-5 text-sm sm:text-base tracking-wider leading-relaxed">
+              [ DAY X: LAUNCH ] ──> [ WITHIN 15 DAYS: UI CONNECTION ] ──> [ WITHIN 90 DAYS: STRANGER MAINNET ]
+            </div>
+            <div class="space-y-4 text-black leading-relaxed text-base font-semibold">
+              <p>
+                <strong class="text-black font-black text-base">PHASE 0 (Day X): Raydium Launchpad Release</strong><br>
+                Activation of the Bonding Curve and start of the airdrop campaign on X (Twitter).
+              </p>
+              <p>
+                <strong class="text-black font-black text-base">PHASE 1 (Within 15 days of ending Bonding Curve): Architectural Connection</strong><br>
+                Integration of tested devnet smart contracts, including BiTickets and P2P rentals, directly into the responsive environment of strangerbits.com.
+              </p>
+              <p>
+                <strong class="text-black font-black text-base">PHASE 2 (Within 90 days of ending Bonding Curve): Global Mainnet Launch & Handover</strong><br>
+                Transition of the entire platform to the Solana Mainnet, distribution of earned airdrops to loyal investors, activation of mining slots, the daily Win Will lottery, and the Starewards staking module.
+              </p>
+            </div>
+          </div>
+
+          <div class="border-4 border-black p-5 text-center bg-black text-white font-black text-base tracking-wide">
+            Total Production Time: Within 90 days to complete, 100% handover of the entire gaming and economic ecosystem.
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer Seal -->
+      <div class="border-t-4 border-black pt-8 mt-8 text-center font-mono text-sm font-black text-black">
+        ** DOCUMENT LOCKED. BLOCKCHAIN RECORD COMPLETED. CODE IS LAW. **
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t-4 border-black bg-white py-10 text-black mt-12">
+    <div class="max-w-6xl mx-auto px-6 text-center font-mono text-xs text-black font-black space-y-3">
+      <p>&copy; 2026 STRANGER BITS INC. ALL RIGHTS RESERVED. REALITY DECRYPTED ON SOLANA.</p>
+      <p class="text-[10px] tracking-wider">// DECENTRALIZED REVERSE ASSET PROTOCOL. NO GOVERNMENT CAN TOUCH THESE STARBITS //</p>
+    </div>
+  </footer>
+
+  <!-- JAVASCRIPT FOR LOGIC AND INTERACTIVE MODES -->
+  <script>
+    // Set active language
+    function setLanguage(lang) {
+      const paperSk = document.getElementById('paper-sk');
+      const paperEn = document.getElementById('paper-en');
+      const btnSk = document.getElementById('btn-sk');
+      const btnEn = document.getElementById('btn-en');
+
+      if (lang === 'sk') {
+        paperSk.classList.remove('hidden');
+        paperEn.classList.add('hidden');
+        btnSk.className = "px-4 py-1.5 text-xs font-mono font-black uppercase rounded-full bg-white text-black transition-all";
+        btnEn.className = "px-4 py-1.5 text-xs font-mono font-black uppercase rounded-full text-white hover:text-gray-300 transition-all";
+      } else {
+        paperEn.classList.remove('hidden');
+        paperSk.classList.add('hidden');
+        btnEn.className = "px-4 py-1.5 text-xs font-mono font-black uppercase rounded-full bg-white text-black transition-all";
+        btnSk.className = "px-4 py-1.5 text-xs font-mono font-black uppercase rounded-full text-white hover:text-gray-300 transition-all";
+      }
+    }
+
+    // Toggle Screenshot Mode (4 elegant cards on white background)
+    function toggleScreenshotMode() {
+      document.body.classList.toggle('screenshot-mode-active');
+      const btn = document.getElementById('btn-screenshot');
+      
+      if (document.body.classList.contains('screenshot-mode-active')) {
+        btn.innerText = '[ NORMAL READ MODE ]';
+        btn.classList.add('bg-black', 'text-white');
+        btn.classList.remove('bg-white', 'text-black');
+      } else {
+        btn.innerText = '[ X SCREENSHOT MODE ]';
+        btn.classList.add('bg-white', 'text-black');
+        btn.classList.remove('bg-black', 'text-white');
+      }
+    }
+  </script>
+
+</body>
+</html>
