@@ -1,0 +1,3411 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STRANGER BITS — Reverse Dimension Mining</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --r:#ff1a1a;--r2:#cc0000;--r3:#ff4444;--r4:rgba(255,26,26,0.08);
+  --g:#00ff44;--g2:#00cc33;
+  --y:#ffd700;--y2:#ffaa00;
+  --bg:#000;--bg2:#07050f;--bg3:#0e0a1a;--purple:#1a0a2e;--purple2:#2d1b4e;
+  --px:'Press Start 2P',monospace;--mn:'Share Tech Mono',monospace;
+  --glow:0 0 20px rgba(255,26,26,0.5);--glow2:0 0 40px rgba(255,26,26,0.25);
+  --glow-r:0 0 30px rgba(255,26,26,0.6),0 0 60px rgba(255,26,26,0.3);
+}
+html{scroll-behavior:smooth}
+body{background:#0d0215;color:var(--r);font-family:var(--mn);overflow-x:hidden;cursor:default}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:#000}
+::-webkit-scrollbar-thumb{background:var(--r2);box-shadow:0 0 6px var(--r)}
+
+/* ══════════════════════════════════════
+   NAV
+══════════════════════════════════════ */
+#nav{
+  position:fixed;top:0;left:0;right:0;height:68px;z-index:900;
+  background:rgba(45,8,40,0.97);
+  border-bottom:2px solid rgba(255,26,26,0.4);
+  display:flex;align-items:center;padding:0 20px;gap:14px;
+  box-shadow:0 2px 30px rgba(255,0,0,0.15),0 1px 0 rgba(180,20,140,0.3);
+}
+/* HOME KNOB - replaces logo */
+#nav-home-knob{
+  width:36px;height:36px;border-radius:50%;flex-shrink:0;
+  cursor:pointer;border:none;outline:none;
+  background:radial-gradient(circle at 35% 28%,
+    #cc1111 0%, #880000 35%, #550000 65%, #220000 100%);
+  box-shadow:
+    0 3px 0 #1a0000,0 4px 6px rgba(0,0,0,0.8),
+    0 0 0 2px #660000,0 0 8px rgba(255,0,0,0.25);
+  position:relative;transition:all 0.08s;
+}
+#nav-home-knob::before{
+  content:'';position:absolute;
+  top:5px;left:7px;width:12px;height:7px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(255,180,180,0.35) 0%,transparent 100%);
+}
+#nav-home-knob::after{
+  content:'';position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:5px;height:5px;border-radius:50%;
+  background:#330000;box-shadow:inset 0 1px 2px rgba(0,0,0,0.9);
+}
+#nav-home-knob:hover{
+  box-shadow:0 3px 0 #1a0000,0 4px 6px rgba(0,0,0,0.8),
+    0 0 0 2px #880000,0 0 14px rgba(255,0,0,0.45);
+}
+#nav-home-knob.active{
+  background:radial-gradient(circle at 35% 28%,
+    #ff3333 0%,#cc0000 30%,#880000 60%,#330000 100%);
+  transform:translateY(2px);
+  box-shadow:0 1px 0 #1a0000,0 2px 4px rgba(0,0,0,0.7),
+    0 0 0 2px #ff0000,0 0 14px rgba(255,0,0,0.7),
+    0 0 28px rgba(255,0,0,0.35);
+}
+#nav-tabs{display:flex;gap:0px;margin-left:10px;flex:1;overflow-x:auto}
+#nav-tabs::-webkit-scrollbar{display:none}
+.ntab{
+  font-family:var(--px);font-size:10px;letter-spacing:1px;
+  color:rgba(255,100,180,0.5);background:none;border:none;
+  padding:10px 12px;cursor:pointer;border-bottom:2px solid transparent;
+  transition:all 0.2s;white-space:nowrap;flex-shrink:0;
+}
+.ntab:hover{color:rgba(255,140,200,0.8);text-shadow:0 0 10px rgba(255,80,180,0.4)}
+.ntab.act{color:var(--r);border-bottom-color:var(--r);text-shadow:var(--glow)}
+#nav-wallet{
+  font-family:var(--px);font-size:7px;letter-spacing:1px;
+  color:var(--r);border:1px solid rgba(255,26,26,0.6);
+  background:rgba(30,0,20,0.5);padding:10px 14px;border-radius:2px;
+  cursor:pointer;transition:all 0.2s;white-space:nowrap;flex-shrink:0;
+}
+#nav-wallet:hover{background:var(--r4);box-shadow:var(--glow)}
+#nav-wallet.connected{color:var(--g);border-color:var(--g);font-size:7px}
+/* HAMBURGER */
+#nav-burger{
+  display:none;flex-direction:column;gap:5px;cursor:pointer;
+  background:none;border:none;padding:6px;flex-shrink:0;
+}
+#nav-burger span{display:block;width:22px;height:2px;background:var(--r);
+  border-radius:1px;transition:all 0.3s;box-shadow:0 0 6px rgba(255,26,26,0.4)}
+#nav-burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+#nav-burger.open span:nth-child(2){opacity:0}
+#nav-burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+/* MOBILE MENU */
+#mobile-menu{
+  display:none;position:fixed;top:60px;left:0;right:0;z-index:800;
+  background:rgba(35,5,32,0.98);border-bottom:1px solid rgba(255,26,26,0.2);
+  padding:8px 0;flex-direction:column;
+}
+#mobile-menu.open{display:flex}
+.mmitem{
+  font-family:var(--px);font-size:8px;letter-spacing:2px;
+  color:rgba(255,26,26,0.5);padding:14px 24px;cursor:pointer;
+  border-bottom:1px solid rgba(255,26,26,0.05);
+  transition:all 0.15s;text-align:left;background:none;border-left:none;border-right:none;border-top:none;
+}
+.mmitem:hover,.mmitem.act{color:var(--r);background:rgba(255,26,26,0.05);
+  border-bottom-color:rgba(255,26,26,0.1);padding-left:32px}
+#nav-net{
+  font-family:var(--mn);font-size:9px;color:var(--g);
+  display:flex;align-items:center;gap:6px;margin-left:8px;
+  opacity:0;transition:opacity 0.5s;flex-shrink:0;
+}
+#nav-net .dot{width:6px;height:6px;border-radius:50%;background:var(--g);
+  animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+
+/* ══════════════════════════════════════
+   SECTIONS
+══════════════════════════════════════ */
+.sec{display:none;min-height:100vh;padding:80px 24px 40px;
+  background:linear-gradient(180deg,#1a0520 0%,#130318 40%,#0d0215 100%)}
+#sec-home{background:transparent!important}
+.sec.act{display:block}
+
+/* ══════════════════════════════════════
+   HERO / HOME
+══════════════════════════════════════ */
+#sec-home{padding:0;overflow:hidden;position:relative}
+
+/* PURPLE NIGHT SKY */
+#hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 10%, #4a0845 0%, #330630 25%, #200420 50%, #0a0010 80%, #000 100%),
+    radial-gradient(ellipse 65% 50% at 20% 0%, #6a1060 0%, #480840 35%, transparent 65%),
+    radial-gradient(ellipse 60% 40% at 82% 5%, #5a0850 0%, #380630 40%, transparent 68%),
+    radial-gradient(ellipse 50% 35% at 50% 35%, rgba(200,30,150,0.18) 0%, transparent 55%),
+    radial-gradient(ellipse 30% 20% at 35% 15%, rgba(220,60,180,0.1) 0%, transparent 50%);
+}
+
+/* YELLOW STARS */
+#hero-stars{position:absolute;inset:0;overflow:hidden}
+.star{
+  position:absolute;border-radius:50%;
+  animation:twinkle var(--d) ease-in-out infinite;
+  animation-delay:var(--delay,0s);
+}
+@keyframes twinkle{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.1;transform:scale(0.4)}}
+
+/* hide old sun/palms/grid - not used */
+#hero-sun{display:none}
+#hero-palms{display:none}
+#hero-grid{display:none}
+
+/* Hero content */
+#hero-content{
+  position:relative;z-index:10;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;height:100vh;text-align:center;
+  padding:0 20px;gap:0;
+}
+#hero-eyebrow{
+  font-family:var(--mn);font-size:11px;letter-spacing:8px;
+  color:rgba(255,26,26,0.6);margin-bottom:16px;
+  text-transform:uppercase;
+}
+#hero-title{
+  font-family:var(--px);font-size:clamp(22px,4vw,44px);
+  color:var(--r);letter-spacing:4px;line-height:1.4;
+  text-shadow:var(--glow-r);
+  margin-bottom:8px;
+}
+#hero-subtitle{
+  font-family:var(--mn);font-size:12px;letter-spacing:4px;
+  color:rgba(255,200,200,0.5);margin-bottom:40px;
+}
+
+/* CRT TV - 3D RETRO TELEVISION */
+#hero-counter{
+  position:relative;margin-bottom:40px;width:min(700px,88vw);perspective:900px;
+}
+.crt-body{
+  position:relative;
+  /* Deep red metallic - like anodized aluminum */
+  background:
+    linear-gradient(160deg,
+      #3a0808 0%, #2a0404 15%, #200303 35%,
+      #180202 55%, #1a0303 75%, #140202 100%);
+  border-radius:14px 14px 10px 10px;
+  padding:14px 18px 18px;
+  box-shadow:
+    /* OUTER - floating above bg */
+    0 0 40px rgba(255,0,0,0.45),
+    0 0 80px rgba(255,0,0,0.18),
+    0 20px 50px rgba(0,0,0,0.7),
+    /* METALLIC EDGE - bright top, dark bottom = raised plate */
+    inset 0 2px 0 rgba(255,120,120,0.35),
+    inset 0 1px 0 rgba(255,80,80,0.2),
+    inset 0 -2px 0 rgba(0,0,0,0.9),
+    inset 2px 0 0 rgba(255,60,60,0.15),
+    inset -2px 0 0 rgba(0,0,0,0.6),
+    /* 3D DEPTH - right+bottom darker = light from top-left */
+    4px 4px 0 #0f0000,
+    5px 5px 0 #0a0000,
+    6px 6px 10px rgba(0,0,0,0.85);
+  transform:rotateX(1deg);transform-style:preserve-3d;
+}
+/* Brushed horizontal metal lines */
+.crt-body::before{
+  content:'';position:absolute;inset:0;border-radius:14px 14px 10px 10px;
+  background:
+    repeating-linear-gradient(0deg,
+      transparent 0px,transparent 3px,
+      rgba(255,50,50,0.04) 3px,rgba(255,50,50,0.04) 4px),
+    /* diagonal sheen */
+    linear-gradient(125deg,
+      rgba(255,100,100,0.06) 0%,transparent 40%,
+      rgba(255,60,60,0.03) 70%,transparent 100%);
+  pointer-events:none;
+}
+.crt-brand{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding:0 4px}
+.crt-brand-name{font-family:var(--px);font-size:6px;letter-spacing:3px;color:rgba(255,60,60,0.45)}
+.crt-brand-dots{display:flex;gap:5px}
+.crt-bdot{width:6px;height:6px;border-radius:50%;background:rgba(255,0,0,0.3);box-shadow:0 0 5px rgba(255,0,0,0.5)}
+.crt-bdot:nth-child(1){animation:dot-b 3.3s ease-in-out infinite 0.5s}
+.crt-bdot:nth-child(2){background:rgba(255,120,0,0.45);box-shadow:0 0 5px rgba(255,120,0,0.6);animation:dot-b 2.1s ease-in-out infinite}
+@keyframes dot-b{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.15;transform:scale(0.6)}}
+.crt-bezel{
+  position:relative;
+  /* RECESSED CAVITY - like screen punched INTO the plate */
+  background:
+    radial-gradient(ellipse 110% 120% at 50% -10%,
+      #0a0000 0%,#050000 50%,#020000 100%);
+  border-radius:10px;
+  padding:10px;
+  box-shadow:
+    /* INWARD 3D - top+left bright = light hits rim from top */
+    inset 0 -3px 8px rgba(0,0,0,1),
+    inset 0 -6px 16px rgba(0,0,0,0.9),
+    inset -3px 0 8px rgba(0,0,0,0.85),
+    inset -6px 0 16px rgba(0,0,0,0.7),
+    /* top-left inner highlight - opposite of body */
+    inset 0 3px 6px rgba(0,0,0,0.95),
+    inset 3px 0 6px rgba(0,0,0,0.9),
+    /* subtle inner red rim */
+    inset 0 0 0 1px rgba(100,0,0,0.4),
+    /* outer raised edge of bezel hole */
+    0 0 0 1px rgba(80,0,0,0.6),
+    0 0 0 2px rgba(180,0,0,0.15);
+}
+.crt-rim{
+  border:3px solid #ff0000;border-radius:5px;background:#000;overflow:hidden;
+  box-shadow:
+    /* sharp neon lines */
+    0 0 4px #ff0000,
+    0 0 10px rgba(255,0,0,1),
+    0 0 22px rgba(255,0,0,0.8),
+    0 0 50px rgba(255,0,0,0.4),
+    0 0 90px rgba(255,0,0,0.15),
+    /* screen inset */
+    inset 0 0 20px rgba(255,0,0,0.12),
+    inset 0 0 6px rgba(255,0,0,0.08);
+}
+.crt-screen{
+  position:relative;overflow:hidden;border-radius:2px;padding:18px 30px 16px;
+  background:radial-gradient(ellipse 70% 55% at 50% 45%,
+    rgba(0,28,4,1) 0%,rgba(0,14,2,1) 50%,rgba(0,5,1,1) 85%,#000 100%);
+  transform:perspective(600px) rotateX(-0.5deg);
+}
+.crt-screen::before{
+  content:'';position:absolute;inset:0;z-index:10;pointer-events:none;
+  background:repeating-linear-gradient(0deg,
+    transparent 0px,transparent 3px,rgba(0,0,0,0.42) 3px,rgba(0,0,0,0.42) 4px);
+}
+.crt-screen::after{
+  content:'';position:absolute;inset:0;z-index:11;pointer-events:none;
+  background:radial-gradient(ellipse 95% 85% at 50% 50%,
+    transparent 52%,rgba(0,0,0,0.55) 78%,rgba(0,0,0,0.9) 100%);
+}
+.crt-scan-line{
+  position:absolute;left:0;right:0;height:3px;z-index:12;pointer-events:none;
+  background:linear-gradient(90deg,transparent 0%,rgba(0,255,68,0.08) 30%,rgba(0,255,68,0.15) 50%,rgba(0,255,68,0.08) 70%,transparent 100%);
+  animation:scan-mv 5s linear infinite;
+}
+@keyframes scan-mv{0%{top:-3px;opacity:0}5%{opacity:1}95%{opacity:0.8}100%{top:100%;opacity:0}}
+.crt-flicker{
+  position:absolute;inset:0;z-index:13;border-radius:2px;pointer-events:none;
+  animation:crt-fl 8s linear infinite;background:transparent;
+}
+@keyframes crt-fl{
+  0%,100%{opacity:1}1%{opacity:0.84}2%{opacity:1}
+  29%{opacity:1}29.3%{opacity:0.88}29.6%{opacity:1}
+  57%{opacity:1}57.2%{opacity:0.8}57.3%{opacity:0.92}57.5%{opacity:1}
+  73%{opacity:1}73.2%{opacity:0.86}73.4%{opacity:1}
+}
+.crt-content{position:relative;z-index:9;text-align:center}
+#hero-counter-label{
+  font-family:var(--px);font-size:7px;letter-spacing:5px;
+  color:rgba(0,200,45,0.55);margin-bottom:12px;filter:blur(0.3px);
+}
+#hero-counter-value{
+  font-family:var(--px);font-size:clamp(16px,3vw,30px);color:#00ff44;
+  letter-spacing:3px;line-height:1.2;filter:blur(0.25px);
+  text-shadow:0 0 4px #00ff44,0 0 10px rgba(0,255,68,0.9),0 0 22px rgba(0,255,68,0.55),0 0 44px rgba(0,255,68,0.28);
+  animation:ph-pulse 3s ease-in-out infinite,char-jit 9s step-end infinite;
+}
+@keyframes ph-pulse{
+  0%,100%{text-shadow:0 0 4px #00ff44,0 0 10px rgba(0,255,68,0.9),0 0 22px rgba(0,255,68,0.55),0 0 44px rgba(0,255,68,0.28)}
+  50%{text-shadow:0 0 7px #00ff44,0 0 18px rgba(0,255,68,1),0 0 36px rgba(0,255,68,0.75),0 0 72px rgba(0,255,68,0.38)}
+}
+@keyframes char-jit{
+  0%,88%,100%{transform:translateX(0) skewX(0)}
+  89%{transform:translateX(-0.8px) skewX(-0.25deg)}
+  90%{transform:translateX(0.5px) skewX(0.15deg)}
+  91%{transform:translateX(0)}
+}
+#hero-counter-sub{
+  font-family:var(--mn);font-size:9px;letter-spacing:4px;
+  color:rgba(0,175,40,0.45);margin-top:10px;filter:blur(0.3px);
+}
+.crt-controls{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding:0 4px}
+.crt-knobs{display:flex;gap:10px;align-items:center}
+.crt-knob{
+  width:16px;height:16px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#220000,#0a0000);
+  border:1px solid rgba(255,0,0,0.22);
+  box-shadow:2px 2px 5px rgba(0,0,0,0.9),inset 0 1px 0 rgba(255,80,80,0.12);
+  position:relative;
+}
+.crt-knob::after{content:'';position:absolute;top:50%;left:50%;width:2px;height:5px;
+  background:rgba(255,0,0,0.35);transform:translate(-50%,-50%);border-radius:1px}
+.crt-speaker{display:grid;grid-template-columns:repeat(5,4px);gap:3px}
+.crt-spk-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,0,0,0.12);box-shadow:inset 0 0 2px rgba(0,0,0,0.9)}
+.crt-model{font-family:var(--mn);font-size:7px;letter-spacing:2px;color:rgba(255,60,60,0.22)}
+/* CTA buttons */
+#hero-btns{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.hero-btn{
+  font-family:var(--px);font-size:9px;letter-spacing:2px;
+  border:1px solid var(--r);color:var(--r);background:transparent;
+  padding:14px 28px;cursor:pointer;transition:all 0.2s;border-radius:2px;
+}
+.hero-btn:hover{background:var(--r);color:#000;box-shadow:var(--glow)}
+.hero-btn.primary{background:var(--r);color:#000}
+.hero-btn.primary:hover{background:var(--r3);box-shadow:var(--glow)}
+
+/* Scroll hint */
+#hero-scroll{
+  position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
+  font-family:var(--px);font-size:7px;letter-spacing:2px;
+  color:rgba(255,26,26,0.3);z-index:10;
+  animation:bounce 2s ease-in-out infinite;
+}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-8px)}}
+
+/* ══════════════════════════════════════
+   STATS BAR (under hero, above dashboard)
+══════════════════════════════════════ */
+#stats-bar{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-bottom:1px solid rgba(255,26,26,0.15);
+  background:rgba(6,2,10,0.98);
+}
+.sbar-item{
+  padding:20px;border-right:1px solid rgba(255,26,26,0.1);text-align:center;
+}
+.sbar-item:last-child{border-right:none}
+.sbar-label{font-family:var(--px);font-size:9px;letter-spacing:2px;
+  color:rgba(255,26,26,0.55);margin-bottom:12px}
+.sbar-value{font-family:var(--px);font-size:20px;color:var(--r);
+  text-shadow:0 0 15px rgba(255,26,26,0.4)}
+.sbar-value.green{color:var(--g);text-shadow:0 0 15px rgba(0,255,68,0.4)}
+.sbar-sub{font-family:var(--mn);font-size:11px;color:rgba(255,26,26,0.4);margin-top:6px;letter-spacing:1px}
+
+/* ══════════════════════════════════════
+   SECTION HEADERS
+══════════════════════════════════════ */
+.sec-head{
+  display:flex;align-items:center;gap:16px;
+  margin-bottom:32px;padding-bottom:16px;
+  border-bottom:1px solid rgba(255,26,26,0.15);
+}
+.sec-head h2{font-family:var(--px);font-size:18px;letter-spacing:4px;color:var(--r);
+  text-shadow:0 0 20px rgba(255,26,26,0.4)}
+.sec-head .sh-sub{font-family:var(--mn);font-size:11px;color:rgba(255,26,26,0.45);margin-left:auto;letter-spacing:1px}
+.sec-slash{color:rgba(255,26,26,0.4);font-family:var(--px);font-size:18px}
+
+/* ══════════════════════════════════════
+   DASHBOARD - MY MACHINES
+══════════════════════════════════════ */
+/* Balance row */
+#dash-balances{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  margin-bottom:32px;background:rgba(255,26,26,0.1);border:1px solid rgba(255,26,26,0.1);
+}
+.bal-card{background:rgba(20,3,18,0.95);padding:20px;text-align:center}
+.bal-label{font-family:var(--px);font-size:7px;letter-spacing:2px;
+  color:rgba(255,26,26,0.4);margin-bottom:10px}
+.bal-val{font-family:var(--px);font-size:16px;color:var(--r)}
+.bal-val.green{color:var(--g)}
+.bal-val.white{color:#fff}
+
+/* Machine cards */
+#machine-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;margin-bottom:32px}
+.mcard{
+  background:rgba(22,4,20,0.95);border:1px solid rgba(255,26,26,0.2);
+  border-radius:2px;padding:24px;position:relative;overflow:hidden;
+  transition:border-color 0.2s;
+}
+.mcard:hover{border-color:rgba(255,26,26,0.5)}
+.mcard::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg, transparent, var(--r), transparent);
+  opacity:0;transition:opacity 0.3s;
+}
+.mcard:hover::before{opacity:1}
+.mcard-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+.mcard-name{font-family:var(--px);font-size:12px;color:var(--r);line-height:1.5;
+  text-shadow:0 0 12px rgba(255,26,26,0.3)}
+.mcard-badge{
+  font-family:var(--px);font-size:7px;letter-spacing:1px;
+  padding:4px 10px;border:1px solid;border-radius:2px;
+}
+.badge-classic{border-color:rgba(255,26,26,0.4);color:rgba(255,26,26,0.7)}
+.badge-reverse{border-color:rgba(0,255,68,0.4);color:rgba(0,255,68,0.7)}
+.badge-parasit{border-color:rgba(255,200,0,0.5);color:rgba(255,200,0,0.8)}
+
+.mcard-rate{font-family:var(--mn);font-size:11px;color:rgba(255,26,26,0.55);margin-bottom:6px;letter-spacing:1px}
+.mcard-earn{
+  font-family:var(--px);font-size:24px;color:var(--r);
+  text-shadow:0 0 20px rgba(255,26,26,0.5);margin-bottom:6px;
+}
+.mcard-earn.green{color:var(--g);text-shadow:0 0 20px rgba(0,255,68,0.5)}
+
+/* Progress bar */
+.mcard-prog-wrap{margin:12px 0;height:3px;background:rgba(255,26,26,0.1)}
+.mcard-prog{height:100%;background:var(--r);transition:width 1s linear;
+  box-shadow:0 0 8px rgba(255,26,26,0.5)}
+.mcard-prog.green{background:var(--g);box-shadow:0 0 8px rgba(0,255,68,0.5)}
+.mcard-meta{display:flex;justify-content:space-between;
+  font-family:var(--mn);font-size:9px;color:rgba(255,26,26,0.35);margin-bottom:16px}
+
+.mcard-actions{display:flex;gap:8px}
+.mbtn{
+  flex:1;font-family:var(--px);font-size:7px;letter-spacing:1px;
+  padding:10px 8px;border:1px solid rgba(255,26,26,0.35);
+  color:var(--r);background:transparent;cursor:pointer;
+  border-radius:1px;transition:all 0.2s;
+}
+.mbtn:hover{background:var(--r4)}
+.mbtn.primary{background:rgba(255,26,26,0.12);border-color:var(--r)}
+.mbtn.primary:hover{background:rgba(255,26,26,0.25)}
+.mbtn:disabled{opacity:0.3;cursor:not-allowed}
+
+/* WinWill timer */
+.mcard-ww{
+  margin-top:12px;padding:10px;background:rgba(0,0,0,0.3);
+  border:1px solid rgba(255,26,26,0.1);border-radius:1px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.ww-label{font-family:var(--px);font-size:7px;color:rgba(255,26,26,0.4);letter-spacing:1px}
+.ww-timer{font-family:var(--px);font-size:9px;color:var(--g)}
+
+/* WINWILL STATUS */
+.ww-won{
+  display:inline-block;font-family:var(--px);font-size:7px;
+  color:var(--g);border:1px solid var(--g);padding:3px 8px;
+  animation:flash 1s infinite;
+}
+@keyframes flash{0%,100%{opacity:1}50%{opacity:0.4}}
+
+/* No machines placeholder */
+#no-machines{
+  text-align:center;padding:80px 20px;
+  border:1px dashed rgba(255,26,26,0.2);border-radius:2px;
+}
+#no-machines .nm-icon{font-size:40px;margin-bottom:20px;opacity:0.3}
+#no-machines h3{font-family:var(--px);font-size:10px;color:rgba(255,26,26,0.4);
+  margin-bottom:12px;letter-spacing:2px}
+#no-machines p{font-family:var(--mn);font-size:10px;color:rgba(255,26,26,0.25);margin-bottom:24px}
+
+/* ══════════════════════════════════════
+   SHOP
+══════════════════════════════════════ */
+#shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.scard{
+  background:rgba(20,3,18,0.95);border:1px solid rgba(255,26,26,0.2);
+  border-radius:2px;overflow:hidden;transition:all 0.2s;
+}
+.scard:hover{border-color:rgba(255,26,26,0.5);transform:translateY(-2px)}
+
+/* Machine art */
+.scard-art{
+  height:160px;display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg, #0a0002, #1a0005);
+}
+.scard-art-icon{font-size:64px;filter:drop-shadow(0 0 20px var(--r));z-index:2;position:relative}
+.scard-art-glow{
+  position:absolute;width:100px;height:100px;border-radius:50%;
+  background:radial-gradient(circle, rgba(255,26,26,0.2), transparent);
+  animation:breathe 3s ease-in-out infinite;
+}
+@keyframes breathe{0%,100%{transform:scale(1);opacity:0.5}50%{transform:scale(1.3);opacity:1}}
+.scard-art-scan{
+  position:absolute;inset:0;
+  background:repeating-linear-gradient(0deg,
+    transparent 0px, transparent 3px,
+    rgba(255,26,26,0.03) 3px, rgba(255,26,26,0.03) 4px);
+  pointer-events:none;
+}
+
+.scard-body{padding:20px}
+.scard-tier{
+  font-family:var(--px);font-size:8px;letter-spacing:2px;
+  color:rgba(255,26,26,0.55);margin-bottom:8px;
+}
+.scard-name{font-family:var(--px);font-size:13px;color:var(--r);margin-bottom:16px;line-height:1.4;
+  text-shadow:0 0 15px rgba(255,26,26,0.3)}
+
+.scard-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.sstat{background:rgba(0,0,0,0.3);padding:10px;border-radius:1px}
+.sstat-label{font-family:var(--px);font-size:6px;letter-spacing:1px;
+  color:rgba(255,26,26,0.35);margin-bottom:5px}
+.sstat-value{font-family:var(--mn);font-size:11px;color:var(--r)}
+.sstat-value.green{color:var(--g)}
+
+.scard-pools{
+  font-family:var(--mn);font-size:9px;color:rgba(255,26,26,0.3);
+  margin-bottom:16px;line-height:1.6;
+  padding:10px;border-top:1px solid rgba(255,26,26,0.08);
+}
+.scard-pools span{color:rgba(255,26,26,0.55)}
+
+.scard-price{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-top:16px;border-top:1px solid rgba(255,26,26,0.1);
+}
+.scard-price-val{font-family:var(--px);font-size:14px;color:var(--r)}
+.scard-price-sub{font-family:var(--mn);font-size:9px;color:rgba(255,26,26,0.35);margin-top:2px}
+.sbuy{
+  font-family:var(--px);font-size:7px;letter-spacing:1px;
+  color:var(--r);border:1px solid var(--r);background:transparent;
+  padding:10px 18px;cursor:pointer;border-radius:1px;transition:all 0.2s;
+}
+.sbuy:hover{background:var(--r);color:#000}
+
+/* SUPPLY BAR */
+.scard-supply{margin-bottom:12px}
+.supply-label{display:flex;justify-content:space-between;
+  font-family:var(--mn);font-size:9px;color:rgba(255,26,26,0.35);margin-bottom:4px}
+.supply-bar{height:2px;background:rgba(255,26,26,0.1)}
+.supply-fill{height:100%;background:var(--r);transition:width 0.5s}
+
+/* ══════════════════════════════════════
+   MARKET
+══════════════════════════════════════ */
+#market-filters{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+.mfbtn{
+  font-family:var(--px);font-size:7px;letter-spacing:1px;
+  padding:8px 16px;border:1px solid rgba(255,26,26,0.25);
+  color:rgba(255,26,26,0.45);background:transparent;
+  cursor:pointer;border-radius:1px;transition:all 0.2s;
+}
+.mfbtn:hover,.mfbtn.act{color:var(--r);border-color:var(--r);background:var(--r4)}
+
+/* Market table */
+#market-table-wrap{overflow-x:auto}
+#market-table{width:100%;border-collapse:collapse}
+#market-table th{
+  font-family:var(--px);font-size:8px;letter-spacing:2px;
+  color:rgba(255,26,26,0.45);padding:12px 16px;text-align:left;
+  border-bottom:1px solid rgba(255,26,26,0.15);white-space:nowrap;
+}
+#market-table td{
+  font-family:var(--mn);font-size:11px;color:rgba(255,200,200,0.75);
+  padding:15px 16px;border-bottom:1px solid rgba(255,26,26,0.07);
+  white-space:nowrap;vertical-align:middle;
+}
+#market-table tr:hover td{background:rgba(255,26,26,0.03)}
+.mt-name{font-family:var(--px);font-size:8px;color:var(--r)!important}
+.mt-price{color:var(--r)!important;font-family:var(--px);font-size:9px}
+.mt-badge{
+  font-family:var(--px);font-size:6px;padding:3px 8px;
+  border-radius:1px;display:inline-block;
+}
+.mt-buy{
+  font-family:var(--px);font-size:7px;letter-spacing:1px;
+  padding:7px 14px;border:1px solid rgba(255,26,26,0.4);
+  color:var(--r);background:transparent;cursor:pointer;
+  border-radius:1px;transition:all 0.2s;
+}
+.mt-buy:hover{background:var(--r);color:#000}
+#market-empty{
+  text-align:center;padding:60px;
+  font-family:var(--mn);font-size:10px;color:rgba(255,26,26,0.2);
+}
+
+/* ══════════════════════════════════════
+   UPGRADE
+══════════════════════════════════════ */
+#upgrade-sec{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.ug-panel{background:rgba(22,4,20,0.95);border:1px solid rgba(255,26,26,0.15);padding:24px;border-radius:2px}
+.ug-title{font-family:var(--px);font-size:10px;letter-spacing:2px;color:var(--r);margin-bottom:20px}
+.ug-select{
+  width:100%;font-family:var(--px);font-size:8px;color:var(--r);
+  background:var(--bg);border:1px solid rgba(255,26,26,0.3);
+  padding:10px;border-radius:1px;margin-bottom:16px;cursor:pointer;
+}
+.ug-select option{background:var(--bg)}
+
+.ug-levels{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
+.ug-lvl{
+  text-align:center;padding:12px;border:1px solid rgba(255,26,26,0.15);
+  cursor:pointer;transition:all 0.2s;border-radius:1px;
+}
+.ug-lvl:hover,.ug-lvl.sel{border-color:var(--r);background:var(--r4)}
+.ug-lvl-num{font-family:var(--px);font-size:9px;color:var(--r);margin-bottom:4px}
+.ug-lvl-bonus{font-family:var(--mn);font-size:9px;color:rgba(255,26,26,0.5)}
+.ug-lvl-cost{font-family:var(--mn);font-size:8px;color:rgba(255,26,26,0.35);margin-top:4px}
+
+.ug-info-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 0;border-bottom:1px solid rgba(255,26,26,0.08);
+  font-family:var(--mn);font-size:10px;
+}
+.ug-info-row .label{color:rgba(255,26,26,0.4)}
+.ug-info-row .val{color:var(--r)}
+.ug-info-row .val.green{color:var(--g)}
+.ug-btn{
+  width:100%;margin-top:20px;font-family:var(--px);font-size:8px;
+  letter-spacing:1px;padding:14px;border:1px solid var(--r);
+  color:var(--r);background:transparent;cursor:pointer;transition:all 0.2s;
+}
+.ug-btn:hover{background:var(--r);color:#000}
+.ug-prob{
+  text-align:center;padding:16px;background:rgba(0,0,0,0.3);
+  border:1px solid rgba(255,26,26,0.1);border-radius:1px;margin-bottom:16px;
+}
+.ug-prob-val{font-family:var(--px);font-size:20px;color:var(--g)}
+.ug-prob-label{font-family:var(--mn);font-size:9px;color:rgba(255,26,26,0.35);margin-top:4px}
+
+/* ══════════════════════════════════════
+   STAREWARDS (HODL)
+══════════════════════════════════════ */
+#hodl-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.hodl-panel{background:rgba(22,4,20,0.95);border:1px solid rgba(255,26,26,0.15);padding:24px;border-radius:2px}
+.hodl-title{font-family:var(--px);font-size:10px;letter-spacing:2px;color:var(--r);margin-bottom:20px}
+.hodl-input-wrap{margin-bottom:16px}
+.hodl-label{font-family:var(--px);font-size:7px;letter-spacing:1px;
+  color:rgba(255,26,26,0.4);margin-bottom:8px;display:block}
+.hodl-input{
+  width:100%;font-family:var(--mn);font-size:12px;color:var(--r);
+  background:var(--bg);border:1px solid rgba(255,26,26,0.3);
+  padding:12px;border-radius:1px;outline:none;
+}
+.hodl-input:focus{border-color:var(--r)}
+.hodl-input::placeholder{color:rgba(255,26,26,0.2)}
+
+.drop-table{width:100%;margin:16px 0}
+.drop-table th{font-family:var(--px);font-size:6px;letter-spacing:1px;
+  color:rgba(255,26,26,0.3);padding:6px 0;text-align:left}
+.drop-table td{font-family:var(--mn);font-size:9px;
+  color:rgba(255,255,255,0.5);padding:6px 0;border-bottom:1px solid rgba(255,26,26,0.05)}
+.drop-table td:last-child{color:var(--g);text-align:right}
+
+.hodl-locks{margin-top:8px;display:flex;flex-direction:column;gap:10px}
+.lock-item{
+  background:rgba(0,0,0,0.3);border:1px solid rgba(255,26,26,0.12);
+  padding:14px;border-radius:1px;
+}
+.lock-top{display:flex;justify-content:space-between;margin-bottom:8px}
+.lock-amount{font-family:var(--px);font-size:9px;color:var(--r)}
+.lock-days{font-family:var(--mn);font-size:9px;color:rgba(255,26,26,0.4)}
+.lock-prog{height:2px;background:rgba(255,26,26,0.1);margin-bottom:8px}
+.lock-fill{height:100%;background:var(--g)}
+.lock-claim{
+  width:100%;font-family:var(--px);font-size:7px;padding:8px;
+  border:1px solid rgba(0,255,68,0.3);color:var(--g);
+  background:transparent;cursor:pointer;transition:all 0.2s;
+}
+.lock-claim:hover{background:rgba(0,255,68,0.1)}
+.lock-claim:disabled{opacity:0.3;cursor:not-allowed}
+
+/* ══════════════════════════════════════
+   REVERSE NFT
+══════════════════════════════════════ */
+#rev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.rcard{
+  background:var(--bg2);border:1px solid rgba(0,255,68,0.15);
+  padding:20px;border-radius:2px;
+}
+.rcard-header{display:flex;justify-content:space-between;margin-bottom:12px}
+.rcard-name{font-family:var(--px);font-size:9px;color:var(--g)}
+.rcard-status{font-family:var(--px);font-size:7px;padding:3px 8px;border-radius:1px}
+.rs-free{border:1px solid rgba(0,255,68,0.3);color:var(--g)}
+.rs-rented{border:1px solid rgba(255,26,26,0.3);color:var(--r)}
+.rcard-income{font-family:var(--px);font-size:16px;color:var(--g);
+  text-shadow:0 0 10px rgba(0,255,68,0.3);margin-bottom:4px}
+.rcard-rate{font-family:var(--mn);font-size:9px;color:rgba(0,255,68,0.35);margin-bottom:12px}
+.rcard-btn{
+  width:100%;font-family:var(--px);font-size:7px;letter-spacing:1px;
+  padding:10px;border:1px solid rgba(0,255,68,0.3);color:var(--g);
+  background:transparent;cursor:pointer;transition:all 0.2s;
+}
+.rcard-btn:hover{background:rgba(0,255,68,0.1)}
+
+/* ══════════════════════════════════════
+   STARBIT TOKEN
+══════════════════════════════════════ */
+#token-grid{display:grid;grid-template-columns:2fr 1fr;gap:24px}
+.token-panel{background:rgba(22,4,20,0.95);border:1px solid rgba(255,26,26,0.15);padding:24px;border-radius:2px}
+.token-title{font-family:var(--px);font-size:10px;letter-spacing:2px;color:var(--r);margin-bottom:20px}
+
+.tstat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+.tstat{background:rgba(0,0,0,0.3);padding:16px;border-radius:1px;text-align:center}
+.tstat-label{font-family:var(--px);font-size:6px;letter-spacing:1px;color:rgba(255,26,26,0.35);margin-bottom:8px}
+.tstat-val{font-family:var(--px);font-size:12px;color:var(--r)}
+
+.dist-row{display:flex;justify-content:space-between;align-items:center;
+  padding:10px 0;border-bottom:1px solid rgba(255,26,26,0.08);font-family:var(--mn);font-size:10px}
+.dist-row .dl{color:rgba(255,26,26,0.4)}
+.dist-row .dv{color:var(--r)}
+.dist-row .dp{color:rgba(255,26,26,0.3)}
+
+.buy-block{text-align:center;padding:24px 0;border-top:1px solid rgba(255,26,26,0.1);margin-top:20px}
+.buy-block-title{font-family:var(--px);font-size:8px;color:rgba(255,26,26,0.4);margin-bottom:16px;letter-spacing:2px}
+.raydium-btn{
+  font-family:var(--px);font-size:9px;letter-spacing:2px;
+  color:var(--r);border:1px solid var(--r);background:transparent;
+  padding:14px 32px;cursor:pointer;transition:all 0.2s;border-radius:2px;
+}
+.raydium-btn:hover{background:var(--r);color:#000;box-shadow:var(--glow)}
+
+/* Fee breakdown */
+.fee-section{margin-top:20px}
+.fee-title{font-family:var(--px);font-size:8px;color:rgba(255,26,26,0.35);
+  letter-spacing:2px;margin-bottom:12px}
+.fee-row{display:flex;justify-content:space-between;padding:8px 0;
+  font-family:var(--mn);font-size:9px;
+  border-bottom:1px solid rgba(255,26,26,0.05);}
+.fee-row .fl{color:rgba(255,26,26,0.35)}
+.fee-row .fv{color:rgba(255,26,26,0.6)}
+
+/* ══════════════════════════════════════
+   MODAL
+══════════════════════════════════════ */
+#modal-bg{
+  display:none;position:fixed;inset:0;z-index:1000;
+  background:rgba(0,0,0,0.85);backdrop-filter:blur(4px);
+  align-items:center;justify-content:center;
+}
+#modal-bg.open{display:flex}
+#modal{
+  background:var(--bg2);border:1px solid rgba(255,26,26,0.3);
+  width:90%;max-width:440px;padding:32px;border-radius:2px;
+  position:relative;
+}
+#modal-title{font-family:var(--px);font-size:11px;color:var(--r);
+  margin-bottom:24px;letter-spacing:2px}
+#modal-close{
+  position:absolute;top:16px;right:16px;
+  font-family:var(--px);font-size:9px;color:rgba(255,26,26,0.4);
+  background:none;border:none;cursor:pointer;
+}
+#modal-close:hover{color:var(--r)}
+#modal-body{font-family:var(--mn);font-size:10px;color:rgba(255,26,26,0.6);line-height:1.8}
+.modal-input{
+  width:100%;font-family:var(--mn);font-size:12px;color:var(--r);
+  background:var(--bg);border:1px solid rgba(255,26,26,0.3);
+  padding:12px;border-radius:1px;margin:16px 0;outline:none;
+}
+.modal-input:focus{border-color:var(--r)}
+#modal-actions{display:flex;gap:10px;margin-top:20px}
+.modal-btn{
+  flex:1;font-family:var(--px);font-size:8px;letter-spacing:1px;
+  padding:12px;border:1px solid rgba(255,26,26,0.35);
+  color:var(--r);background:transparent;cursor:pointer;transition:all 0.2s;
+}
+.modal-btn.primary{background:rgba(255,26,26,0.15);border-color:var(--r)}
+.modal-btn:hover{background:var(--r4)}
+
+/* ══════════════════════════════════════
+   TOAST
+══════════════════════════════════════ */
+#toast{
+  position:fixed;top:70px;right:20px;z-index:1100;
+  font-family:var(--px);font-size:8px;letter-spacing:1px;
+  background:rgba(0,0,0,0.95);border:1px solid var(--r);
+  color:var(--r);padding:14px 20px;border-radius:1px;
+  opacity:0;pointer-events:none;transition:opacity 0.3s;
+  max-width:320px;line-height:1.6;
+}
+#toast.show{opacity:1}
+#toast.success{border-color:var(--g);color:var(--g)}
+
+/* ══════════════════════════════════════
+   WALLET REQUIRED OVERLAY
+══════════════════════════════════════ */
+.wallet-lock{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:80px 20px;text-align:center;
+  border:1px dashed rgba(255,26,26,0.15);border-radius:2px;
+}
+.wallet-lock-icon{font-size:36px;margin-bottom:20px;opacity:0.4}
+.wallet-lock h3{font-family:var(--px);font-size:10px;color:rgba(255,26,26,0.4);
+  margin-bottom:12px;letter-spacing:2px}
+.wallet-lock p{font-family:var(--mn);font-size:10px;color:rgba(255,26,26,0.25);margin-bottom:24px}
+.wallet-lock-btn{
+  font-family:var(--px);font-size:8px;letter-spacing:1px;
+  color:var(--r);border:1px solid var(--r);background:transparent;
+  padding:12px 24px;cursor:pointer;transition:all 0.2s;
+}
+.wallet-lock-btn:hover{background:var(--r);color:#000}
+
+/* ══════════════════════════════════════
+   CONTRACT INFO PILL
+══════════════════════════════════════ */
+#contract-bar{
+  display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px;
+  padding:12px 0;border-bottom:1px solid rgba(255,26,26,0.08);
+}
+.cpill{
+  font-family:var(--mn);font-size:9px;color:rgba(255,26,26,0.35);
+  background:rgba(255,26,26,0.04);border:1px solid rgba(255,26,26,0.1);
+  padding:6px 12px;border-radius:1px;
+}
+.cpill span{color:rgba(255,26,26,0.55)}
+.cpill.live{border-color:rgba(0,255,68,0.2)}
+.cpill.live span{color:var(--g)}
+
+/* ══════════════════════════════════════
+   FOOTER
+══════════════════════════════════════ */
+#footer{
+  border-top:1px solid rgba(255,26,26,0.1);
+  padding:32px 24px;text-align:center;background:var(--bg);
+}
+#footer-logo{font-family:var(--px);font-size:10px;color:rgba(255,26,26,0.3);
+  letter-spacing:3px;margin-bottom:12px}
+#footer-sub{font-family:var(--mn);font-size:9px;color:rgba(255,26,26,0.2)}
+
+/* ══════════════════════════════════════
+   RESPONSIVE - TABLET + MOBILE
+══════════════════════════════════════ */
+
+/* TABLET (768-1024px) */
+@media(max-width:1024px) and (min-width:769px){
+  #nav-tabs .ntab{font-size:6px;padding:8px 8px}
+  #hero-title{font-size:clamp(18px,3vw,32px)}
+  #hero-counter{padding:18px 28px}
+  #hero-counter-value{font-size:22px}
+  #stats-bar{grid-template-columns:repeat(2,1fr)}
+  #dash-balances{grid-template-columns:repeat(2,1fr)}
+  #upgrade-sec{grid-template-columns:1fr}
+  #hodl-grid{grid-template-columns:1fr}
+  #token-grid{grid-template-columns:1fr}
+  .sec{padding:76px 16px 40px}
+  #shop-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+/* MOBILE (<768px) */
+@media(max-width:768px){
+  /* NAV - hide tabs, show burger */
+  #nav-tabs{display:none!important}
+  #nav-net{display:none}
+  #nav-burger{display:flex!important}
+  #nav-logo{font-size:10px;letter-spacing:2px}
+  #nav-wallet{font-size:6px;padding:8px 10px}
+  #nav{height:54px;padding:0 14px;gap:8px}
+  #nav-home-knob{width:30px;height:30px}
+
+  /* HERO */
+  #hero-title{font-size:clamp(16px,6vw,28px);letter-spacing:2px}
+  #hero-eyebrow{font-size:8px;letter-spacing:3px}
+  #hero-subtitle{font-size:9px;letter-spacing:2px}
+  #hero-counter{padding:16px 20px;margin-bottom:28px}
+  #hero-counter-value{font-size:18px;min-width:0}
+  #hero-counter-label{font-size:6px}
+  #hero-counter-sub{font-size:8px}
+  #hero-btns{flex-direction:column;gap:10px;width:100%;max-width:280px}
+  .hero-btn{font-size:7px;padding:12px 20px}
+  #hero-scroll{font-size:6px}
+
+  /* STATS */
+  #stats-bar{grid-template-columns:1fr 1fr}
+  .sbar-item{padding:14px 10px}
+  .sbar-label{font-size:6px}
+  .sbar-value{font-size:13px}
+  .sbar-sub{font-size:8px}
+
+  /* SECTIONS */
+  .sec{padding:64px 12px 32px}
+  .sec-head h2{font-size:11px;letter-spacing:2px}
+  .sec-head .sh-sub{display:none}
+
+  /* DASHBOARD */
+  #dash-balances{grid-template-columns:1fr 1fr;gap:1px}
+  .bal-label{font-size:6px}
+  .bal-val{font-size:13px}
+  #machine-grid{grid-template-columns:1fr}
+  .mcard{padding:16px}
+  .mcard-name{font-size:10px}
+  .mcard-earn{font-size:18px}
+
+  /* SHOP */
+  #shop-grid{grid-template-columns:1fr}
+  .scard-name{font-size:11px}
+
+  /* MARKET */
+  #market-filters{gap:6px}
+  .mfbtn{font-size:6px;padding:7px 10px}
+  #market-table th{font-size:6px;padding:8px 10px}
+  #market-table td{font-size:9px;padding:10px 10px}
+
+  /* UPGRADE / HODL / TOKEN */
+  #upgrade-sec{grid-template-columns:1fr}
+  #hodl-grid{grid-template-columns:1fr}
+  #token-grid{grid-template-columns:1fr}
+  .tstat-grid{grid-template-columns:1fr 1fr}
+
+  /* CONTRACT BAR */
+  #contract-bar{flex-wrap:wrap;gap:8px}
+  .cpill{font-size:8px;padding:5px 10px}
+}
+
+/* VERY SMALL MOBILE (<380px) */
+@media(max-width:380px){
+  #hero-title{font-size:clamp(14px,5vw,20px)}
+  #stats-bar{grid-template-columns:1fr 1fr}
+  .sbar-value{font-size:11px}
+  #dash-balances{grid-template-columns:1fr 1fr}
+}
+
+/* ══════════════════════════════════════
+   CRT TV CHANNEL KNOBS - RETRO 80s
+══════════════════════════════════════ */
+.crt-channels{
+  display:flex;gap:16px;justify-content:center;
+  align-items:center;margin-bottom:10px;padding:4px 0;
+}
+
+/* ROUND RETRO KNOB BUTTON */
+.crt-ch-btn{
+  position:relative;
+  width:38px;height:38px;border-radius:50%;
+  cursor:pointer;border:none;outline:none;
+  /* Plastic body */
+  background:radial-gradient(circle at 35% 28%,
+    #cc1111 0%, #880000 35%, #550000 65%, #220000 100%);
+  box-shadow:
+    /* 3D raised effect */
+    0 4px 0 #1a0000,
+    0 5px 0 #110000,
+    0 6px 8px rgba(0,0,0,0.8),
+    /* outer rim */
+    0 0 0 2px #660000,
+    /* glow off */
+    0 0 6px rgba(255,0,0,0.2);
+  transition:all 0.08s ease;
+}
+
+/* Specular highlight */
+.crt-ch-btn::before{
+  content:'';position:absolute;
+  top:6px;left:8px;
+  width:14px;height:8px;
+  border-radius:50%;
+  background:radial-gradient(ellipse,rgba(255,180,180,0.35) 0%,transparent 100%);
+  pointer-events:none;
+}
+
+/* Center indicator dot */
+.crt-ch-btn::after{
+  content:'';position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:6px;height:6px;
+  border-radius:50%;
+  background:#330000;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,0.9);
+  transition:all 0.08s;
+}
+
+.crt-ch-btn:hover{
+  background:radial-gradient(circle at 35% 28%,
+    #dd2222 0%, #aa0000 35%, #660000 65%, #2a0000 100%);
+  box-shadow:
+    0 4px 0 #1a0000,0 5px 0 #110000,0 6px 8px rgba(0,0,0,0.8),
+    0 0 0 2px #880000,
+    0 0 12px rgba(255,0,0,0.35);
+}
+
+/* ACTIVE = pressed down + glowing */
+.crt-ch-btn.active{
+  background:radial-gradient(circle at 35% 28%,
+    #ff3333 0%, #cc0000 30%, #880000 60%, #330000 100%);
+  box-shadow:
+    /* pressed - shorter shadow */
+    0 2px 0 #1a0000,
+    0 3px 4px rgba(0,0,0,0.7),
+    /* neon glow ON */
+    0 0 0 2px #ff0000,
+    0 0 12px rgba(255,0,0,0.7),
+    0 0 24px rgba(255,0,0,0.4),
+    0 0 40px rgba(255,0,0,0.2),
+    inset 0 0 8px rgba(255,100,100,0.2);
+  transform:translateY(2px);
+}
+
+/* Active center dot glows */
+.crt-ch-btn.active::after{
+  background:#ff4444;
+  box-shadow:0 0 6px #ff0000,0 0 12px rgba(255,0,0,0.6);
+  animation:dot-b 1.5s ease-in-out infinite;
+}
+
+/* Small label under knob */
+.crt-ch-label{
+  font-family:var(--px);font-size:5px;letter-spacing:2px;
+  color:rgba(255,40,40,0.25);margin-top:4px;text-align:center;
+  transition:color 0.15s;display:block;
+}
+.crt-ch-wrap{
+  display:flex;flex-direction:column;align-items:center;gap:0;
+}
+.crt-ch-wrap.active .crt-ch-label{
+  color:rgba(255,80,80,0.5);
+  text-shadow:0 0 6px rgba(255,0,0,0.3);
+}
+
+/* Divider between knobs */
+.crt-ch-divider{
+  width:1px;height:30px;
+  background:linear-gradient(180deg,transparent,rgba(255,0,0,0.2),transparent);
+}
+
+/* Mode label on screen */
+#crt-mode-label{
+  font-family:var(--px);font-size:6px;letter-spacing:4px;
+  margin-bottom:10px;transition:all 0.3s;
+}
+#crt-mode-label.net{color:rgba(0,200,45,0.55)}
+#crt-mode-label.mine{color:rgba(255,136,204,0.6)}
+
+/* Value color switch */
+#hero-counter-value.mine-mode{
+  color:#ff88cc;
+  text-shadow:
+    0 0 4px #ff88cc,0 0 10px rgba(255,136,204,0.9),
+    0 0 22px rgba(255,100,180,0.6),0 0 44px rgba(255,80,160,0.3);
+  animation:ph-pulse-pink 3s ease-in-out infinite,char-jit 9s step-end infinite;
+}
+@keyframes ph-pulse-pink{
+  0%,100%{text-shadow:0 0 4px #ff88cc,0 0 10px rgba(255,136,204,0.9),0 0 22px rgba(255,100,180,0.6),0 0 44px rgba(255,80,160,0.3)}
+  50%{text-shadow:0 0 8px #ffaadd,0 0 18px rgba(255,160,220,1),0 0 36px rgba(255,120,200,0.8),0 0 72px rgba(255,80,160,0.4)}
+}
+#hero-counter-sub.mine-mode{color:rgba(255,136,204,0.5)}
+
+#crt-wallet-hint{
+  font-family:var(--mn);font-size:8px;letter-spacing:2px;
+  color:rgba(255,60,60,0.3);margin-top:6px;display:none;
+}
+
+
+/* ══════════════════════════════════════
+   WINWILL SECTION
+══════════════════════════════════════ */
+.ww-jackpot-card{
+  background:rgba(22,4,20,0.95);border:1px solid rgba(255,26,26,0.2);
+  padding:24px 32px;border-radius:2px;text-align:center;min-width:200px;
+  transition:all 0.2s;
+}
+.ww-jackpot-card:hover{border-color:rgba(255,26,26,0.5);transform:translateY(-2px)}
+.wj-icon{font-size:32px;margin-bottom:12px}
+.wj-name{font-family:var(--px);font-size:8px;letter-spacing:2px;color:rgba(255,26,26,0.5);margin-bottom:12px}
+.wj-amount{font-family:var(--px);font-size:18px;color:var(--r);text-shadow:var(--glow);margin-bottom:4px}
+.wj-label{font-family:var(--mn);font-size:9px;color:rgba(255,26,26,0.35);margin-bottom:12px;letter-spacing:2px}
+.wj-chance{font-family:var(--px);font-size:7px;letter-spacing:2px;color:rgba(255,26,26,0.4);
+  border:1px solid rgba(255,26,26,0.2);padding:4px 10px;display:inline-block}
+
+/* WinWill feed */
+.ww-feed-item{
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  padding:14px 20px;background:rgba(22,4,20,0.95);
+  border:1px solid rgba(255,26,26,0.1);border-radius:1px;
+}
+.ww-feed-wallet{font-family:var(--mn);font-size:10px;color:rgba(255,26,26,0.4);min-width:80px}
+.ww-feed-machine{font-family:var(--px);font-size:7px;color:rgba(255,26,26,0.5);
+  letter-spacing:1px;min-width:120px}
+.ww-feed-amount{font-family:var(--px);font-size:9px;color:var(--r);flex:1}
+.ww-feed-time{font-family:var(--mn);font-size:9px;color:rgba(255,26,26,0.3);margin-left:auto}
+
+/* ══════════════════════════════════════
+   LANGUAGE SECTION
+══════════════════════════════════════ */
+.lang-card{
+  background:rgba(22,4,20,0.95);border:1px solid rgba(255,26,26,0.15);
+  padding:32px 48px;border-radius:2px;text-align:center;cursor:pointer;
+  transition:all 0.2s;min-width:200px;
+}
+.lang-card:hover{border-color:rgba(255,26,26,0.4);transform:translateY(-2px)}
+.lang-flag{font-size:48px;margin-bottom:16px}
+.lang-name{font-family:var(--px);font-size:9px;letter-spacing:3px;color:var(--r);margin-bottom:8px}
+.lang-code{font-family:var(--px);font-size:20px;color:rgba(255,26,26,0.4);margin-bottom:12px}
+.lang-active{font-family:var(--px);font-size:7px;color:var(--g);letter-spacing:2px}
+
+
+/* ══════════════════════════════════════
+   GOLDEN COMET
+══════════════════════════════════════ */
+#hero-comet{
+  position:absolute;top:0;left:0;right:0;bottom:0;
+  overflow:hidden;z-index:1;pointer-events:none;
+}
+.comet{
+  position:absolute;
+  width:200px;height:2px;
+  background:linear-gradient(90deg,
+    rgba(255,215,0,0) 0%,
+    rgba(255,215,0,0.3) 30%,
+    rgba(255,220,50,0.9) 70%,
+    rgba(255,255,200,1) 100%);
+  border-radius:2px;
+  filter:blur(0.5px);
+  box-shadow:0 0 6px rgba(255,215,0,0.8),0 0 12px rgba(255,200,0,0.4);
+  opacity:0;
+  transform-origin:right center;
+}
+/* Head glow */
+.comet::after{
+  content:'';position:absolute;
+  right:0;top:50%;transform:translateY(-50%);
+  width:4px;height:4px;border-radius:50%;
+  background:#fff8dc;
+  box-shadow:0 0 6px #ffd700,0 0 12px rgba(255,215,0,0.8);
+}
+@keyframes comet-fly{
+  0%{
+    opacity:0;
+    transform:translate(0,0) rotate(var(--angle));
+  }
+  5%{opacity:1}
+  90%{opacity:0.8}
+  100%{
+    opacity:0;
+    transform:translate(var(--tx),var(--ty)) rotate(var(--angle));
+  }
+}
+
+
+/* ══════════════════════════════════════
+   STORY SECTION
+══════════════════════════════════════ */
+.story-block{
+  display:flex;gap:24px;margin-bottom:32px;
+  background:rgba(22,4,20,0.95);border:1px solid rgba(255,26,26,0.12);
+  border-radius:2px;padding:28px;
+  border-left:3px solid var(--r);
+  transition:border-color 0.2s;
+}
+.story-block:hover{border-color:rgba(255,26,26,0.4)}
+.story-num{
+  font-family:var(--px);font-size:24px;color:rgba(255,26,26,0.2);
+  min-width:48px;line-height:1;
+}
+.story-content{flex:1}
+.story-chapter-title{
+  font-family:var(--px);font-size:9px;letter-spacing:2px;
+  color:var(--r);margin-bottom:16px;line-height:1.6;
+  text-shadow:0 0 10px rgba(255,26,26,0.2);
+}
+.story-text{
+  font-family:var(--mn);font-size:11px;color:rgba(255,200,200,0.6);
+  line-height:2;
+}
+.story-ext-card{
+  background:rgba(22,4,20,0.95);border:1px solid rgba(255,26,26,0.2);
+  border-radius:2px;padding:24px;text-align:center;
+  transition:all 0.2s;
+}
+.story-ext-card:hover{border-color:rgba(255,26,26,0.5);transform:translateY(-2px)}
+.story-ext-icon{font-size:36px;margin-bottom:12px}
+.story-ext-name{font-family:var(--px);font-size:10px;color:var(--r);
+  margin-bottom:6px;letter-spacing:2px}
+.story-ext-sub{font-family:var(--mn);font-size:10px;color:rgba(255,26,26,0.4);
+  margin-bottom:12px;letter-spacing:2px}
+.story-ext-desc{font-family:var(--mn);font-size:10px;color:rgba(255,180,180,0.55);
+  line-height:1.8;text-align:left}
+
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ NAV ═══════════════════ -->
+<nav id="nav">
+  <button id="nav-burger" onclick="toggleMobileMenu()" aria-label="menu">
+    <span></span><span></span><span></span>
+  </button>
+  <!-- HOME KNOB -->
+  <button id="nav-home-knob" class="active" data-sec="home"
+    onclick="showSec('home');closeMobileMenu()" title="HOME"></button>
+  <div id="nav-tabs">
+    <button class="ntab" data-sec="dash" onclick="showSec('dash')" data-t="nav-dash" data-sk="EXTRAKTORY" data-en="EXTRACTORS">EXTRAKTORY</button>
+    <button class="ntab" data-sec="shop" onclick="showSec('shop')" data-t="nav-shop" data-sk="SHOP" data-en="SHOP">SHOP</button>
+    <button class="ntab" data-sec="market" onclick="showSec('market')" data-sk="MARKET" data-en="MARKET">MARKET</button>
+    <button class="ntab" data-sec="upgrade" onclick="showSec('upgrade')" data-sk="UPGRADE" data-en="UPGRADE">UPGRADE</button>
+    <button class="ntab" data-sec="winwill" onclick="showSec('winwill')" data-t="nav-winwill" data-sk="WINWILL" data-en="WINWILL">WINWILL</button>
+    <button class="ntab" data-sec="hodl" onclick="showSec('hodl')" data-sk="STAREWARDS" data-en="STAREWARDS">STAREWARDS</button>
+    <button class="ntab" data-sec="rev" onclick="showSec('rev')" data-sk="REVERSE" data-en="REVERSE">REVERSE</button>
+    <button class="ntab" data-sec="token" onclick="showSec('token')" data-sk="$STARBIT" data-en="$STARBIT">$STARBIT</button>
+    <button class="ntab" data-sec="story" onclick="showSec('story')" data-sk="STORY" data-en="STORY">STORY</button>
+  </div>
+  <button id="nav-wallet" onclick="connectWallet()">[ CONNECT ]</button>
+  <button onclick="showSec('lang')" style="font-family:var(--px);font-size:8px;letter-spacing:2px;
+    color:rgba(255,100,180,0.5);background:none;border:1px solid rgba(255,26,26,0.2);
+    padding:6px 10px;cursor:pointer;border-radius:2px;flex-shrink:0;transition:all 0.2s"
+    id="lang-toggle">SK</button>
+  <div id="nav-net"><div class="dot"></div><span id="net-label">SOLANA</span></div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div id="mobile-menu">
+  <button class="mmitem" data-sec="dash" onclick="showSec('dash');closeMobileMenu()" data-sk="EXTRAKTORY" data-en="EXTRACTORS">EXTRAKTORY</button>
+  <button class="mmitem" data-sec="shop" onclick="showSec('shop');closeMobileMenu()" data-sk="SHOP" data-en="SHOP">SHOP</button>
+  <button class="mmitem" data-sec="market" onclick="showSec('market');closeMobileMenu()" data-sk="MARKET" data-en="MARKET">MARKET</button>
+  <button class="mmitem" data-sec="upgrade" onclick="showSec('upgrade');closeMobileMenu()" data-sk="UPGRADE" data-en="UPGRADE">UPGRADE</button>
+  <button class="mmitem" data-sec="winwill" onclick="showSec('winwill');closeMobileMenu()" data-sk="WINWILL" data-en="WINWILL">WINWILL</button>
+  <button class="mmitem" data-sec="hodl" onclick="showSec('hodl');closeMobileMenu()" data-sk="STAREWARDS" data-en="STAREWARDS">STAREWARDS</button>
+  <button class="mmitem" data-sec="rev" onclick="showSec('rev');closeMobileMenu()" data-sk="REVERSE" data-en="REVERSE">REVERSE</button>
+  <button class="mmitem" data-sec="token" onclick="showSec('token');closeMobileMenu()" data-sk="$STARBIT" data-en="$STARBIT">$STARBIT</button>
+  <button class="mmitem" data-sec="story" onclick="showSec('story');closeMobileMenu()" data-sk="STORY" data-en="STORY">STORY</button>
+</div>
+
+<!-- ═══════════════════ TOAST ═══════════════════ -->
+<div id="toast"></div>
+
+<!-- ═══════════════════ MODAL ═══════════════════ -->
+<div id="modal-bg">
+  <div id="modal">
+    <button id="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-title">MODAL</div>
+    <div id="modal-body"></div>
+    <div id="modal-actions"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════ HOME ═══════════════════ -->
+<section class="sec act" id="sec-home" style="min-height:100vh;padding:0">
+  <div id="hero-bg"></div>
+  <div id="hero-stars"></div>
+  <div id="hero-comet"></div>
+  <div id="hero-sun"></div>
+  <div id="hero-grid"></div>
+  <div id="hero-palms"></div>
+
+  <div id="hero-content">
+    <div id="hero-eyebrow" data-t="hero-eyebrow">// REVERSE DIMENSION EXTRACTION PROTOCOL //</div>
+    <div id="hero-title">STRANGER<br>BITS</div>
+    
+
+    <div id="hero-counter">
+      <div class="crt-body">
+        <!-- TV top brand bar - dots only -->
+        <div class="crt-brand">
+          <div class="crt-brand-dots">
+            <div class="crt-bdot"></div>
+            <div class="crt-bdot"></div>
+          </div>
+        </div>
+
+        <!-- CHANNEL KNOBS -->
+        <div class="crt-channels">
+          <div class="crt-ch-wrap active" id="wrap-net">
+            <button class="crt-ch-btn active" id="ch-net" onclick="switchCRTMode('net')"></button>
+            <span class="crt-ch-label">NET</span>
+          </div>
+          <div class="crt-ch-divider"></div>
+          <div class="crt-ch-wrap" id="wrap-mine">
+            <button class="crt-ch-btn" id="ch-mine" onclick="switchCRTMode('mine')"></button>
+            <span class="crt-ch-label">MINE</span>
+          </div>
+        </div>
+
+        <!-- Bezel recess -->
+        <div class="crt-bezel">
+          <!-- Glowing red rim -->
+          <div class="crt-rim">
+            <!-- CRT screen -->
+            <div class="crt-screen">
+              <div class="crt-scan-line"></div>
+              <div class="crt-flicker"></div>
+              <div class="crt-content">
+                <div id="crt-mode-label" class="net" data-t="counter-label">// CELKOVÁ ŤAŽBA SIETE</div>
+                <div id="hero-counter-value">0.00 STARBIT</div>
+                <div id="hero-counter-sub" data-t="counter-sub">REVERSE DIMENSION EXTRACTION / STARBIT</div>
+                <div id="crt-wallet-hint">PRIPOJ WALLET PRE MOJU ŤAŽBU</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TV bottom controls -->
+        <div class="crt-controls">
+          <div class="crt-knobs">
+            <div class="crt-knob"></div>
+            <div class="crt-knob"></div>
+          </div>
+          <div class="crt-speaker">
+            <div class="crt-spk-dot"></div><div class="crt-spk-dot"></div><div class="crt-spk-dot"></div><div class="crt-spk-dot"></div><div class="crt-spk-dot"></div>
+            <div class="crt-spk-dot"></div><div class="crt-spk-dot"></div><div class="crt-spk-dot"></div><div class="crt-spk-dot"></div><div class="crt-spk-dot"></div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+
+    <div id="hero-btns">
+      <button class="hero-btn primary" onclick="showSec('shop')" data-t="hero-cta1">[ KÚPIŤ EXTRAKTOR ]</button>
+      <button class="hero-btn" onclick="showSec('dash')" data-t="hero-cta2">[ MÔJ DASHBOARD ]</button>
+      <button class="hero-btn" onclick="showSec('token')">[ $STARBIT TOKEN ]</button>
+    </div>
+  </div>
+
+  <div id="hero-scroll">▼ SCROLL DOWN ▼</div>
+
+  <!-- STATS BAR (below hero) -->
+  <div id="stats-bar" style="position:relative;z-index:10">
+    <div class="sbar-item">
+      <div class="sbar-label" data-t="sb-label1" data-sk="LIVE STARBITIANS" data-en="LIVE STARBITIANS">LIVE STARBITIANS</div>
+      <div class="sbar-value" id="sb-total">0</div>
+      <div class="sbar-sub" data-t="sb-sub1" data-sk="ONLINE PRÁVE TERAZ" data-en="ONLINE RIGHT NOW">ONLINE PRÁVE TERAZ</div>
+    </div>
+    <div class="sbar-item">
+      <div class="sbar-label" data-t="sb-label2" data-sk="AKTÍVNE EXTRAKTORY" data-en="ACTIVE EXTRACTORS">AKTÍVNE EXTRAKTORY</div>
+      <div class="sbar-value" id="sb-machines">0</div>
+      <div class="sbar-sub" data-t="sb-sub2" data-sk="NFT EXTRAKTORY" data-en="NFT EXTRACTORS">NFT EXTRAKTORY</div>
+    </div>
+    <div class="sbar-item">
+      <div class="sbar-label" data-t="sb-label3" data-sk="MAIN POOL" data-en="MAIN POOL">MAIN POOL</div>
+      <div class="sbar-value green" id="sb-pool">0</div>
+      <div class="sbar-sub" data-t="sb-sub3" data-sk="STARBIT LOCKED" data-en="STARBIT LOCKED">STARBIT LOCKED</div>
+    </div>
+    <div class="sbar-item">
+      <div class="sbar-label" data-t="sb-label4" data-sk="DARK-RIFT POOL" data-en="DARK-RIFT POOL">DARK-RIFT POOL</div>
+      <div class="sbar-value" id="sb-dark">0</div>
+      <div class="sbar-sub" data-t="sb-sub4" data-sk="STARBIT / FEES" data-en="STARBIT / FEES">STARBIT / FEES</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ DASHBOARD ═══════════════════ -->
+<section class="sec" id="sec-dash">
+  <div class="sec-head">
+    <div class="sec-slash">//</div>
+    <h2 data-t="sec-dash-h">EXTRAKTORY</h2>
+    <div class="sh-sub" id="dash-wallet-addr"></div>
+  </div>
+
+  <!-- CONTRACT INFO -->
+  <div id="contract-bar">
+    <div class="cpill">PROGRAM <span>NOT DEPLOYED</span></div>
+    <div class="cpill">MINT <span>D2Uy7Tn3...eypUp</span></div>
+    <div class="cpill live">HELIUS RPC <span>● LIVE</span></div>
+    <div class="cpill">JITO BUNDLES <span>ENABLED</span></div>
+  </div>
+
+  <div id="dash-locked">
+    <div class="wallet-lock">
+      <div class="wallet-lock-icon">🔒</div>
+      <h3 data-t="wallet-req">WALLET REQUIRED</h3>
+      <p data-t="wallet-hint">Pripoj Phantom wallet pre prístup k dashboardu</p>
+      <button class="wallet-lock-btn" onclick="connectWallet()" data-t="btn-connect-ph">[ CONNECT PHANTOM ]</button>
+    </div>
+  </div>
+
+  <div id="dash-content" style="display:none">
+    <!-- Balance row -->
+    <div id="dash-balances">
+      <div class="bal-card">
+        <div class="bal-label" data-t="bal-starbit-label">STARBIT BALANCE</div>
+        <div class="bal-val" id="bal-starbit">4,200,000</div>
+      </div>
+      <div class="bal-card">
+        <div class="bal-label" data-t="bal-pending-label">PENDING CLAIM</div>
+        <div class="bal-val green" id="bal-pending">0.0000</div>
+      </div>
+      <div class="bal-card">
+        <div class="bal-label" data-t="bal-machines-label">AKTÍVNE STROJE</div>
+        <div class="bal-val white" id="bal-machines">0</div>
+      </div>
+      <div class="bal-card">
+        <div class="bal-label" data-t="bal-ww-label">WINWILL COUNTDOWN</div>
+        <div class="bal-val" id="bal-ww">18:42:07</div>
+      </div>
+    </div>
+
+    <!-- Machine cards -->
+    <div id="machine-grid"></div>
+
+    <div id="no-machines">
+      <div class="nm-icon">📡</div>
+      <h3 data-t="no-machines-h">ŽIADNE EXTRAKTORY</h3>
+      <p>Kúp si Walkie-Talkie, Laser-Drill alebo Dark-Rift extraktor v shope</p>
+      <button class="hero-btn" onclick="showSec('shop')" style="margin-top:8px">[ PREJSŤ DO SHOPU ]</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ SHOP ═══════════════════ -->
+<section class="sec" id="sec-shop">
+  <div class="sec-head">
+    <div class="sec-slash">//</div>
+    <h2 data-t="sec-shop-h">EXTRAKTOR SHOP</h2>
+    <div class="sh-sub" data-t="shop-sub">PLATBA LEN V STARBIT</div>
+  </div>
+
+  <div id="contract-bar" style="margin-bottom:24px">
+    <div class="cpill">POOL SPLIT <span>85% MAIN / 5% DARK-RIFT / 5% DEV / 5% BURN</span></div>
+    <div class="cpill">LICENCIA <span>CLASSIC 180D · REVERSE 360D</span></div>
+  </div>
+
+  <div id="shop-grid">
+    <!-- WALKIE-TALKIE -->
+    <div class="scard">
+      <div class="scard-art">
+        <div class="scard-art-glow"></div>
+        <div class="scard-art-icon">📻</div>
+        <div class="scard-art-scan"></div>
+      </div>
+      <div class="scard-body">
+        <div class="scard-tier" data-sk="TIER 1 — BASIC EXTRACTOR" data-en="TIER 1 — BASIC EXTRACTOR">TIER 1 — BASIC EXTRACTOR</div>
+        <div class="scard-name">WALKIE-TALKIE</div>
+        <div class="scard-supply">
+          <div class="supply-label"><span>SUPPLY</span><span id="wt-supply">14,832 / 20,000</span></div>
+          <div class="supply-bar"><div class="supply-fill" style="width:74%"></div></div>
+        </div>
+        <div class="scard-stats">
+          <div class="sstat"><div class="sstat-label" data-sk="ŤAŽBA / DEN" data-en="MINING / DAY">ŤAŽBA / DEN</div><div class="sstat-value">33,333 <span style="font-size:8px">STARBIT</span></div></div>
+          <div class="sstat"><div class="sstat-label" data-sk="WINWILL ŠANCA" data-en="WINWILL CHANCE">WINWILL ŠANCA</div><div class="sstat-value green">3%</div></div>
+          <div class="sstat"><div class="sstat-label" data-sk="LICENCIA" data-en="LICENSE">LICENCIA</div><div class="sstat-value">180 DNÍ</div></div>
+          <div class="sstat"><div class="sstat-label" data-sk="MAX SUPPLY" data-en="MAX SUPPLY">MAX SUPPLY</div><div class="sstat-value">20,000</div></div>
+        </div>
+        <div class="scard-pools">
+          Pool split: <span>85% MAIN</span> · <span>5% DARK-RIFT</span> · <span>5% DEV</span> · <span>5% BURN</span><br>
+          Renewal cost: <span>30% z ceny</span> → MAIN_POOL
+        </div>
+        <div class="scard-price">
+          <div>
+            <div class="scard-price-val">3,000,000 STARBIT</div>
+            <div class="scard-price-sub">≈ $1,500 USD (pri $0.0005/STARBIT)</div>
+          </div>
+          <button class="sbuy" onclick="buyMachine('walkie')">[ KÚPIŤ ]</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LASER-DRILL -->
+    <div class="scard" style="border-color:rgba(255,100,0,0.25)">
+      <div class="scard-art" style="background:linear-gradient(135deg,#0a0100,#1a0800)">
+        <div class="scard-art-glow" style="background:radial-gradient(circle,rgba(255,100,0,0.2),transparent)"></div>
+        <div class="scard-art-icon">⚡</div>
+        <div class="scard-art-scan"></div>
+      </div>
+      <div class="scard-body">
+        <div class="scard-tier" style="color:rgba(255,150,0,0.6)">TIER 2 — ADVANCED EXTRACTOR</div>
+        <div class="scard-name">LASER-DRILL</div>
+        <div class="scard-supply">
+          <div class="supply-label"><span>SUPPLY</span><span id="ld-supply">9,241 / 15,000</span></div>
+          <div class="supply-bar"><div class="supply-fill" style="width:62%;background:#ff6600"></div></div>
+        </div>
+        <div class="scard-stats">
+          <div class="sstat"><div class="sstat-label" data-sk="ŤAŽBA / DEN" data-en="MINING / DAY">ŤAŽBA / DEN</div><div class="sstat-value" style="color:#ff8800">75,000 <span style="font-size:8px">STARBIT</span></div></div>
+          <div class="sstat"><div class="sstat-label" data-sk="WINWILL ŠANCA" data-en="WINWILL CHANCE">WINWILL ŠANCA</div><div class="sstat-value green">6%</div></div>
+          <div class="sstat"><div class="sstat-label" data-sk="LICENCIA" data-en="LICENSE">LICENCIA</div><div class="sstat-value">180 DNÍ</div></div>
+          <div class="sstat"><div class="sstat-label" data-sk="MAX SUPPLY" data-en="MAX SUPPLY">MAX SUPPLY</div><div class="sstat-value">15,000</div></div>
+        </div>
+        <div class="scard-pools">
+          Pool split: <span>85% MAIN</span> · <span>5% DARK-RIFT</span> · <span>5% DEV</span> · <span>5% BURN</span><br>
+          Renewal cost: <span>30% z ceny</span> → MAIN_POOL
+        </div>
+        <div class="scard-price">
+          <div>
+            <div class="scard-price-val" style="color:#ff8800">6,000,000 STARBIT</div>
+            <div class="scard-price-sub">≈ $3,000 USD</div>
+          </div>
+          <button class="sbuy" style="border-color:#ff8800;color:#ff8800" onclick="buyMachine('laser')">[ KÚPIŤ ]</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DARK-RIFT -->
+    <div class="scard" style="border-color:rgba(150,0,255,0.25)">
+      <div class="scard-art" style="background:linear-gradient(135deg,#040010,#0a0020)">
+        <div class="scard-art-glow" style="background:radial-gradient(circle,rgba(150,0,255,0.2),transparent)"></div>
+        <div class="scard-art-icon">🕳️</div>
+        <div class="scard-art-scan"></div>
+      </div>
+      <div class="scard-body">
+        <div class="scard-tier" style="color:rgba(150,100,255,0.6)">TIER 3 — PARASIT EXTRACTOR</div>
+        <div class="scard-name">DARK-RIFT</div>
+        <div class="scard-supply">
+          <div class="supply-label"><span>SUPPLY</span><span id="dr-supply">3,891 / 10,000</span></div>
+          <div class="supply-bar"><div class="supply-fill" style="width:39%;background:#9900ff"></div></div>
+        </div>
+        <div class="scard-stats">
+          <div class="sstat"><div class="sstat-label" data-sk="ŤAŽBA / DEN" data-en="MINING / DAY">ŤAŽBA / DEN</div><div class="sstat-value" style="color:#aa44ff">128,571 <span style="font-size:8px">STARBIT</span></div></div>
+          <div class="sstat"><div class="sstat-label">MODE</div><div class="sstat-value" style="color:#aa44ff;font-size:8px">PARASIT FEES</div></div>
+          <div class="sstat"><div class="sstat-label" data-sk="LICENCIA" data-en="LICENSE">LICENCIA</div><div class="sstat-value">180 DNÍ</div></div>
+          <div class="sstat"><div class="sstat-label" data-sk="MAX SUPPLY" data-en="MAX SUPPLY">MAX SUPPLY</div><div class="sstat-value">10,000</div></div>
+        </div>
+        <div class="scard-pools" style="color:rgba(150,100,255,0.4)">
+          Ťaží z <span style="color:#aa44ff">DARK-RIFT POOL</span> (fee parasitizmus)<br>
+          Dostáva podiel zo všetkých trhových poplatkov
+        </div>
+        <div class="scard-price">
+          <div>
+            <div class="scard-price-val" style="color:#aa44ff">9,000,000 STARBIT</div>
+            <div class="scard-price-sub">≈ $4,500 USD</div>
+          </div>
+          <button class="sbuy" style="border-color:#9900ff;color:#aa44ff" onclick="buyMachine('darkrift')">[ KÚPIŤ ]</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ MARKET ═══════════════════ -->
+<section class="sec" id="sec-market">
+  <div class="sec-head">
+    <div class="sec-slash">//</div>
+    <h2 data-t="sec-market-h">SEKUNDÁRNY MARKET</h2>
+    <div class="sh-sub">10% TAX → 5% DARK-RIFT / 2.5% BURN / 2.5% MAIN</div>
+  </div>
+
+  <div id="market-filters" style="margin-bottom:12px">
+    <button class="mfbtn act" onclick="filterMarket('all',this)" data-t="mf-all">VŠETKY</button>
+    <button class="mfbtn" onclick="filterMarket('walkie',this)" data-sk="WALKIE-TALKIE" data-en="WALKIE-TALKIE">WALKIE-TALKIE</button>
+    <button class="mfbtn" onclick="filterMarket('laser',this)" data-sk="LASER-DRILL" data-en="LASER-DRILL">LASER-DRILL</button>
+    <button class="mfbtn" onclick="filterMarket('darkrift',this)" data-sk="DARK-RIFT" data-en="DARK-RIFT">DARK-RIFT</button>
+    <button class="mfbtn" onclick="filterMarket('reverse',this)" data-sk="REVERSE NFT" data-en="REVERSE NFT">REVERSE NFT</button>
+  </div>
+  <div style="display:flex;gap:8px;margin-bottom:20px;align-items:center">
+    <span style="font-family:var(--px);font-size:7px;color:rgba(255,26,26,0.35);letter-spacing:1px">SORT:</span>
+    <button class="mfbtn act" id="sort-price" onclick="sortMarket('price',this)" style="padding:5px 10px;font-size:6px">CENA ↓</button>
+    <button class="mfbtn" id="sort-days" onclick="sortMarket('days',this)" style="padding:5px 10px;font-size:6px">DNÍ ↑</button>
+    <button class="mfbtn" id="sort-rate" onclick="sortMarket('rate',this)" style="padding:5px 10px;font-size:6px">ŤAŽBA ↓</button>
+  </div>
+
+  <div id="market-table-wrap">
+    <table id="market-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>EXTRAKTOR</th>
+          <th>TYP</th>
+          <th>LEVEL</th>
+          <th>ŤAŽBA / DEN</th>
+          <th>DNÍ DO EXPIRY</th>
+          <th>CENA</th>
+          <th>PREDAJCA</th>
+          <th>AKCIA</th>
+        </tr>
+      </thead>
+      <tbody id="market-tbody"></tbody>
+    </table>
+    <div id="market-empty" style="display:none">// ŽIADNE LISTINGY //</div>
+  </div>
+
+  <div style="margin-top:20px;text-align:right">
+    <button class="hero-btn" onclick="showSec('dash');openSellModal()" data-t="btn-sell-my">[ PREDAJ MÔJ EXTRAKTOR ]</button>
+  </div>
+</section>
+
+<!-- ═══════════════════ UPGRADE ═══════════════════ -->
+<section class="sec" id="sec-upgrade">
+  <div class="sec-head">
+    <div class="sec-slash">//</div>
+    <h2 data-t="sec-upgrade-h">UPGRADE SYSTÉM</h2>
+    <div class="sh-sub">STACKER POWER — 70% MAIN / 25% BURN / 5% DEV</div>
+  </div>
+
+  <div id="upgrade-sec">
+    <div class="ug-panel">
+      <div class="ug-title" data-t="ug-pick">// VYBER EXTRAKTOR</div>
+      <select class="ug-select" id="ug-select" onchange="updateUpgrade()">
+        <option value="">-- Vyber stroj --</option>
+        <option value="wt1">WALKIE-TALKIE #001 (LVL 1)</option>
+        <option value="ld1">LASER-DRILL #001 (LVL 1)</option>
+        <option value="dr1">DARK-RIFT #001 (PARASIT)</option>
+      </select>
+
+      <div class="ug-title" data-t="ug-level-title">// ÚROVEŇ UPGRADU</div>
+      <div class="ug-levels">
+        <div class="ug-lvl" onclick="selectUpgrade(1,this)">
+          <div class="ug-lvl-num">LVL 2</div>
+          <div class="ug-lvl-bonus">+5% ťažba</div>
+          <div class="ug-lvl-cost">150K STARBIT</div>
+        </div>
+        <div class="ug-lvl" onclick="selectUpgrade(2,this)">
+          <div class="ug-lvl-num">LVL 3</div>
+          <div class="ug-lvl-bonus">+10% ťažba</div>
+          <div class="ug-lvl-cost">300K STARBIT</div>
+        </div>
+        <div class="ug-lvl" onclick="selectUpgrade(3,this)">
+          <div class="ug-lvl-num">LVL 4</div>
+          <div class="ug-lvl-bonus">+15% ťažba</div>
+          <div class="ug-lvl-cost">500K STARBIT</div>
+        </div>
+      </div>
+
+      <div class="ug-info-row">
+        <span class="label" data-sk="AKTUÁLNA ŤAŽBA" data-en="CURRENT MINING">AKTUÁLNA ŤAŽBA</span>
+        <span class="val" id="ug-current">33,333 STARBIT/DEN</span>
+      </div>
+      <div class="ug-info-row">
+        <span class="label" data-sk="ŤAŽBA PO UPGRADE" data-en="MINING AFTER UPGRADE">ŤAŽBA PO UPGRADE</span>
+        <span class="val green" id="ug-after">—</span>
+      </div>
+      <div class="ug-info-row">
+        <span class="label" data-sk="CENA UPGRADU" data-en="UPGRADE COST">CENA UPGRADU</span>
+        <span class="val" id="ug-cost">—</span>
+      </div>
+      <div class="ug-info-row">
+        <span class="label" data-sk="TVOJ BALANCE" data-en="YOUR BALANCE">TVOJ BALANCE</span>
+        <span class="val" id="ug-balance">4,200,000 STARBIT</span>
+      </div>
+
+      <button class="ug-btn" onclick="doUpgrade()" data-t="btn-upgrade">[ VYKONAJ UPGRADE ]</button>
+    </div>
+
+    <div class="ug-panel">
+      <div class="ug-title" data-t="ug-prob-title">// PRAVDEPODOBNOSŤ</div>
+
+      <div class="ug-prob">
+        <div class="ug-prob-val" id="ug-prob">50%</div>
+        <div class="ug-prob-label" data-t="ug-success">ŠANCA NA ÚSPECH</div>
+      </div>
+
+      <div class="ug-info-row">
+        <span class="label" data-sk="ZÁKLADNÁ ŠANCA" data-en="BASE CHANCE">ZÁKLADNÁ ŠANCA</span>
+        <span class="val">50%</span>
+      </div>
+      <div class="ug-info-row">
+        <span class="label" data-sk="BONUS ZA STROJE" data-en="MACHINE BONUS">BONUS ZA STROJE</span>
+        <span class="val green" id="ug-bonus-pct">+0%</span>
+      </div>
+      <div class="ug-info-row">
+        <span class="label" data-sk="MAX ŠANCA" data-en="MAX CHANCE">MAX ŠANCA</span>
+        <span class="val">90%</span>
+      </div>
+      <div class="ug-info-row">
+        <span class="label" data-sk="EXTRA STROJE" data-en="EXTRA MACHINES">EXTRA STROJE</span>
+        <span class="label" id="ug-extra">0 rovnakých</span>
+      </div>
+
+      <div style="margin-top:20px;padding:16px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,26,26,0.08);border-radius:1px">
+        <div class="fee-title">POOL ROUTING</div>
+        <div class="fee-row"><span class="fl">MAIN POOL</span><span class="fv">70%</span></div>
+        <div class="fee-row"><span class="fl">BURN</span><span class="fv">25%</span></div>
+        <div class="fee-row"><span class="fl">DEV WALLET</span><span class="fv">5%</span></div>
+      </div>
+
+      <div style="margin-top:16px;padding:12px;background:rgba(255,200,0,0.03);border:1px solid rgba(255,200,0,0.1);border-radius:1px">
+        <div style="font-family:var(--px);font-size:7px;color:rgba(255,200,0,0.5);letter-spacing:1px;margin-bottom:6px">⚠ POZOR</div>
+        <div style="font-family:var(--mn);font-size:9px;color:rgba(255,200,0,0.35);line-height:1.6">
+          Pri neúspešnom upgrade sa STARBIT spotrebuje, extraktor zostáva na pôvodnom leveli.
+          Každý rovnaký stroj v tvojom wallete = +5% šanca (max 90%).
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ STAREWARDS ═══════════════════ -->
+<section class="sec" id="sec-hodl">
+  <div class="sec-head">
+    <div class="sec-slash">//</div>
+    <h2 data-t="sec-hodl-h">STAREWARDS — HODL PROGRAM</h2>
+    <div class="sh-sub">30 DNÍ LOCK → REVERSE NFT EXTRAKTOR</div>
+  </div>
+
+  <div id="hodl-grid">
+    <div class="hodl-panel">
+      <div class="hodl-title" data-t="hodl-new">// NOVÝ LOCK</div>
+
+      <div class="hodl-input-wrap">
+        <label class="hodl-label">MNOŽSTVO STARBIT</label>
+        <input class="hodl-input" type="number" id="hodl-amount" placeholder="min. 1,000,000"
+          oninput="updateHodlDrops()">
+      </div>
+
+      <table class="drop-table">
+        <thead>
+          <tr>
+            <th>EXTRAKTOR TYPE</th>
+            <th>DROP ŠANCA</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>WALKIE-TALKIE (Reverse)</td><td id="dr-wt">—</td></tr>
+          <tr><td>LASER-DRILL (Reverse)</td><td id="dr-ld">—</td></tr>
+          <tr><td>DARK-RIFT (Reverse)</td><td id="dr-dr">—</td></tr>
+        </tbody>
+      </table>
+
+      <div class="fee-row" style="border-bottom:1px solid rgba(255,26,26,0.08);padding:8px 0;margin-bottom:12px">
+        <span class="fl" style="font-family:var(--mn);font-size:9px;color:rgba(255,26,26,0.35)">LOCK PERIOD</span>
+        <span style="font-family:var(--px);font-size:9px;color:var(--r)">30 DNÍ</span>
+      </div>
+      <div class="fee-row" style="padding:8px 0;margin-bottom:16px">
+        <span class="fl" style="font-family:var(--mn);font-size:9px;color:rgba(255,26,26,0.35)">REWARD</span>
+        <span style="font-family:var(--mn);font-size:9px;color:var(--g)">1x REVERSE NFT EXTRAKTOR</span>
+      </div>
+
+      <button class="ug-btn" onclick="createLock()" data-t="btn-lock">[ ZAMKNÚŤ STARBIT ]</button>
+    </div>
+
+    <div class="hodl-panel">
+      <div class="hodl-title" data-t="hodl-active">// AKTÍVNE LOCKY</div>
+      <div class="hodl-locks" id="hodl-locks">
+        <div style="font-family:var(--mn);font-size:9px;color:rgba(255,26,26,0.2);text-align:center;padding:40px 0">
+          Žiadne aktívne locky
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ REVERSE NFT ═══════════════════ -->
+<section class="sec" id="sec-rev">
+  <div class="sec-head">
+    <div class="sec-slash">//</div>
+    <h2 data-t="sec-rev-h">REVERSE NFT EXTRAKTORY</h2>
+    <div class="sh-sub">PRENÁJOM: 50% VOPRED → 40% OWNER / 5% DARK-RIFT / 2.5% DEV / 2.5% MAIN</div>
+  </div>
+
+  <div id="rev-grid">
+    <div style="text-align:center;padding:60px;border:1px dashed rgba(0,255,68,0.15);border-radius:2px;
+      font-family:var(--mn);font-size:10px;color:rgba(0,255,68,0.2)">
+      Získaj Reverse extraktory cez STAREWARDS HODL program (30-dňový lock)
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ TOKEN ═══════════════════ -->
+<section class="sec" id="sec-token">
+  <div class="sec-head">
+    <div class="sec-slash">//</div>
+    <h2 data-t="sec-token-h">$STARBIT TOKEN</h2>
+    <div class="sh-sub">SOLANA · SPL TOKEN · 1B TOTAL SUPPLY</div>
+  </div>
+
+  <div id="token-grid">
+    <div>
+      <!-- Stats grid -->
+      <div class="token-panel" style="margin-bottom:20px">
+        <div class="token-title" data-t="token-stats-title">// TOKEN ŠTATISTIKY</div>
+        <div class="tstat-grid">
+          <div class="tstat"><div class="tstat-label" data-sk="TOTAL SUPPLY" data-en="TOTAL SUPPLY">TOTAL SUPPLY</div><div class="tstat-val">1,000,000,000</div></div>
+          <div class="tstat"><div class="tstat-label" data-sk="CIRCULATING" data-en="CIRCULATING">CIRCULATING</div><div class="tstat-val" style="color:var(--g)">~50,000,000</div></div>
+          <div class="tstat"><div class="tstat-label" data-sk="MINT AUTHORITY" data-en="MINT AUTHORITY">MINT AUTHORITY</div><div class="tstat-val" style="font-size:9px;color:rgba(0,255,68,0.7)">REVOKED ✓</div></div>
+          <div class="tstat"><div class="tstat-label" data-sk="CHAIN" data-en="CHAIN">CHAIN</div><div class="tstat-val">SOLANA</div></div>
+        </div>
+      </div>
+
+      <!-- Distribution -->
+      <div class="token-panel" style="margin-bottom:20px">
+        <div class="token-title" data-t="token-dist-title">// DISTRIBÚCIA SUPPLY</div>
+        <div class="dist-row"><span class="dl">MINING VAULT PDA</span><span class="dv">750,000,000</span><span class="dp">75%</span></div>
+        <div class="dist-row"><span class="dl">RAYDIUM LIQUIDITY</span><span class="dv">100,000,000</span><span class="dp">10%</span></div>
+        <div class="dist-row"><span class="dl">MARKETING</span><span class="dv">100,000,000</span><span class="dp">10%</span></div>
+        <div class="dist-row"><span class="dl">DEV WALLET</span><span class="dv">50,000,000</span><span class="dp">5%</span></div>
+      </div>
+
+      <!-- Fee breakdown -->
+      <div class="token-panel">
+        <div class="token-title" data-t="token-fees-title">// FEE SYSTÉM</div>
+        <div class="fee-section">
+          <div class="fee-title">WIN FEE (10% z výhier)</div>
+          <div class="fee-row"><span class="fl">PLATFORM</span><span class="fv">2%</span></div>
+          <div class="fee-row"><span class="fl">BUYBACK</span><span class="fv">4%</span></div>
+          <div class="fee-row"><span class="fl">HOLDERS</span><span class="fv">4%</span></div>
+        </div>
+        <div class="fee-section" style="margin-top:16px">
+          <div class="fee-title">PANIC BUTTON FEE (20%)</div>
+          <div class="fee-row"><span class="fl">PLATFORM</span><span class="fv">5%</span></div>
+          <div class="fee-row"><span class="fl">WIN MONEY</span><span class="fv">10%</span></div>
+          <div class="fee-row"><span class="fl">BUNNY MONEY</span><span class="fv">5%</span></div>
+        </div>
+        <div class="fee-section" style="margin-top:16px">
+          <div class="fee-title">SECONDARY MARKET TAX (10%)</div>
+          <div class="fee-row"><span class="fl">DARK-RIFT POOL</span><span class="fv">5%</span></div>
+          <div class="fee-row"><span class="fl">BURN</span><span class="fv">2.5%</span></div>
+          <div class="fee-row"><span class="fl">MAIN POOL</span><span class="fv">2.5%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <!-- Contract info -->
+      <div class="token-panel" style="margin-bottom:20px">
+        <div class="token-title" data-t="token-contract-title">// SMART CONTRACT</div>
+        <div class="fee-row"><span class="fl">PROGRAM</span><span class="fv" style="font-size:8px;word-break:break-all">E1B5gD...oJ2pt</span></div>
+        <div class="fee-row"><span class="fl">MINT</span><span class="fv" style="font-size:8px">D2Uy7T...eypUp</span></div>
+        <div class="fee-row"><span class="fl">DEV WALLET</span><span class="fv" style="font-size:8px">CcfwZH...Xy4c</span></div>
+        <div class="fee-row"><span class="fl">FRAMEWORK</span><span class="fv">ANCHOR · SOLANA</span></div>
+        <div class="fee-row"><span class="fl">JITO BUNDLES</span><span class="fv" style="color:var(--g)">ENABLED ✓</span></div>
+        <div class="fee-row"><span class="fl">HELIUS RPC</span><span class="fv" style="color:var(--g)">CONNECTED ✓</span></div>
+        <div class="fee-row"><span class="fl">STATUS</span><span class="fv" style="color:rgba(255,200,0,0.7)">DEVNET TESTING</span></div>
+      </div>
+
+      <!-- Buy -->
+      <div class="token-panel" style="margin-bottom:20px">
+        <div class="token-title" data-t="token-buy-title">// KÚP $STARBIT</div>
+        <div style="text-align:center;padding:20px 0">
+          <button class="raydium-btn" data-t="btn-raydium" onclick="showToast('Raydium launch čoskoro — mainnet deploy pending')">
+            [ RAYDIUM SWAP ]
+          </button>
+          <div style="font-family:var(--mn);font-size:9px;color:rgba(255,26,26,0.25);margin-top:12px">
+            Dostupné po mainnet deploy
+          </div>
+        </div>
+      </div>
+
+      <!-- Roadmap -->
+      <div class="token-panel">
+        <div class="token-title" data-t="token-roadmap-title">// ROADMAP</div>
+        <div class="fee-row"><span class="fl" data-sk="✓ DIZAJN SYSTÉMU" data-en="✓ SYSTEM DESIGN">✓ DIZAJN SYSTÉMU</span><span class="fv" style="color:var(--g)">DONE</span></div>
+        <div class="fee-row"><span class="fl" data-sk="✓ FRONTEND DASHBOARD" data-en="✓ FRONTEND DASHBOARD">✓ FRONTEND DASHBOARD</span><span class="fv" style="color:var(--g)">DONE</span></div>
+        <div class="fee-row"><span class="fl" data-sk="○ ANCHOR CONTRACT" data-en="○ ANCHOR CONTRACT">○ ANCHOR CONTRACT</span><span class="fv" style="color:rgba(255,200,0,0.7)">IN PROGRESS</span></div>
+        <div class="fee-row"><span class="fl" data-sk="○ DEVNET TEST" data-en="○ DEVNET TEST">○ DEVNET TEST</span><span class="fv" style="color:rgba(255,26,26,0.4)">PENDING</span></div>
+        <div class="fee-row"><span class="fl" data-sk="○ AUDIT" data-en="○ AUDIT">○ AUDIT</span><span class="fv" style="color:rgba(255,26,26,0.4)">PENDING</span></div>
+        <div class="fee-row"><span class="fl" data-sk="○ RAYDIUM LAUNCH" data-en="○ RAYDIUM LAUNCH">○ RAYDIUM LAUNCH</span><span class="fv" style="color:rgba(255,26,26,0.4)">PENDING</span></div>
+        <div class="fee-row"><span class="fl" data-sk="○ MAINNET DEPLOY" data-en="○ MAINNET DEPLOY">○ MAINNET DEPLOY</span><span class="fv" style="color:rgba(255,26,26,0.4)">PENDING</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+
+<!-- ═══════════════════ WINWILL ═══════════════════ -->
+<section class="sec" id="sec-winwill">
+  <div class="sec-head">
+    <div class="sec-slash">//</div>
+    <h2 data-t="sec-winwill-h" data-sk="WINWILL SYSTÉM" data-en="WINWILL SYSTEM">WINWILL SYSTÉM</h2>
+    <div class="sh-sub" data-sk="KAŽDÝCH 24H — ŠANCA NA VÝHRU" data-en="EVERY 24H — CHANCE TO WIN">KAŽDÝCH 24H — ŠANCA NA VÝHRU</div>
+  </div>
+
+  <!-- WINWILL JACKPOT DISPLAY -->
+  <div style="text-align:center;margin-bottom:40px">
+    <div style="font-family:var(--px);font-size:9px;letter-spacing:4px;color:rgba(255,26,26,0.45);margin-bottom:16px"
+      data-sk="// AKTUÁLNY JACKPOT" data-en="// CURRENT JACKPOT">// AKTUÁLNY JACKPOT</div>
+    <div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap">
+      <div class="ww-jackpot-card" style="border-color:rgba(255,26,26,0.3)">
+        <div class="wj-icon">📻</div>
+        <div class="wj-name" data-sk="WALKIE-TALKIE" data-en="WALKIE-TALKIE">WALKIE-TALKIE</div>
+        <div class="wj-amount">999,990</div>
+        <div class="wj-label">STARBIT</div>
+        <div class="wj-rate" style="font-family:var(--mn);font-size:9px;color:rgba(255,26,26,0.35);margin-bottom:8px">33,333/deň × 30</div>
+        <div class="wj-chance" data-sk="3% ŠANCA" data-en="3% CHANCE">3% ŠANCA</div>
+      </div>
+      <div class="ww-jackpot-card" style="border-color:rgba(255,136,0,0.3)">
+        <div class="wj-icon">⚡</div>
+        <div class="wj-name" data-sk="LASER-DRILL" data-en="LASER-DRILL">LASER-DRILL</div>
+        <div class="wj-amount" style="color:#ff8800">2,250,000</div>
+        <div class="wj-label">STARBIT</div>
+        <div class="wj-rate" style="font-family:var(--mn);font-size:9px;color:rgba(255,136,0,0.35);margin-bottom:8px">75,000/deň × 30</div>
+        <div class="wj-chance" data-sk="6% ŠANCA" data-en="6% CHANCE">6% ŠANCA</div>
+      </div>
+      <!-- Dark-Rift - no winwill -->
+      <div class="ww-jackpot-card" style="border-color:rgba(170,68,255,0.15);opacity:0.5">
+        <div class="wj-icon">🕳️</div>
+        <div class="wj-name" style="color:rgba(170,68,255,0.4)">DARK-RIFT</div>
+        <div class="wj-amount" style="color:rgba(170,68,255,0.4);font-size:11px">PARASIT MODE</div>
+        <div class="wj-label">—</div>
+        <div class="wj-chance" style="color:rgba(170,68,255,0.35)" data-sk="BEZ WINWILL" data-en="NO WINWILL">BEZ WINWILL</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REVERSE EXTRACTORS WINWILL -->
+  <div style="margin-bottom:40px">
+    <div style="font-family:var(--px);font-size:9px;letter-spacing:4px;
+      color:rgba(0,255,68,0.45);margin-bottom:16px;text-align:center"
+      data-sk="// REVERSE EXTRAKTORY — WINWILL" data-en="// REVERSE EXTRACTORS — WINWILL">
+      // REVERSE EXTRAKTORY — WINWILL</div>
+    <div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap">
+      <div class="ww-jackpot-card" style="border-color:rgba(0,255,68,0.25)">
+        <div class="wj-icon">📻</div>
+        <div class="wj-name" style="color:var(--g)">REVERSE WALKIE</div>
+        <div class="wj-amount" style="color:var(--g);font-size:16px">499,980</div>
+        <div class="wj-label" style="color:rgba(0,255,68,0.35)">STARBIT</div>
+        <div class="wj-rate" style="font-family:var(--mn);font-size:9px;color:rgba(0,255,68,0.35);margin-bottom:8px">16,666/deň × 30</div>
+        <div class="wj-chance" style="color:var(--g);border-color:rgba(0,255,68,0.3)"
+          data-sk="1% ŠANCA" data-en="1% CHANCE">1% ŠANCA</div>
+      </div>
+      <div class="ww-jackpot-card" style="border-color:rgba(0,255,68,0.25)">
+        <div class="wj-icon">⚡</div>
+        <div class="wj-name" style="color:var(--g)">REVERSE LASER</div>
+        <div class="wj-amount" style="color:var(--g);font-size:16px">1,125,000</div>
+        <div class="wj-label" style="color:rgba(0,255,68,0.35)">STARBIT</div>
+        <div class="wj-rate" style="font-family:var(--mn);font-size:9px;color:rgba(0,255,68,0.35);margin-bottom:8px">37,500/deň × 30</div>
+        <div class="wj-chance" style="color:var(--g);border-color:rgba(0,255,68,0.3)"
+          data-sk="2% ŠANCA" data-en="2% CHANCE">2% ŠANCA</div>
+      </div>
+      <div class="ww-jackpot-card" style="border-color:rgba(0,255,68,0.25)">
+        <div class="wj-icon">🕳️</div>
+        <div class="wj-name" style="color:var(--g)">REVERSE DARK-RIFT</div>
+        <div class="wj-amount" style="color:var(--g);font-size:16px">1,928,550</div>
+        <div class="wj-label" style="color:rgba(0,255,68,0.35)">STARBIT</div>
+        <div class="wj-rate" style="font-family:var(--mn);font-size:9px;color:rgba(0,255,68,0.35);margin-bottom:8px">64,285/deň × 30</div>
+        <div class="wj-chance" style="color:var(--g);border-color:rgba(0,255,68,0.3)"
+          data-sk="3% ŠANCA" data-en="3% CHANCE">3% ŠANCA</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- placeholder closing tags removed by restructure -->
+  <div style="display:none">
+    </div>
+  </div>
+
+  <!-- COUNTDOWN -->
+  <div style="text-align:center;margin-bottom:40px;padding:24px;background:rgba(22,4,20,0.95);border:1px solid rgba(255,26,26,0.2);border-radius:2px">
+    <div style="font-family:var(--px);font-size:8px;letter-spacing:3px;color:rgba(255,26,26,0.4);margin-bottom:12px"
+      data-t="winwill-roll-label" data-sk="// ĎALŠÍ ROLL ZA" data-en="// NEXT ROLL IN">// ĎALŠÍ ROLL ZA</div>
+    <div id="ww-global-timer" style="font-family:var(--px);font-size:48px;color:var(--r);text-shadow:var(--glow-r);letter-spacing:4px">18:42:07</div>
+    <div style="font-family:var(--mn);font-size:9px;color:rgba(255,26,26,0.3);margin-top:8px;letter-spacing:2px"
+      data-t="winwill-roll-sub" data-sk="ROLL PRE VŠETKY AKTÍVNE EXTRAKTORY" data-en="ROLL FOR ALL ACTIVE EXTRACTORS">ROLL PRE VŠETKY AKTÍVNE EXTRAKTORY</div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:40px">
+    <div style="background:rgba(22,4,20,0.95);border:1px solid rgba(255,26,26,0.15);padding:20px;border-radius:2px">
+      <div style="font-family:var(--px);font-size:9px;color:var(--r);margin-bottom:12px;letter-spacing:2px">01 // ROLL</div>
+      <div style="font-family:var(--mn);font-size:10px;color:rgba(255,200,200,0.6);line-height:1.8"
+        data-sk="Každých 24 hodín sa automaticky vykoná on-chain random roll pre každý tvoj extraktor zvlášť."
+        data-en="Every 24 hours an automatic on-chain random roll is executed for each of your extractors separately.">
+        Každých 24 hodín sa automaticky vykoná on-chain random roll pre každý tvoj extraktor zvlášť.</div>
+    </div>
+    <div style="background:rgba(22,4,20,0.95);border:1px solid rgba(255,26,26,0.15);padding:20px;border-radius:2px">
+      <div style="font-family:var(--px);font-size:9px;color:var(--r);margin-bottom:12px;letter-spacing:2px">02 // ŠANCA</div>
+      <div style="font-family:var(--mn);font-size:10px;color:rgba(255,200,200,0.6);line-height:1.8"
+        data-sk="Walkie-Talkie má 3% šancu. Laser-Drill má 6% šancu. Viac extraktorov = viac rollov = väčšia šanca vyhrať."
+        data-en="Walkie-Talkie has 3% chance. Laser-Drill has 6% chance. More extractors = more rolls = bigger chance to win.">
+        Walkie-Talkie má 3% šancu. Laser-Drill má 6% šancu. Viac extraktorov = viac rollov = väčšia šanca vyhrať.</div>
+    </div>
+    <div style="background:rgba(22,4,20,0.95);border:1px solid rgba(255,26,26,0.15);padding:20px;border-radius:2px">
+      <div style="font-family:var(--px);font-size:9px;color:var(--r);margin-bottom:12px;letter-spacing:2px">03 // VÝHRA</div>
+      <div style="font-family:var(--mn);font-size:10px;color:rgba(255,200,200,0.6);line-height:1.8"
+        data-sk="Výhra = 30 dní ťažby tvojho extraktora. Vyplatené okamžite zo MAIN POOL priamo do tvojho walletu."
+        data-en="Win = 30 days of your extractor's mining output. Paid instantly from MAIN POOL directly to your wallet.">
+        Výhra = 30 dní ťažby tvojho extraktora. Vyplatené okamžite zo MAIN POOL priamo do tvojho walletu.</div>
+    </div>
+  </div>
+
+  <!-- LIVE WINNERS FEED -->
+  <div class="sec-head" style="margin-top:8px">
+    <div class="sec-slash">//</div>
+    <h2 style="font-size:14px" data-sk="LIVE VÝHRY" data-en="LIVE WINS">LIVE VÝHRY</h2>
+  </div>
+  <div id="ww-feed" style="display:flex;flex-direction:column;gap:8px">
+    <div class="ww-feed-item">
+      <span class="ww-feed-wallet">7mRt...pQ9z</span>
+      <span class="ww-feed-machine">LASER-DRILL</span>
+      <span class="ww-feed-amount" style="color:#ff8800">+2,250,000 STARBIT</span>
+      <span class="ww-feed-time">2h ago</span>
+    </div>
+    <div class="ww-feed-item">
+      <span class="ww-feed-wallet">3xDf...kL2p</span>
+      <span class="ww-feed-machine">WALKIE-TALKIE</span>
+      <span class="ww-feed-amount">+999,990 STARBIT</span>
+      <span class="ww-feed-time">5h ago</span>
+    </div>
+    <div class="ww-feed-item">
+      <span class="ww-feed-wallet">9kBw...nX4c</span>
+      <span class="ww-feed-machine">DARK-RIFT</span>
+      <span class="ww-feed-amount" style="color:#aa44ff">+3,857,130 STARBIT</span>
+      <span class="ww-feed-time">18h ago</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ STORY ═══════════════════ -->
+<section class="sec" id="sec-story">
+  <div class="sec-head">
+    <div class="sec-slash">//</div>
+    <h2 data-t="sec-story-h">STRANGER BITS STORY</h2>
+  </div>
+
+  <div style="max-width:860px;margin:0 auto">
+
+    <!-- ARCHIVE LOG HEADER -->
+    <div style="text-align:center;margin-bottom:40px">
+      <div style="font-family:var(--px);font-size:11px;color:var(--r);
+        letter-spacing:4px;text-shadow:var(--glow-r);margin-bottom:12px"
+        data-t="story-archive-title">[ ARCHIVE LOG: THE SATOSHI CONSPIRACY ]</div>
+      <div style="width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--r),transparent)"></div>
+    </div>
+
+    <!-- CHAPTER 1 -->
+    <div class="story-block">
+      <div class="story-num">01</div>
+      <div class="story-content">
+        <div class="story-chapter-title" data-t="story-ch1-title">Utajený projekt: Po Bitcoine prišla Realita</div>
+        <div class="story-text" data-t="story-ch1-text">Keď Satoshi Nakamoto v roku 2011 zmizol, svet si myslel, že jeho práca skončila. Pravda je však taká, že Bitcoin bol len verejný záťažový test. Satoshi si uvedomil limity lineárnych blockchainov a zvyšok života zasvätil vývoju STRANGER BITS – projektu, ktorý nebeží na našich serveroch.</div>
+        <div class="story-text" style="margin-top:12px" data-t="story-ch1-text2">Objavil trhlinu v základnom protokole internetu, pod ktorou sa nachádza Reverzná dimenzia dát. Je to vrstva, kde dáta nezanikajú, ale hromadia sa v surovej forme ako Stranger Minerals.</div>
+      </div>
+    </div>
+
+    <!-- CHAPTER 2 -->
+    <div class="story-block">
+      <div class="story-num">02</div>
+      <div class="story-content">
+        <div class="story-chapter-title" data-t="story-ch2-title">Dátové monštrá: The Glitch-Plants</div>
+        <div class="story-text" data-t="story-ch2-text">V tejto dimenzii narazil na Mäsožravé rastliny (The Glitch-Plants). Sú to najagresívnejšie entity v digitálnom priestore, fungujúce ako organické firewally. Tieto rastliny sa živia práve spomínanými Stranger Minerals – nasávajú útržky surového kódu z bežného internetu, ktoré prepadli cez trhlinu.</div>
+        <div class="story-text" style="margin-top:12px" data-t="story-ch2-text2">Procesom vnútornej dátovej syntézy tieto minerály transformujú a po čase vylučujú Stranger Bits — takzvané STARBITS – kryštalizované bloky dát s extrémne vysokou hustotou informácií. Glitch-Plants sú však vysoko teritoriálne a akýkoľvek pokus o odber ich potravy okamžite trestajú totálnym vymazaním cudzieho signálu.</div>
+      </div>
+    </div>
+
+    <!-- CHAPTER 3 -->
+    <div class="story-block">
+      <div class="story-num">03</div>
+      <div class="story-content">
+        <div class="story-chapter-title" data-t="story-ch3-title">Objav v štruktúre peňaženky (Pred 3 mesiacmi)</div>
+        <div class="story-text" data-t="story-ch3-text">Celý svet sledoval Satoshiho legendárnu peňaženku s tisíckami nehybných Bitcoinov a čakal na ich pohyb. My sme na to išli inak. Pri pokuse o hĺbkovú dešifrovaciu analýzu štruktúry samotnej adresy sme nenarazili na privátny kľúč – ten zostáva neprelomený.</div>
+        <div class="story-text" style="margin-top:12px" data-t="story-ch3-text2">Našli sme však niečo oveľa dôležitejšie: zakódovanú vrstvu v kontrolnom súčte adresy. Satoshi tam nenechal peniaze, ale prístupový protokol. Objavili sme fragmenty kódu, ktoré slúžia ako súradnice k reverznej dimenzii a technickú schému na zostrojenie extraktorov. Na základe tohto objavu sme oživili jeho technológiu a vytvorili jediný legitímny Black Market na svete.</div>
+      </div>
+    </div>
+
+    <!-- CHAPTER 4 -->
+    <div class="story-block">
+      <div class="story-num">04</div>
+      <div class="story-content">
+        <div class="story-chapter-title" data-t="story-ch4-title">STARBIT: Viac než len token</div>
+        <div class="story-text" data-t="story-ch4-text">STARBIT (rubínový dátový kryštál) je výsledkom tejto unikátnej transformácie dát. Obsahuje v sebe čistú esenciu z hlbín reverzného internetu – kód, ktorý sa dokáže sám prepisovať a vyvíjať. Satoshi do týchto kryštálov vložil mechanizmus, ktorý má potenciál redefinovať samotnú podstatu digitálneho vlastníctva.</div>
+        <div class="story-text" style="margin-top:12px" data-t="story-ch4-text2">Pravda o tom, čo sa stane, keď sa nazbiera kritické množstvo STARBITS, zostáva pod prísnym utajením. Dovtedy je STARBIT najvzácnejším artiklom na čiernom trhu – je to kľúč k novej architektúre sveta.</div>
+      </div>
+    </div>
+
+    <!-- EXTRACTORS -->
+    <div style="font-family:var(--px);font-size:10px;color:var(--r);
+      letter-spacing:3px;margin:40px 0 24px;text-align:center;
+      text-shadow:var(--glow-r)" data-t="story-ext-header">// EXTRAKTORY //</div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:40px">
+
+      <div class="story-ext-card">
+        <div class="story-ext-icon">📻</div>
+        <div class="story-ext-name">WALKIE-TALKIE</div>
+        <div class="story-ext-sub" data-t="story-ext1-sub">Signal Mimic</div>
+        <div class="story-ext-desc" data-t="story-ext1-desc">Využíva modifikovanú frekvenciu nájdenú v kóde peňaženky. Vysiela signál, ktorý simuluje šum Stranger Minerals. Rastlina si myslí, že sa len kŕmi, zatiaľ čo prístroj potichu zbiera hotové STARBITS.</div>
+      </div>
+
+      <div class="story-ext-card" style="border-color:rgba(255,136,0,0.25)">
+        <div class="story-ext-icon">⚡</div>
+        <div class="story-ext-name" style="color:#ff8800">LASER-DRILL</div>
+        <div class="story-ext-sub" style="color:rgba(255,136,0,0.5)" data-t="story-ext2-sub">Phase Shifter</div>
+        <div class="story-ext-desc" data-t="story-ext2-desc">Tento nástroj fázovo posúva realitu extraktora. Dokáže odobrať kryštál z vnútra rastliny v inom časovom intervale, takže rastlina nezaregistruje žiadny úbytok dát v prítomnosti.</div>
+      </div>
+
+      <div class="story-ext-card" style="border-color:rgba(170,68,255,0.25)">
+        <div class="story-ext-icon">🕳️</div>
+        <div class="story-ext-name" style="color:#aa44ff">DARK-RIFT</div>
+        <div class="story-ext-sub" style="color:rgba(170,68,255,0.5)" data-t="story-ext3-sub">Void Harvester</div>
+        <div class="story-ext-desc" data-t="story-ext3-desc">Najpokročilejšia technológia. Vytvára mikroskopický tunel z temnej reverznej hmoty priamo k jadru Glitch-Plant. Umožňuje masívny odber Stranger Bits s minimálnym rizikom odhalenia.</div>
+      </div>
+
+    </div>
+
+    <!-- CLASSIFIED FOOTER -->
+    <div style="text-align:center;padding:20px;border:1px solid rgba(255,26,26,0.15);
+      border-radius:2px;background:rgba(0,0,0,0.3)">
+      <div style="font-family:var(--px);font-size:7px;letter-spacing:4px;
+        color:rgba(255,26,26,0.3)" data-t="story-classified">
+        [ CLASSIFIED — STRANGER BITS RESEARCH DIVISION ]
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════ LANGUAGE ═══════════════════ -->
+<section class="sec" id="sec-lang">
+  <div class="sec-head">
+    <div class="sec-slash">//</div>
+    <h2 data-t="sec-lang-h">JAZYK / LANGUAGE</h2>
+  </div>
+  <div style="display:flex;gap:20px;flex-wrap:wrap">
+    <div class="lang-card" id="lang-sk" onclick="setLang('sk')" style="border-color:rgba(255,26,26,0.6)">
+      <div class="lang-flag">🇸🇰</div>
+      <div class="lang-name">SLOVENČINA</div>
+      <div class="lang-code">SK</div>
+      <div class="lang-active" id="la-sk" data-sk="● AKTÍVNY" data-en="● ACTIVE">● AKTÍVNY</div>
+    </div>
+    <div class="lang-card" id="lang-en" onclick="setLang('en')">
+      <div class="lang-flag">🇬🇧</div>
+      <div class="lang-name">ENGLISH</div>
+      <div class="lang-code">EN</div>
+      <div class="lang-active" id="la-en" style="opacity:0">● ACTIVE</div>
+    </div>
+  </div>
+</section>
+<footer id="footer">
+  <div id="footer-logo" data-t="footer-logo">// STRANGER BITS //</div>
+  <div id="footer-sub" data-t="footer-sub">REVERSE DIMENSION EXTRACTION PROTOCOL · POWERED BY SOLANA · © 2025</div>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+const STATE = {
+  connected: false,
+  wallet: null,
+  starbit: 4200000,
+  machines: [],
+  listings: [],
+  locks: [],
+  revNFTs: [],
+  wwTimer: 18*3600+42*60+7,
+  networkTotal: 842847291.3,
+  selectedUpgradeMachine: null,
+  selectedUpgradeLevel: null,
+};
+
+// Machine blueprints
+const MACHINES = {
+  walkie:   { name:'WALKIE-TALKIE', tier:'TIER 1', rate:33333, ww:3,  cost:3000000, icon:'📻', days:180, color:'var(--r)' },
+  laser:    { name:'LASER-DRILL',   tier:'TIER 2', rate:75000, ww:6,  cost:6000000, icon:'⚡', days:180, color:'#ff8800' },
+  darkrift: { name:'DARK-RIFT',     tier:'TIER 3', rate:128571,ww:0,  cost:9000000, icon:'🕳️', days:180, color:'#aa44ff', parasit:true },
+};
+
+// ═══════════════════════════════════════════════
+// HERO STARS
+// ═══════════════════════════════════════════════
+function initStars(){
+  const c = document.getElementById('hero-stars');
+  const colors = ['#ffd700','#ffcc00','#ffaa00','#ffe066','#ffdd44','#ffc800','#ffb800','#ffd700','#ffe566','#ffcf00'];
+  for(let i=0;i<220;i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    const sz = Math.random()*2.5+0.5;
+    const col = colors[Math.floor(Math.random()*colors.length)];
+    s.style.cssText = `
+      width:${sz}px;height:${sz}px;
+      top:${Math.random()*100}%;left:${Math.random()*100}%;
+      background:${col};
+      box-shadow:0 0 ${sz*2}px ${col};
+      --d:${(Math.random()*4+1).toFixed(1)}s;
+      --delay:${(Math.random()*4).toFixed(1)}s;
+    `;
+    c.appendChild(s);
+  }
+  initComets();
+}
+
+function initComets(){
+  const container = document.getElementById('hero-comet');
+  if(!container) return;
+
+  function launchComet(){
+    const comet = document.createElement('div');
+    comet.className = 'comet';
+
+    // Random angle between -20 and -50 degrees (going diagonally down-right)
+    const angle = -(Math.random() * 30 + 15);
+    const rad = angle * Math.PI / 180;
+
+    // Start position - random on left/top edges
+    const startEdge = Math.random();
+    let startX, startY;
+    if(startEdge < 0.6){
+      // From left edge
+      startX = -250;
+      startY = Math.random() * 70;
+    } else {
+      // From top edge
+      startX = Math.random() * 60;
+      startY = -10;
+    }
+
+    // Travel distance
+    const dist = 800 + Math.random() * 600;
+    const tx = dist * Math.cos(rad * -1);
+    const ty = dist * Math.sin(rad * -1);
+
+    // Comet length - varies
+    const len = 150 + Math.random() * 120;
+
+    comet.style.cssText = `
+      left:${startX}%;top:${startY}%;
+      width:${len}px;
+      --angle:${angle}deg;
+      --tx:${tx}px;
+      --ty:${ty}px;
+      animation:comet-fly ${(2.5 + Math.random()*1.5).toFixed(1)}s ease-out forwards;
+    `;
+
+    container.appendChild(comet);
+
+    // Remove after animation
+    setTimeout(() => {
+      comet.remove();
+    }, 5000);
+  }
+
+  // Launch first comet after 3s
+  setTimeout(launchComet, 3000);
+
+  // Then every 6-12 seconds
+  function scheduleNext(){
+    const delay = 6000 + Math.random() * 6000;
+    setTimeout(()=>{
+      launchComet();
+      scheduleNext();
+    }, delay);
+  }
+  scheduleNext();
+}
+
+// ═══════════════════════════════════════════════
+// NETWORK COUNTER
+// ═══════════════════════════════════════════════
+// CRT mode: 'net' = network total, 'mine' = my mining
+STATE.crtMode = 'net';
+
+function initCounter(){
+  const ratePerSec = 847231 / 86400;
+  setInterval(()=>{
+    STATE.networkTotal += ratePerSec * 0.1;
+    updateCRTDisplay();
+  }, 100);
+}
+
+function updateCRTDisplay(){
+  const el = document.getElementById('hero-counter-value');
+  const sub = document.getElementById('hero-counter-sub');
+  const lbl = document.getElementById('crt-mode-label');
+  const hint = document.getElementById('crt-wallet-hint');
+  if(!el) return;
+
+  if(STATE.crtMode === 'net'){
+    // Network total - ticks up fast, green
+    const n = STATE.networkTotal;
+    el.textContent = n.toLocaleString('sk',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' STARBIT';
+    el.className = '';
+    sub.textContent = 'REVERSE DIMENSION EXTRACTION / STARBIT';
+    sub.className = '';
+    lbl.textContent = '// CELKOVÁ ŤAŽBA SIETE';
+    lbl.className = 'net';
+    hint.style.display = 'none';
+
+  } else {
+    // My mining - red, personal
+    el.className = 'mine-mode';
+    sub.className = 'mine-mode';
+    lbl.className = 'mine';
+
+    if(!STATE.connected){
+      // Not connected
+      el.textContent = '??.???? STARBIT';
+      sub.textContent = 'WALLET NOT CONNECTED';
+      lbl.textContent = '// MOJA ŤAŽBA';
+      hint.style.display = 'block';
+    } else {
+      // Connected - show my pending from all machines
+      // When contracts live: fetch PDA claim amount here
+      let myPending = 0;
+      STATE.machines.forEach(m => { myPending += m.earnedTotal; });
+      el.textContent = myPending.toLocaleString('sk',{minimumFractionDigits:4,maximumFractionDigits:4}) + ' STARBIT';
+      sub.textContent = 'MOJA ŤAŽBA ČAKÁ NA CLAIM';
+      lbl.textContent = '// MOJA ŤAŽBA';
+      hint.style.display = 'none';
+    }
+  }
+}
+
+function switchCRTMode(mode){
+  STATE.crtMode = mode;
+
+  // Update buttons + wraps
+  document.getElementById('ch-net').classList.toggle('active', mode === 'net');
+  document.getElementById('ch-mine').classList.toggle('active', mode === 'mine');
+  document.getElementById('wrap-net').classList.toggle('active', mode === 'net');
+  document.getElementById('wrap-mine').classList.toggle('active', mode === 'mine');
+
+  // Static glitch effect on switch
+  const el = document.getElementById('hero-counter-value');
+  el.style.opacity = '0';
+  el.style.transform = 'translateX(4px)';
+  setTimeout(()=>{
+    el.style.opacity = '0.3';
+    el.style.transform = 'translateX(-2px)';
+    updateCRTDisplay();
+  }, 80);
+  setTimeout(()=>{
+    el.style.opacity = '1';
+    el.style.transform = 'translateX(0)';
+  }, 160);
+}
+
+// ═══════════════════════════════════════════════
+// NAV / SECTIONS
+// ═══════════════════════════════════════════════
+function showSec(id){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('act'));
+  document.querySelectorAll('.ntab,.mmitem').forEach(t=>t.classList.remove('act'));
+  document.getElementById('sec-'+id).classList.add('act');
+  document.querySelectorAll(`[data-sec="${id}"]`).forEach(t=>t.classList.add('act'));
+  // Home knob highlight
+  const knob = document.getElementById('nav-home-knob');
+  if(knob) knob.classList.toggle('active', id==='home');
+  window.scrollTo(0,0);
+}
+
+function toggleMobileMenu(){
+  const menu = document.getElementById('mobile-menu');
+  const burger = document.getElementById('nav-burger');
+  const open = menu.classList.toggle('open');
+  burger.classList.toggle('open', open);
+}
+
+function closeMobileMenu(){
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('nav-burger').classList.remove('open');
+}
+
+// ═══════════════════════════════════════════════
+// WALLET
+// ═══════════════════════════════════════════════
+function connectWallet(){
+  if(STATE.connected){ disconnectWallet(); return; }
+  // Simulate Phantom connection
+  const shortAddr = 'CcfwZH...Xy4c';
+  STATE.connected = true;
+  STATE.wallet = shortAddr;
+
+  const btn = document.getElementById('nav-wallet');
+  btn.textContent = shortAddr;
+  btn.classList.add('connected');
+
+  document.getElementById('nav-net').style.opacity = '1';
+  document.getElementById('dash-wallet-addr').textContent = shortAddr;
+
+  // Show dashboard content
+  document.getElementById('dash-locked').style.display = 'none';
+  document.getElementById('dash-content').style.display = 'block';
+
+  // Load demo machines
+  if(STATE.machines.length === 0){
+    STATE.machines = [
+      { id:'wt001', type:'walkie', level:2, earnedTotal:12.5576, capacity:0.62, daysLeft:115, ticking:true },
+      { id:'ld001', type:'laser',  level:1, earnedTotal:27.3437, capacity:0.35, daysLeft:63,  ticking:true },
+      { id:'dr001', type:'darkrift',level:1,earnedTotal:44.6427, capacity:0.88, daysLeft:155, ticking:true },
+    ];
+  }
+  renderMachines();
+  startMachineTicks();
+  startWWTimer();
+  showToast('✓ Wallet pripojený — ' + shortAddr, 'success');
+}
+
+function disconnectWallet(){
+  STATE.connected = false;
+  STATE.wallet = null;
+  const btn = document.getElementById('nav-wallet');
+  btn.textContent = '[ CONNECT ]';
+  btn.classList.remove('connected');
+  document.getElementById('nav-net').style.opacity = '0';
+  document.getElementById('dash-locked').style.display = 'block';
+  document.getElementById('dash-content').style.display = 'none';
+}
+
+// ═══════════════════════════════════════════════
+// MACHINES
+// ═══════════════════════════════════════════════
+function renderMachines(){
+  const grid = document.getElementById('machine-grid');
+  const nm   = document.getElementById('no-machines');
+  grid.innerHTML = '';
+
+  if(STATE.machines.length === 0){
+    nm.style.display = 'block';
+    document.getElementById('bal-machines').textContent = '0';
+    return;
+  }
+  nm.style.display = 'none';
+  document.getElementById('bal-machines').textContent = STATE.machines.length;
+
+  STATE.machines.forEach(m => {
+    const bp = MACHINES[m.type];
+    const isParasit = bp.parasit;
+    const lvlLabel = isParasit ? 'PARASIT' : `LVL ${m.level}`;
+    const badgeClass = isParasit ? 'badge-parasit' : (m.type==='walkie'?'badge-classic':'badge-classic');
+    const col = bp.color;
+
+    const div = document.createElement('div');
+    div.className = 'mcard';
+    div.id = 'mc-' + m.id;
+    div.innerHTML = `
+      <div class="mcard-header">
+        <div>
+          <div style="font-size:24px;margin-bottom:6px">${bp.icon}</div>
+          <div class="mcard-name" style="color:${col}">${bp.name}</div>
+        </div>
+        <div class="mcard-badge ${badgeClass}">${lvlLabel}</div>
+      </div>
+      <div class="mcard-rate" style="color:${col}88">${bp.rate.toLocaleString()} STARBIT / DEN ${isParasit?'| FEES':''} | WW: ${isParasit?'PARASIT':bp.ww+'%'}</div>
+      <div class="mcard-earn ${isParasit?'green':''}" id="earn-${m.id}" style="${!isParasit?'color:'+col:''}">${m.earnedTotal.toFixed(4)}</div>
+      <div class="mcard-prog-wrap">
+        <div class="mcard-prog ${isParasit?'green':''}" style="width:${m.capacity*100}%;${!isParasit?'background:'+col:''}"></div>
+      </div>
+      <div class="mcard-meta">
+        <span>KAPACITA: ${Math.round(m.capacity*100)}%</span>
+        <span>${m.daysLeft} DNÍ</span>
+      </div>
+      <div class="mcard-actions">
+        ${isParasit
+          ? `<button class="mbtn primary" onclick="claimFees('${m.id}')">[ CLAIM FEES ]</button>`
+          : `<button class="mbtn primary" onclick="claimMachine('${m.id}')">[ CLAIM ]</button>`
+        }
+        <button class="mbtn" onclick="renewLicense('${m.id}')">[ RENEW ]</button>
+        <button class="mbtn" onclick="openSellModal('${m.id}')">[ PREDAJ ]</button>
+      </div>
+      <div class="mcard-ww">
+        <span class="ww-label">WINWILL COUNTDOWN</span>
+        <span class="ww-timer" id="ww-${m.id}">--:--:--</span>
+      </div>
+    `;
+    grid.appendChild(div);
+  });
+}
+
+function startMachineTicks(){
+  clearInterval(window._machineTick);
+  window._machineTick = setInterval(()=>{
+    let totalPending = 0;
+    STATE.machines.forEach(m => {
+      const bp = MACHINES[m.type];
+      const perSec = bp.rate / 86400;
+      m.earnedTotal += perSec * 0.1;
+      totalPending += m.earnedTotal;
+      const el = document.getElementById('earn-'+m.id);
+      if(el) el.textContent = m.earnedTotal.toFixed(4);
+    });
+    document.getElementById('bal-pending').textContent = totalPending.toFixed(4);
+  }, 100);
+}
+
+function startWWTimer(){
+  clearInterval(window._wwTick);
+  window._wwTick = setInterval(()=>{
+    if(STATE.wwTimer > 0){
+      STATE.wwTimer--;
+    } else {
+      STATE.wwTimer = 24*3600;
+      checkWinWill();
+    }
+    const h = Math.floor(STATE.wwTimer/3600);
+    const m2 = Math.floor((STATE.wwTimer%3600)/60);
+    const s = STATE.wwTimer%60;
+    const str = `${pad(h)}:${pad(m2)}:${pad(s)}`;
+    // Update all timer elements
+    const balWw = document.getElementById('bal-ww');
+    if(balWw) balWw.textContent = str;
+    const gwt = document.getElementById('ww-global-timer');
+    if(gwt) gwt.textContent = str;
+    STATE.machines.forEach(mc => {
+      const el = document.getElementById('ww-'+mc.id);
+      if(el) el.textContent = str;
+    });
+  }, 1000);
+}
+
+function checkWinWill(){
+  STATE.machines.forEach(m => {
+    const bp = MACHINES[m.type];
+    if(bp.parasit) return;
+    const roll = Math.random()*100;
+    if(roll < bp.ww){
+      // WINNER!
+      const bonus = bp.rate * 0.5;
+      m.earnedTotal += bonus;
+      showToast(`🎰 WINWILL! ${bp.name} vyhral +${bonus.toFixed(0)} STARBIT!`, 'success');
+      // Flash the card
+      const card = document.getElementById('mc-'+m.id);
+      if(card){
+        card.style.border = '2px solid #ffd700';
+        card.style.boxShadow = '0 0 30px rgba(255,215,0,0.4)';
+        setTimeout(()=>{
+          card.style.border = '';
+          card.style.boxShadow = '';
+        }, 5000);
+      }
+    }
+  });
+}
+function pad(n){ return n.toString().padStart(2,'0') }
+
+function renewLicense(id){
+  const m = STATE.machines.find(x=>x.id===id);
+  if(!m) return;
+  const bp = MACHINES[m.type];
+  const isReverse = false; // reverse = 15%, classic = 30%
+  const cost = Math.round(bp.cost * 0.30);
+  openModal(
+    'RENEW LICENCIA',
+    `<div style="margin-bottom:10px">Extraktor: <strong style="color:var(--r)">${bp.name}</strong></div>
+     <div style="margin-bottom:10px">Cena renewal: <strong style="color:var(--r)">${cost.toLocaleString()} STARBIT</strong></div>
+     <div style="margin-bottom:10px">Predĺženie: <strong style="color:var(--g)">+${bp.days} dní</strong></div>
+     <div style="font-size:9px;color:rgba(255,26,26,0.4)">30% z ceny ide do MAIN_POOL</div>`,
+    [
+      { label:'ZRUŠIŤ', fn:closeModal },
+      { label:'RENEW', primary:true, fn:()=>{
+        if(STATE.starbit < cost){ showToast('Nedostatok STARBIT!'); return; }
+        STATE.starbit -= cost;
+        m.daysLeft += bp.days;
+        document.getElementById('bal-starbit').textContent = Math.round(STATE.starbit).toLocaleString();
+        closeModal();
+        renderMachines();
+        startMachineTicks();
+        showToast(`✓ Licencia predĺžená o ${bp.days} dní!`, 'success');
+      }}
+    ]
+  );
+}
+
+function claimMachine(id){
+  const m = STATE.machines.find(x=>x.id===id);
+  if(!m) return;
+  const earned = m.earnedTotal;
+  STATE.starbit += earned;
+  m.earnedTotal = 0;
+  document.getElementById('bal-starbit').textContent = Math.round(STATE.starbit).toLocaleString();
+  renderMachines();
+  startMachineTicks();
+  showToast(`✓ Claimuješ ${earned.toFixed(2)} STARBIT`, 'success');
+}
+function claimFees(id){ claimMachine(id); }
+
+// ═══════════════════════════════════════════════
+// SHOP
+// ═══════════════════════════════════════════════
+function buyMachine(type){
+  if(!STATE.connected){ showToast('Pripoj wallet najprv'); connectWallet(); return; }
+  const bp = MACHINES[type];
+  openModal(
+    `KÚPIŤ ${bp.name}`,
+    `<div style="margin-bottom:12px">Cena: <strong style="color:var(--r)">${bp.cost.toLocaleString()} STARBIT</strong></div>
+     <div style="margin-bottom:12px">Tvoj balance: <strong style="color:var(--r)">${STATE.starbit.toLocaleString()}</strong></div>
+     <div style="font-size:9px;color:rgba(255,26,26,0.4);line-height:1.6">
+       Pool split: 85% MAIN / 5% DARK-RIFT / 5% DEV / 5% BURN<br>
+       Licencia: ${bp.days} dní<br>
+       Ťažba: ${bp.rate.toLocaleString()} STARBIT/deň
+     </div>`,
+    [
+      { label:'ZRUŠIŤ', fn: closeModal },
+      { label:'POTVRDIŤ NÁKUP', primary:true, fn:()=>{
+        if(STATE.starbit < bp.cost){ showToast('Nedostatok STARBIT!'); return; }
+        STATE.starbit -= bp.cost;
+        const id = type + '_' + Date.now();
+        const m = { id, type, level:1, earnedTotal:0, capacity:0, daysLeft:bp.days, ticking:true };
+        STATE.machines.push(m);
+        document.getElementById('bal-starbit').textContent = Math.round(STATE.starbit).toLocaleString();
+        closeModal();
+        showSec('dash');
+        renderMachines();
+        startMachineTicks();
+        showToast(`✓ ${bp.name} kúpený! Ťažba začína.`, 'success');
+      }}
+    ]
+  );
+}
+
+// ═══════════════════════════════════════════════
+// MARKET
+// ═══════════════════════════════════════════════
+const DEMO_LISTINGS = [
+  { id:'l1', type:'walkie', level:2, rate:34650, daysLeft:98, price:2800000, seller:'3xDf...kL2p' },
+  { id:'l2', type:'laser',  level:1, rate:75000, daysLeft:142, price:5500000, seller:'7mRt...pQ9z' },
+  { id:'l3', type:'darkrift', level:1, rate:128571, daysLeft:180, price:8500000, seller:'9kBw...nX4c' },
+  { id:'l4', type:'walkie', level:1, rate:33333, daysLeft:55, price:1200000, seller:'2nLp...yH7s' },
+  { id:'l5', type:'laser',  level:3, rate:86250, daysLeft:167, price:7200000, seller:'5cMq...rT1v' },
+];
+
+function renderMarket(filter='all'){
+  MARKET_FILTER = filter;
+  const tbody = document.getElementById('market-tbody');
+  const empty = document.getElementById('market-empty');
+  const all = [...STATE.listings, ...DEMO_LISTINGS];
+  let filtered = filter==='all' ? all : all.filter(l=>l.type===filter);
+  // Sort
+  filtered = filtered.sort((a,b) => {
+    const dir = SORT_DIR[MARKET_SORT] || -1;
+    if(MARKET_SORT==='price') return (a.price-b.price)*dir;
+    if(MARKET_SORT==='days') return (a.daysLeft-b.daysLeft)*dir;
+    if(MARKET_SORT==='rate') return (a.rate-b.rate)*dir;
+    return 0;
+  });
+
+  if(filtered.length===0){
+    tbody.innerHTML=''; empty.style.display='block'; return;
+  }
+  empty.style.display='none';
+
+  tbody.innerHTML = filtered.map((l,i) => {
+    const bp = MACHINES[l.type];
+    const badgeColor = l.type==='darkrift'?'rgba(170,68,255,0.3)': l.type==='laser'?'rgba(255,136,0,0.3)':'rgba(255,26,26,0.2)';
+    const textColor = l.type==='darkrift'?'#aa44ff': l.type==='laser'?'#ff8800':'var(--r)';
+    return `<tr>
+      <td style="color:rgba(255,26,26,0.3)">${i+1}</td>
+      <td><span class="mt-name">${bp.icon} ${bp.name}</span></td>
+      <td><span class="mt-badge" style="background:${badgeColor};color:${textColor}">${l.type.toUpperCase()}</span></td>
+      <td>LVL ${l.level}</td>
+      <td style="color:${textColor}">${l.rate.toLocaleString()}/deň</td>
+      <td>${l.daysLeft}</td>
+      <td class="mt-price">${(l.price/1000000).toFixed(1)}M STARBIT</td>
+      <td style="font-size:9px;color:rgba(255,26,26,0.35)">${l.seller}</td>
+      <td><button class="mt-buy" onclick="buyListing('${l.id}','${l.type}',${l.price})">[ KÚP ]</button></td>
+    </tr>`;
+  }).join('');
+}
+
+let MARKET_SORT = 'price';
+let MARKET_FILTER = 'all';
+let SORT_DIR = { price:-1, days:1, rate:-1 };
+
+function sortMarket(field, btn){
+  MARKET_SORT = field;
+  SORT_DIR[field] = -SORT_DIR[field];
+  document.querySelectorAll('#sort-price,#sort-days,#sort-rate').forEach(b=>b.classList.remove('act'));
+  btn.classList.add('act');
+  const arrow = SORT_DIR[field] === -1 ? '↓' : '↑';
+  btn.textContent = {price:'CENA',days:'DNÍ',rate:'ŤAŽBA'}[field] + ' ' + arrow;
+  renderMarket(MARKET_FILTER);
+}
+
+function filterMarket(type, btn){
+  document.querySelectorAll('.mfbtn').forEach(b=>b.classList.remove('act'));
+  btn.classList.add('act');
+  renderMarket(type);
+}
+
+function buyListing(id, type, price){
+  if(!STATE.connected){ connectWallet(); return; }
+  const bp = MACHINES[type];
+  openModal(
+    'KÚPIŤ Z MARKETU',
+    `<div style="margin-bottom:10px">Extraktor: <strong style="color:var(--r)">${bp.name}</strong></div>
+     <div style="margin-bottom:10px">Cena: <strong style="color:var(--r)">${(price/1000000).toFixed(1)}M STARBIT</strong></div>
+     <div style="color:rgba(255,200,0,0.5);font-size:9px">⚠ 10% market tax je automaticky odpočítaný</div>`,
+    [
+      { label:'ZRUŠIŤ', fn:closeModal },
+      { label:'KÚPIŤ', primary:true, fn:()=>{
+        if(STATE.starbit < price){ showToast('Nedostatok STARBIT!'); return; }
+        STATE.starbit -= price;
+        document.getElementById('bal-starbit').textContent = Math.round(STATE.starbit).toLocaleString();
+        const idx = STATE.listings.findIndex(l=>l.id===id);
+        if(idx>=0) STATE.listings.splice(idx,1);
+        const m = {id:'buy_'+Date.now(), type, level:1, earnedTotal:0, capacity:0, daysLeft:120, ticking:true};
+        STATE.machines.push(m);
+        closeModal();
+        showToast('✓ Extraktor kúpený z marketu!', 'success');
+        renderMarket();
+        renderMachines();
+        startMachineTicks();
+      }}
+    ]
+  );
+}
+
+function openSellModal(machineId){
+  if(!STATE.connected){ connectWallet(); return; }
+  if(STATE.machines.length === 0){ showToast('Žiadny extraktor na predaj'); return; }
+
+  // Build machine selector options
+  const machineOptions = STATE.machines.map(m => {
+    const bp = MACHINES[m.type];
+    return `<option value="${m.id}">${bp.icon} ${bp.name} · LVL ${m.level} · ${bp.rate.toLocaleString()} STARBIT/deň · ${m.daysLeft} dní</option>`;
+  }).join('');
+
+  // Pre-select if machineId provided
+  const preselect = machineId || STATE.machines[0].id;
+
+  openModal(
+    STATE.lang==='en' ? 'SELL EXTRACTOR' : 'PREDAJ EXTRAKTOR',
+    `<div style="font-family:var(--mn);font-size:9px;color:rgba(255,200,0,0.4);margin-bottom:16px">
+       ⚠ 10% market tax: 5% Dark-Rift · 2.5% Burn · 2.5% Main
+     </div>`,
+    [
+      { label: STATE.lang==='en'?'CANCEL':'ZRUŠIŤ', fn:closeModal },
+      { label: STATE.lang==='en'?'LIST':'LISTOVAŤ', primary:true, fn:()=>{
+        const sel = document.getElementById('sell-machine-select');
+        const priceInput = document.getElementById('sell-price-input');
+        const selectedId = sel?.value;
+        const price = parseInt(priceInput?.value || 0);
+        if(!selectedId){ showToast(STATE.lang==='en'?'Pick an extractor!':'Vyber extraktor!'); return; }
+        if(!price || price <= 0){ showToast(STATE.lang==='en'?'Enter a price!':'Zadaj cenu!'); return; }
+        const m = STATE.machines.find(x=>x.id===selectedId);
+        if(!m) return;
+        const bp = MACHINES[m.type];
+        STATE.machines = STATE.machines.filter(x=>x.id!==selectedId);
+        STATE.listings.push({
+          id:'ls_'+Date.now(), type:m.type, level:m.level,
+          rate:bp.rate, daysLeft:m.daysLeft, price, seller:STATE.wallet||'???'
+        });
+        closeModal();
+        renderMachines();
+        startMachineTicks();
+        renderMarket();
+        showToast(`✓ ${bp.name} listovaný za ${price.toLocaleString()} STARBIT`, 'success');
+      }}
+    ],
+    `<div style="margin-bottom:8px">
+       <label class="hodl-label" style="display:block;margin-bottom:8px">
+         ${STATE.lang==='en'?'SELECT EXTRACTOR':'VYBER EXTRAKTOR'}
+       </label>
+       <select class="ug-select" id="sell-machine-select" style="margin-bottom:16px">
+         ${machineOptions}
+       </select>
+       <script>document.getElementById('sell-machine-select').value='${preselect}';<\/script>
+     </div>
+     <label class="hodl-label" style="display:block;margin-bottom:8px">
+       ${STATE.lang==='en'?'PRICE IN STARBIT':'CENA V STARBIT'}
+     </label>
+     <input class="modal-input" type="number" id="sell-price-input" 
+       placeholder="${STATE.lang==='en'?'e.g. 2500000':'napr. 2500000'}">`
+  );
+
+  // Set preselect after modal opens
+  setTimeout(()=>{
+    const sel = document.getElementById('sell-machine-select');
+    if(sel && preselect) sel.value = preselect;
+  }, 50);
+}
+
+// ═══════════════════════════════════════════════
+// UPGRADE
+// ═══════════════════════════════════════════════
+const UG_LEVELS = [
+  { level:2, bonus:0.05, cost:150000 },
+  { level:3, bonus:0.10, cost:300000 },
+  { level:4, bonus:0.15, cost:500000 },
+];
+
+function selectUpgrade(idx, el){
+  document.querySelectorAll('.ug-lvl').forEach(l=>l.classList.remove('sel'));
+  el.classList.add('sel');
+  STATE.selectedUpgradeLevel = idx - 1;
+  updateUpgradeCalc();
+}
+
+function updateUpgrade(){
+  STATE.selectedUpgradeMachine = document.getElementById('ug-select').value;
+  updateUpgradeCalc();
+}
+
+function updateUpgradeCalc(){
+  const m = STATE.selectedUpgradeMachine;
+  const li = STATE.selectedUpgradeLevel;
+  if(!m || li === null || li === undefined) return;
+
+  const types = { wt1:'walkie', ld1:'laser', dr1:'darkrift' };
+  const type = types[m];
+  if(!type) return;
+  const bp = MACHINES[type];
+  const ug = UG_LEVELS[li];
+
+  const after = Math.round(bp.rate * (1 + ug.bonus));
+  const sameCount = STATE.machines.filter(x=>x.type===type).length;
+  const prob = Math.min(90, 50 + sameCount * 5);
+
+  document.getElementById('ug-current').textContent = bp.rate.toLocaleString() + ' STARBIT/DEN';
+  document.getElementById('ug-after').textContent = after.toLocaleString() + ' STARBIT/DEN';
+  document.getElementById('ug-cost').textContent = ug.cost.toLocaleString() + ' STARBIT';
+  document.getElementById('ug-prob').textContent = prob + '%';
+  document.getElementById('ug-bonus-pct').textContent = '+' + (sameCount * 5) + '%';
+  document.getElementById('ug-extra').textContent = sameCount + ' rovnakých';
+}
+
+function doUpgrade(){
+  if(!STATE.connected){ connectWallet(); return; }
+  const m = STATE.selectedUpgradeMachine;
+  const li = STATE.selectedUpgradeLevel;
+  if(!m || li === null){ showToast('Vyber stroj a level!'); return; }
+  const ug = UG_LEVELS[li];
+  if(STATE.starbit < ug.cost){ showToast('Nedostatok STARBIT!'); return; }
+
+  const types = { wt1:'walkie', ld1:'laser', dr1:'darkrift' };
+  const type = types[m];
+  const sameCount = STATE.machines.filter(x=>x.type===type).length;
+  const prob = Math.min(90, 50 + sameCount * 5);
+
+  STATE.starbit -= ug.cost;
+  document.getElementById('bal-starbit').textContent = Math.round(STATE.starbit).toLocaleString();
+  document.getElementById('ug-balance').textContent = Math.round(STATE.starbit).toLocaleString() + ' STARBIT';
+
+  const roll = Math.random() * 100;
+  if(roll < prob){
+    showToast(`✓ UPGRADE ÚSPEŠNÝ! +${Math.round(ug.bonus*100)}% ťažba (${prob}% šanca)`, 'success');
+  } else {
+    showToast(`✗ UPGRADE NEÚSPEŠNÝ (šanca bola ${prob}%) — STARBIT spotrebovaný`);
+  }
+}
+
+// ═══════════════════════════════════════════════
+// HODL / STAREWARDS
+// ═══════════════════════════════════════════════
+function updateHodlDrops(){
+  const amt = parseInt(document.getElementById('hodl-amount').value) || 0;
+  const base = amt / 10000000;
+  const wt = Math.min(80, Math.round(base * 60 * 10) / 10);
+  const ld = Math.min(50, Math.round(base * 30 * 10) / 10);
+  const dr = Math.min(20, Math.round(base * 10 * 10) / 10);
+  document.getElementById('dr-wt').textContent = wt ? wt + '%' : '—';
+  document.getElementById('dr-ld').textContent = ld ? ld + '%' : '—';
+  document.getElementById('dr-dr').textContent = dr ? dr + '%' : '—';
+}
+
+function createLock(){
+  if(!STATE.connected){ connectWallet(); return; }
+  const amt = parseInt(document.getElementById('hodl-amount').value) || 0;
+  if(amt < 1000000){ showToast('Minimum 1,000,000 STARBIT!'); return; }
+  if(STATE.starbit < amt){ showToast('Nedostatok STARBIT!'); return; }
+
+  STATE.starbit -= amt;
+  document.getElementById('bal-starbit').textContent = Math.round(STATE.starbit).toLocaleString();
+
+  const lock = { id:'lk_'+Date.now(), amount:amt, daysTotal:30, daysDone:0 };
+  STATE.locks.push(lock);
+  renderLocks();
+  document.getElementById('hodl-amount').value = '';
+  updateHodlDrops();
+  showToast(`✓ ${amt.toLocaleString()} STARBIT zamknuté na 30 dní`, 'success');
+}
+
+function renderLocks(){
+  const container = document.getElementById('hodl-locks');
+  if(STATE.locks.length === 0){
+    container.innerHTML = '<div style="font-family:var(--mn);font-size:9px;color:rgba(255,26,26,0.2);text-align:center;padding:40px 0">Žiadne aktívne locky</div>';
+    return;
+  }
+  container.innerHTML = STATE.locks.map(l => {
+    const pct = Math.round((l.daysDone / l.daysTotal) * 100);
+    const done = l.daysDone >= l.daysTotal;
+    return `<div class="lock-item">
+      <div class="lock-top">
+        <span class="lock-amount">${l.amount.toLocaleString()} STARBIT</span>
+        <span class="lock-days">${done ? 'READY!' : l.daysDone + '/' + l.daysTotal + ' DNÍ'}</span>
+      </div>
+      <div class="lock-prog"><div class="lock-fill" style="width:${pct}%"></div></div>
+      <button class="lock-claim" ${done?'':'disabled'} onclick="claimLock('${l.id}')">
+        ${done ? '[ CLAIM REVERSE NFT ]' : '[ ' + (l.daysTotal - l.daysDone) + ' DNÍ ZOSTÁVA ]'}
+      </button>
+    </div>`;
+  }).join('');
+}
+
+function claimLock(id){
+  const l = STATE.locks.find(x=>x.id===id);
+  if(!l || l.daysDone < l.daysTotal) return;
+  STATE.locks = STATE.locks.filter(x=>x.id!==id);
+  const types = ['walkie','laser','darkrift'];
+  const type = types[Math.floor(Math.random()*3)];
+  const bp = MACHINES[type];
+  const rev = { id:'rev_'+Date.now(), type, name:bp.name+' (Reverse)', income:0, status:'free' };
+  STATE.revNFTs.push(rev);
+  renderLocks();
+  renderRevNFTs();
+  showToast(`✓ Reverse ${bp.name} NFT získaný!`, 'success');
+}
+
+// ═══════════════════════════════════════════════
+// REVERSE NFTs
+// ═══════════════════════════════════════════════
+function renderRevNFTs(){
+  const grid = document.getElementById('rev-grid');
+  if(STATE.revNFTs.length === 0){
+    grid.innerHTML = `<div style="text-align:center;padding:60px;border:1px dashed rgba(0,255,68,0.15);border-radius:2px;
+      font-family:var(--mn);font-size:10px;color:rgba(0,255,68,0.2)">
+      Získaj Reverse extraktory cez STAREWARDS HODL program (30-dňový lock)
+    </div>`;
+    return;
+  }
+  grid.innerHTML = STATE.revNFTs.map(r => {
+    const bp = MACHINES[r.type];
+    const rented = r.status === 'rented';
+    return `<div class="rcard">
+      <div class="rcard-header">
+        <div class="rcard-name">${bp.icon} ${r.name}</div>
+        <div class="rcard-status ${rented?'rs-rented':'rs-free'}">${rented?'PRENAJATÝ':'VOĽNÝ'}</div>
+      </div>
+      <div class="rcard-income">${r.income.toFixed(4)}</div>
+      <div class="rcard-rate">STARBIT / ACCUMULATED</div>
+      <button class="rcard-btn" onclick="rentOut('${r.id}')">
+        ${rented ? '[ UKONČIŤ PRENÁJOM ]' : '[ PRENAJAŤ ]'}
+      </button>
+    </div>`;
+  }).join('');
+}
+
+function rentOut(id){
+  const r = STATE.revNFTs.find(x=>x.id===id);
+  if(!r) return;
+  r.status = r.status === 'rented' ? 'free' : 'rented';
+  renderRevNFTs();
+  showToast(r.status === 'rented' ? '✓ Extraktor prenajatý' : '✓ Prenájom ukončený', 'success');
+}
+
+// ═══════════════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════════════
+function openModal(title, bodyHtml, actions=[], extraHtml=''){
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').innerHTML = bodyHtml + extraHtml;
+  const actDiv = document.getElementById('modal-actions');
+  actDiv.innerHTML = actions.map((a,i) =>
+    `<button class="modal-btn ${a.primary?'primary':''}" onclick="(${a.fn.toString()})()">${a.label}</button>`
+  ).join('');
+  // Reattach onclick properly
+  const btns = actDiv.querySelectorAll('.modal-btn');
+  actions.forEach((a,i) => btns[i].onclick = a.fn);
+  document.getElementById('modal-bg').classList.add('open');
+}
+function closeModal(){ document.getElementById('modal-bg').classList.remove('open'); }
+
+// ═══════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════
+let _toastTimeout;
+function showToast(msg, type='error'){
+  const t = document.getElementById('toast');
+  clearTimeout(_toastTimeout);
+  t.textContent = msg;
+  t.className = 'show' + (type==='success'?' success':'');
+  _toastTimeout = setTimeout(()=>{ t.className=''; }, 4000);
+}
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════
+// LANGUAGE SYSTEM
+// ═══════════════════════════════════════
+STATE.lang = 'sk';
+
+function setLang(lang){
+  STATE.lang = lang;
+  document.getElementById('lang-toggle').textContent = lang.toUpperCase();
+
+  // Update all data-sk / data-en elements
+  document.querySelectorAll('[data-'+lang+']').forEach(el => {
+    el.textContent = el.getAttribute('data-'+lang);
+  });
+
+  // Active indicator
+  document.getElementById('la-sk').style.opacity = lang==='sk' ? '1' : '0';
+  document.getElementById('la-en').style.opacity = lang==='en' ? '1' : '0';
+  document.getElementById('lang-sk').style.borderColor = lang==='sk' ? 'rgba(255,26,26,0.6)' : 'rgba(255,26,26,0.15)';
+  document.getElementById('lang-en').style.borderColor = lang==='en' ? 'rgba(255,26,26,0.6)' : 'rgba(255,26,26,0.15)';
+
+  showToast(lang==='sk' ? '✓ Jazyk: Slovenčina' : '✓ Language: English', 'success');
+}
+
+// ═══════════════════════════════════════
+// LIVE STATS ANIMATION
+// ═══════════════════════════════════════
+function initLiveStats(){
+  // Simulate live users online
+  let liveUsers = Math.floor(Math.random() * 50) + 20;
+  let machines = Math.floor(Math.random() * 200) + 100;
+  let mainPool = 24891337;
+  let darkPool = 1284992;
+
+  // Animate counters on load
+  animateCount('sb-total', 0, liveUsers, 1500);
+  animateCount('sb-machines', 0, machines, 1500);
+  animateCount('sb-pool', 0, mainPool, 2000);
+  animateCount('sb-dark', 0, darkPool, 2000);
+
+  // Live users fluctuate
+  setInterval(()=>{
+    const delta = Math.floor(Math.random() * 3) - 1;
+    liveUsers = Math.max(1, liveUsers + delta);
+    document.getElementById('sb-total').textContent = liveUsers.toLocaleString('sk');
+  }, 3000);
+
+  // Pools grow slowly
+  setInterval(()=>{
+    mainPool += Math.floor(Math.random() * 1000);
+    darkPool += Math.floor(Math.random() * 100);
+    document.getElementById('sb-pool').textContent = mainPool.toLocaleString('sk');
+    document.getElementById('sb-dark').textContent = darkPool.toLocaleString('sk');
+  }, 2000);
+
+  // Machines occasionally change
+  setInterval(()=>{
+    const d = Math.random() > 0.7 ? 1 : 0;
+    machines += d;
+    document.getElementById('sb-machines').textContent = machines.toLocaleString('sk');
+  }, 8000);
+}
+
+function animateCount(id, from, to, duration){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const start = performance.now();
+  const update = (time) => {
+    const elapsed = time - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    const value = Math.floor(from + (to - from) * ease);
+    el.textContent = value.toLocaleString('sk');
+    if(progress < 1) requestAnimationFrame(update);
+  };
+  requestAnimationFrame(update);
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  initStars();
+  initCounter();
+  initLiveStats();
+  startWWTimer(); // Timer starts immediately, no wallet needed
+  renderMarket();
+  renderLocks();
+  renderRevNFTs();
+
+  // ESC closes modal
+  document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
+  document.getElementById('modal-bg').addEventListener('click', e => {
+    if(e.target === document.getElementById('modal-bg')) closeModal();
+  });
+});
+
+// ═══════════════════════════════════════
+// COMPLETE TRANSLATION SYSTEM
+// ═══════════════════════════════════════
+const T = {
+  sk: {
+    // NAV TABS
+    'nav-dash':'EXTRAKTORY','nav-shop':'SHOP','nav-market':'MARKET',
+    'nav-upgrade':'UPGRADE','nav-winwill':'WINWILL','nav-hodl':'STAREWARDS',
+    'nav-rev':'REVERSE','nav-token':'$STARBIT','nav-story':'STORY',
+    // HERO
+    'hero-eyebrow':'// REVERSE DIMENSION EXTRACTION PROTOCOL //',
+    'hero-cta1':'[ KÚPIŤ EXTRAKTOR ]','hero-cta2':'[ MÔJ DASHBOARD ]','hero-cta3':'[ $STARBIT TOKEN ]',
+    'hero-scroll':'▼ SCROLL DOWN ▼',
+    'counter-label':'// CELKOVÁ ŤAŽBA SIETE',
+    'counter-sub':'REVERSE DIMENSION EXTRAKCIA / STARBIT',
+    // STATS BAR
+    'sb-label1':'LIVE STARBITIANS','sb-sub1':'ONLINE PRÁVE TERAZ',
+    'sb-label2':'AKTÍVNE EXTRAKTORY','sb-sub2':'NFT EXTRAKTORY',
+    'sb-label3':'MAIN POOL','sb-sub3':'STARBIT LOCKED',
+    'sb-label4':'DARK-RIFT POOL','sb-sub4':'STARBIT / FEES',
+    // DASHBOARD
+    'sec-dash-h':'EXTRAKTORY',
+    'bal-label1':'STARBIT BALANCE','bal-label2':'PENDING CLAIM',
+    'bal-label3':'AKTÍVNE STROJE','bal-label4':'WINWILL COUNTDOWN',
+    'contract-pill1':'PROGRAM','contract-pill2':'MINT','contract-pill3':'HELIUS RPC','contract-pill4':'JITO BUNDLES',
+    'wallet-req':'WALLET REQUIRED',
+    'wallet-hint':'Pripoj Phantom wallet pre prístup k dashboardu',
+    'btn-connect-ph':'[ CONNECT PHANTOM ]',
+    'no-machines-h':'ŽIADNE EXTRAKTORY',
+    'no-machines-p':'Kúp si Walkie-Talkie, Laser-Drill alebo Dark-Rift extraktor v shope',
+    'btn-go-shop':'[ PREJSŤ DO SHOPU ]',
+    // SHOP
+    'sec-shop-h':'EXTRAKTOR SHOP','shop-sub':'PLATBA LEN V STARBIT',
+    'shop-pill1':'POOL SPLIT 85% MAIN / 5% DARK-RIFT / 5% DEV / 5% BURN',
+    'shop-pill2':'LICENCIA CLASSIC 180D · REVERSE 360D',
+    'tier1-label':'TIER 1 — BASIC EXTRACTOR','tier2-label':'TIER 2 — ADVANCED EXTRACTOR',
+    'tier3-label':'TIER 3 — PARASIT EXTRACTOR',
+    'sstat-rate':'ŤAŽBA / DEN','sstat-ww':'WINWILL ŠANCA',
+    'sstat-lic':'LICENCIA','sstat-supply':'MAX SUPPLY',
+    'btn-buy':'[ KÚPIŤ ]',
+    // MARKET
+    'sec-market-h':'SEKUNDÁRNY MARKET',
+    'market-sub':'10% TAX → 5% DARK-RIFT / 2.5% BURN / 2.5% MAIN',
+    'mf-all':'VŠETKY','sort-label':'SORT:',
+    'th-extractor':'EXTRAKTOR','th-type':'TYP','th-level':'LEVEL',
+    'th-rate':'ŤAŽBA / DEN','th-days':'DNÍ DO EXPIRY',
+    'th-price':'CENA','th-seller':'PREDAJCA','th-action':'AKCIA',
+    'btn-sell-my':'[ PREDAJ MÔJ EXTRAKTOR ]',
+    // UPGRADE
+    'sec-upgrade-h':'UPGRADE SYSTÉM',
+    'upgrade-sub':'STACKER POWER — 70% MAIN / 25% BURN / 5% DEV',
+    'ug-pick':'// VYBER EXTRAKTOR','ug-level-title':'// ÚROVEŇ UPGRADU',
+    'ug-prob-title':'// PRAVDEPODOBNOSŤ','ug-success':'ŠANCA NA ÚSPECH',
+    'ug-curr-label':'AKTUÁLNA ŤAŽBA','ug-after-label':'ŤAŽBA PO UPGRADE',
+    'ug-cost-label':'CENA UPGRADU','ug-bal-label':'TVOJ BALANCE',
+    'ug-base':'ZÁKLADNÁ ŠANCA','ug-bonus':'BONUS ZA STROJE',
+    'ug-max':'MAX ŠANCA','ug-extra':'EXTRA STROJE',
+    'btn-upgrade':'[ VYKONAJ UPGRADE ]',
+    'ug-warn-title':'⚠ POZOR',
+    'ug-warn-text':'Pri neúspešnom upgrade sa STARBIT spotrebuje, extraktor zostáva na pôvodnom leveli. Každý rovnaký stroj v tvojom wallete = +5% šanca (max 90%).',
+    'pool-routing':'POOL ROUTING',
+    // STAREWARDS
+    'sec-hodl-h':'STAREWARDS — HODL PROGRAM',
+    'hodl-sub':'30 DNÍ LOCK → REVERSE NFT EXTRAKTOR',
+    'hodl-new':'// NOVÝ LOCK','hodl-active':'// AKTÍVNE LOCKY',
+    'hodl-amount-label':'MNOŽSTVO STARBIT',
+    'hodl-amount-ph':'min. 1 000 000',
+    'hodl-drop-h1':'EXTRAKTOR TYPE','hodl-drop-h2':'DROP ŠANCA',
+    'hodl-period':'LOCK PERIOD','hodl-period-val':'30 DNÍ',
+    'hodl-reward':'REWARD','hodl-reward-val':'1x REVERSE NFT EXTRAKTOR',
+    'btn-lock':'[ ZAMKNÚŤ STARBIT ]',
+    'no-locks':'Žiadne aktívne locky',
+    // REVERSE
+    'sec-rev-h':'REVERSE NFT EXTRAKTORY',
+    'rev-sub':'PRENÁJOM: 50% VOPRED → 40% OWNER / 5% DARK-RIFT / 2.5% DEV / 2.5% MAIN',
+    'rev-empty':'Získaj Reverse extraktory cez STAREWARDS HODL program (30-dňový lock)',
+    // TOKEN
+    'sec-token-h':'$STARBIT TOKEN','token-sub':'SOLANA · SPL TOKEN · 1B TOTAL SUPPLY',
+    'token-stats-title':'// TOKEN ŠTATISTIKY',
+    'token-dist-title':'// DISTRIBÚCIA SUPPLY',
+    'token-fees-title':'// FEE SYSTÉM',
+    'token-contract-title':'// SMART CONTRACT',
+    'token-buy-title':'// KÚP $STARBIT',
+    'token-roadmap-title':'// ROADMAP',
+    'token-soon':'Dostupné po mainnet deploy',
+    'btn-raydium':'[ RAYDIUM SWAP ]',
+    'tstat1':'TOTAL SUPPLY','tstat2':'CIRCULATING','tstat3':'MINT AUTHORITY','tstat4':'CHAIN',
+    'mint-revoked':'REVOKED ✓',
+    // WINWILL
+    'sec-winwill-h':'WINWILL SYSTÉM',
+    'winwill-sub':'KAŽDÝCH 24H — ŠANCA NA VÝHRU',
+    'jackpot-label':'// AKTUÁLNY JACKPOT',
+    'ww-roll-label':'// ĎALŠÍ ROLL ZA',
+    'ww-roll-sub':'ROLL PRE VŠETKY AKTÍVNE EXTRAKTORY',
+    'ww-step1':'01 // ROLL','ww-step2':'02 // ŠANCA','ww-step3':'03 // VÝHRA',
+    'ww-text1':'Každých 24 hodín sa automaticky vykoná on-chain random roll pre každý tvoj extraktor zvlášť.',
+    'ww-text2':'Walkie-Talkie má 3% šancu. Laser-Drill má 6% šancu. Viac extraktorov = viac rollov = väčšia šanca vyhrať.',
+    'ww-text3':'Výhra = 30 dní ťažby tvojho extraktora. Vyplatené okamžite zo MAIN POOL priamo do tvojho walletu.',
+    'ww-live-h':'LIVE VÝHRY',
+    'ww-rev-label':'// REVERSE EXTRAKTORY — WINWILL',
+    'ww-no-ww':'BEZ WINWILL',
+    // STORY
+    'sec-story-h':'STRANGER BITS STORY',
+    'story-eyebrow':'// REVERSE DIMENSION EXTRACTION PROTOCOL //',
+    'story-origin-title':'PÔVOD',
+    'story-origin':'Niekde za hranicou viditeľného vesmíru existuje Reverse Dimension — paralelná realita plná čistej energie nazývanej STARBIT. Prvé extraktory boli primitívne zariadenia schopné zachytiť len zlomok tejto energie. Dnes, vďaka pokročilej technológii, dokážeme ťažiť STARBIT priamo z Upside Down.',
+    'story-ext-title':'EXTRAKTORY',
+    'story-ext':'Walkie-Talkie — prvý kontakt s Reverse Dimension. Jednoduchý ale spoľahlivý. Laser-Drill — pokročilá technológia s dvojnásobným výkonom. Dark-Rift — najtemnejší extraktor. Neťaží energiu — parazituje na samotnom systéme, živí sa z poplatkov celého ekosystému.',
+    'story-ww-title':'WINWILL',
+    'story-ww':'WinWill je fenomén Reverse Dimension — každých 24 hodín vytvorí Upside Down náhodný energetický výbuch. Extraktory ktoré sú v správnej pozícii zachytia 30-násobok dennej ťažby. Nikto nevie kedy a kde — to určuje samotná dimenzia.',
+    // LANG
+    'sec-lang-h':'JAZYK / LANGUAGE',
+    'lang-sk-name':'SLOVENČINA','lang-en-name':'ENGLISH',
+    'lang-sk-active':'● AKTÍVNY','lang-en-active':'● ACTIVE',
+    // FOOTER
+    'footer-logo':'// STRANGER BITS //','footer-sub':'REVERSE DIMENSION EXTRACTION PROTOCOL · POWERED BY SOLANA · © 2025',
+    // CONNECT
+    'connect-btn':'[ CONNECT ]',
+    'nav-net-label':'SOLANA',
+    'story-archive-title':'[ ARCHIVE LOG: THE SATOSHI CONSPIRACY ]',
+    'story-ch1-title':'Utajený projekt: Po Bitcoine prišla Realita',
+    'story-ch1-text':'Keď Satoshi Nakamoto v roku 2011 zmizol, svet si myslel, že jeho práca skončila. Pravda je však taká, že Bitcoin bol len verejný záťažový test. Satoshi si uvedomil limity lineárnych blockchainov a zvyšok života zasvätil vývoju STRANGER BITS – projektu, ktorý nebeží na našich serveroch.',
+    'story-ch1-text2':'Objavil trhlinu v základnom protokole internetu, pod ktorou sa nachádza Reverzná dimenzia dát. Je to vrstva, kde dáta nezanikajú, ale hromadia sa v surovej forme ako Stranger Minerals.',
+    'story-ch2-title':'Dátové monštrá: The Glitch-Plants',
+    'story-ch2-text':'V tejto dimenzii narazil na Mäsožravé rastliny (The Glitch-Plants). Sú to najagresívnejšie entity v digitálnom priestore, fungujúce ako organické firewally. Tieto rastliny sa živia práve spomínanými Stranger Minerals – nasávajú útržky surového kódu z bežného internetu, ktoré prepadli cez trhlinu.',
+    'story-ch2-text2':'Procesom vnútornej dátovej syntézy tieto minerály transformujú a po čase vylučujú Stranger Bits — takzvané STARBITS – kryštalizované bloky dát s extrémne vysokou hustotou informácií. Glitch-Plants sú však vysoko teritoriálne a akýkoľvek pokus o odber ich potravy okamžite trestajú totálnym vymazaním cudzieho signálu.',
+    'story-ch3-title':'Objav v štruktúre peňaženky (Pred 3 mesiacmi)',
+    'story-ch3-text':'Celý svet sledoval Satoshiho legendárnu peňaženku s tisíckami nehybných Bitcoinov a čakal na ich pohyb. My sme na to išli inak. Pri pokuse o hĺbkovú dešifrovaciu analýzu štruktúry samotnej adresy sme nenarazili na privátny kľúč – ten zostáva neprelomený.',
+    'story-ch3-text2':'Našli sme však niečo oveľa dôležitejšie: zakódovanú vrstvu v kontrolnom súčte adresy. Satoshi tam nenechal peniaze, ale prístupový protokol. Objavili sme fragmenty kódu, ktoré slúžia ako súradnice k reverznej dimenzii a technickú schému na zostrojenie extraktorov. Na základe tohto objavu sme oživili jeho technológiu a vytvorili jediný legitímny Black Market na svete.',
+    'story-ch4-title':'STARBIT: Viac než len token',
+    'story-ch4-text':'STARBIT (rubínový dátový kryštál) je výsledkom tejto unikátnej transformácie dát. Obsahuje v sebe čistú esenciu z hlbín reverzného internetu – kód, ktorý sa dokáže sám prepisovať a vyvíjať. Satoshi do týchto kryštálov vložil mechanizmus, ktorý má potenciál redefinovať samotnú podstatu digitálneho vlastníctva.',
+    'story-ch4-text2':'Pravda o tom, čo sa stane, keď sa nazbiera kritické množstvo STARBITS, zostáva pod prísnym utajením. Dovtedy je STARBIT najvzácnejším artiklom na čiernom trhu – je to kľúč k novej architektúre sveta.',
+    'story-ext-header':'// EXTRAKTORY //',
+    'story-ext1-sub':'Signal Mimic',
+    'story-ext1-desc':'Využíva modifikovanú frekvenciu nájdenú v kóde peňaženky. Vysiela signál, ktorý simuluje šum Stranger Minerals. Rastlina si myslí, že sa len kŕmi, zatiaľ čo prístroj potichu zbiera hotové STARBITS.',
+    'story-ext2-sub':'Phase Shifter',
+    'story-ext2-desc':'Tento nástroj fázovo posúva realitu extraktora. Dokáže odobrať kryštál z vnútra rastliny v inom časovom intervale, takže rastlina nezaregistruje žiadny úbytok dát v prítomnosti.',
+    'story-ext3-sub':'Void Harvester',
+    'story-ext3-desc':'Najpokročilejšia technológia. Vytvára mikroskopický tunel z temnej reverznej hmoty priamo k jadru Glitch-Plant. Umožňuje masívny odber Stranger Bits s minimálnym rizikom odhalenia.',
+    'story-classified':'[ CLASSIFIED — STRANGER BITS RESEARCH DIVISION ]',
+  },
+  en: {
+    'nav-dash':'EXTRACTORS','nav-shop':'SHOP','nav-market':'MARKET',
+    'nav-upgrade':'UPGRADE','nav-winwill':'WINWILL','nav-hodl':'STAREWARDS',
+    'nav-rev':'REVERSE','nav-token':'$STARBIT','nav-story':'STORY',
+    'hero-eyebrow':'// REVERSE DIMENSION EXTRACTION PROTOCOL //',
+    'hero-cta1':'[ BUY EXTRACTOR ]','hero-cta2':'[ MY DASHBOARD ]','hero-cta3':'[ $STARBIT TOKEN ]',
+    'hero-scroll':'▼ SCROLL DOWN ▼',
+    'counter-label':'// TOTAL NETWORK MINING',
+    'counter-sub':'REVERSE DIMENSION EXTRACTION / STARBIT',
+    'sb-label1':'LIVE STARBITIANS','sb-sub1':'ONLINE RIGHT NOW',
+    'sb-label2':'ACTIVE EXTRACTORS','sb-sub2':'NFT EXTRACTORS',
+    'sb-label3':'MAIN POOL','sb-sub3':'STARBIT LOCKED',
+    'sb-label4':'DARK-RIFT POOL','sb-sub4':'STARBIT / FEES',
+    'sec-dash-h':'EXTRACTORS',
+    'bal-label1':'STARBIT BALANCE','bal-label2':'PENDING CLAIM',
+    'bal-label3':'ACTIVE MACHINES','bal-label4':'WINWILL COUNTDOWN',
+    'contract-pill1':'PROGRAM','contract-pill2':'MINT','contract-pill3':'HELIUS RPC','contract-pill4':'JITO BUNDLES',
+    'wallet-req':'WALLET REQUIRED',
+    'wallet-hint':'Connect Phantom wallet to access your dashboard',
+    'btn-connect-ph':'[ CONNECT PHANTOM ]',
+    'no-machines-h':'NO EXTRACTORS',
+    'no-machines-p':'Buy a Walkie-Talkie, Laser-Drill or Dark-Rift extractor in the shop',
+    'btn-go-shop':'[ GO TO SHOP ]',
+    'sec-shop-h':'EXTRACTOR SHOP','shop-sub':'PAYMENT IN STARBIT ONLY',
+    'shop-pill1':'POOL SPLIT 85% MAIN / 5% DARK-RIFT / 5% DEV / 5% BURN',
+    'shop-pill2':'LICENSE CLASSIC 180D · REVERSE 360D',
+    'tier1-label':'TIER 1 — BASIC EXTRACTOR','tier2-label':'TIER 2 — ADVANCED EXTRACTOR',
+    'tier3-label':'TIER 3 — PARASIT EXTRACTOR',
+    'sstat-rate':'MINING / DAY','sstat-ww':'WINWILL CHANCE',
+    'sstat-lic':'LICENSE','sstat-supply':'MAX SUPPLY',
+    'btn-buy':'[ BUY ]',
+    'sec-market-h':'SECONDARY MARKET',
+    'market-sub':'10% TAX → 5% DARK-RIFT / 2.5% BURN / 2.5% MAIN',
+    'mf-all':'ALL','sort-label':'SORT:',
+    'th-extractor':'EXTRACTOR','th-type':'TYPE','th-level':'LEVEL',
+    'th-rate':'MINING / DAY','th-days':'DAYS TO EXPIRY',
+    'th-price':'PRICE','th-seller':'SELLER','th-action':'ACTION',
+    'btn-sell-my':'[ SELL MY EXTRACTOR ]',
+    'sec-upgrade-h':'UPGRADE SYSTEM',
+    'upgrade-sub':'STACKER POWER — 70% MAIN / 25% BURN / 5% DEV',
+    'ug-pick':'// PICK EXTRACTOR','ug-level-title':'// UPGRADE LEVEL',
+    'ug-prob-title':'// PROBABILITY','ug-success':'SUCCESS CHANCE',
+    'ug-curr-label':'CURRENT MINING','ug-after-label':'MINING AFTER UPGRADE',
+    'ug-cost-label':'UPGRADE COST','ug-bal-label':'YOUR BALANCE',
+    'ug-base':'BASE CHANCE','ug-bonus':'MACHINE BONUS',
+    'ug-max':'MAX CHANCE','ug-extra':'EXTRA MACHINES',
+    'btn-upgrade':'[ EXECUTE UPGRADE ]',
+    'ug-warn-title':'⚠ WARNING',
+    'ug-warn-text':'On a failed upgrade STARBIT is consumed, the extractor stays at its current level. Each identical machine in your wallet = +5% chance (max 90%).',
+    'pool-routing':'POOL ROUTING',
+    'sec-hodl-h':'STAREWARDS — HODL PROGRAM',
+    'hodl-sub':'30 DAY LOCK → REVERSE NFT EXTRACTOR',
+    'hodl-new':'// NEW LOCK','hodl-active':'// ACTIVE LOCKS',
+    'hodl-amount-label':'STARBIT AMOUNT',
+    'hodl-amount-ph':'min. 1,000,000',
+    'hodl-drop-h1':'EXTRACTOR TYPE','hodl-drop-h2':'DROP CHANCE',
+    'hodl-period':'LOCK PERIOD','hodl-period-val':'30 DAYS',
+    'hodl-reward':'REWARD','hodl-reward-val':'1x REVERSE NFT EXTRACTOR',
+    'btn-lock':'[ LOCK STARBIT ]',
+    'no-locks':'No active locks',
+    'sec-rev-h':'REVERSE NFT EXTRACTORS',
+    'rev-sub':'RENTAL: 50% UPFRONT → 40% OWNER / 5% DARK-RIFT / 2.5% DEV / 2.5% MAIN',
+    'rev-empty':'Get Reverse extractors via STAREWARDS HODL program (30-day lock)',
+    'sec-token-h':'$STARBIT TOKEN','token-sub':'SOLANA · SPL TOKEN · 1B TOTAL SUPPLY',
+    'token-stats-title':'// TOKEN STATISTICS',
+    'token-dist-title':'// SUPPLY DISTRIBUTION',
+    'token-fees-title':'// FEE SYSTEM',
+    'token-contract-title':'// SMART CONTRACT',
+    'token-buy-title':'// BUY $STARBIT',
+    'token-roadmap-title':'// ROADMAP',
+    'token-soon':'Available after mainnet deploy',
+    'btn-raydium':'[ RAYDIUM SWAP ]',
+    'tstat1':'TOTAL SUPPLY','tstat2':'CIRCULATING','tstat3':'MINT AUTHORITY','tstat4':'CHAIN',
+    'mint-revoked':'REVOKED ✓',
+    'sec-winwill-h':'WINWILL SYSTEM',
+    'winwill-sub':'EVERY 24H — CHANCE TO WIN',
+    'jackpot-label':'// CURRENT JACKPOT',
+    'ww-roll-label':'// NEXT ROLL IN',
+    'ww-roll-sub':'ROLL FOR ALL ACTIVE EXTRACTORS',
+    'ww-step1':'01 // ROLL','ww-step2':'02 // CHANCE','ww-step3':'03 // WIN',
+    'ww-text1':'Every 24 hours an automatic on-chain random roll is executed for each of your extractors separately.',
+    'ww-text2':'Walkie-Talkie has 3% chance. Laser-Drill has 6% chance. More extractors = more rolls = bigger chance to win.',
+    'ww-text3':'Win = 30 days of your extractor mining output. Paid instantly from MAIN POOL directly to your wallet.',
+    'ww-live-h':'LIVE WINS',
+    'ww-rev-label':'// REVERSE EXTRACTORS — WINWILL',
+    'ww-no-ww':'NO WINWILL',
+    'sec-story-h':'STRANGER BITS STORY',
+    'story-eyebrow':'// REVERSE DIMENSION EXTRACTION PROTOCOL //',
+    'story-origin-title':'ORIGIN',
+    'story-origin':'Somewhere beyond the boundary of the visible universe exists the Reverse Dimension — a parallel reality full of pure energy called STARBIT. The first extractors were primitive devices capable of capturing only a fraction of this energy. Today, thanks to advanced technology, we can mine STARBIT directly from the Upside Down.',
+    'story-ext-title':'EXTRACTORS',
+    'story-ext':'Walkie-Talkie — first contact with the Reverse Dimension. Simple but reliable. Laser-Drill — advanced technology with double the output. Dark-Rift — the darkest extractor. It does not mine energy — it parasitizes the system itself, feeding on fees from the entire ecosystem.',
+    'story-ww-title':'WINWILL',
+    'story-ww':'WinWill is a phenomenon of the Reverse Dimension — every 24 hours the Upside Down creates a random energy burst. Extractors that are in the right position capture 30x the daily mining output. Nobody knows when and where — the dimension itself decides.',
+    'sec-lang-h':'LANGUAGE / JAZYK',
+    'lang-sk-name':'SLOVENČINA','lang-en-name':'ENGLISH',
+    'lang-sk-active':'● ACTIVE','lang-en-active':'● ACTIVE',
+    'footer-logo':'// STRANGER BITS //','footer-sub':'REVERSE DIMENSION EXTRACTION PROTOCOL · POWERED BY SOLANA · © 2025',
+    'connect-btn':'[ CONNECT ]',
+    'nav-net-label':'SOLANA',
+    'story-archive-title':'[ ARCHIVE LOG: THE SATOSHI CONSPIRACY ]',
+    'story-ch1-title':'Secret Project: After Bitcoin Came Reality',
+    'story-ch1-text':'When Satoshi Nakamoto disappeared in 2011, the world thought his work was over. The truth is that Bitcoin was merely a public stress test. Satoshi recognized the limits of linear blockchains and devoted the rest of his life to developing STRANGER BITS — a project that does not run on our servers.',
+    'story-ch1-text2':'He discovered a crack in the fundamental internet protocol, beneath which lies the Reverse Data Dimension. It is a layer where data does not disappear, but accumulates in raw form as Stranger Minerals.',
+    'story-ch2-title':'Data Monsters: The Glitch-Plants',
+    'story-ch2-text':'In this dimension he encountered Carnivorous Plants (The Glitch-Plants). They are the most aggressive entities in digital space, functioning as organic firewalls. These plants feed on the aforementioned Stranger Minerals — absorbing fragments of raw code from the regular internet that have fallen through the crack.',
+    'story-ch2-text2':'Through a process of internal data synthesis they transform these minerals and eventually excrete Stranger Bits — so-called STARBITS — crystallized data blocks with extremely high information density. However, Glitch-Plants are highly territorial and any attempt to harvest their food is immediately punished by total erasure of the foreign signal.',
+    'story-ch3-title':'Discovery in the Wallet Structure (3 Months Ago)',
+    'story-ch3-text':'The entire world watched Satoshi legendary wallet with thousands of dormant Bitcoins and waited for movement. We took a different approach. Attempting a deep decryption analysis of the address structure itself, we did not find the private key — it remains unbroken.',
+    'story-ch3-text2':'However, we found something far more important: an encoded layer within the address checksum. Satoshi left not money there, but an access protocol. We discovered code fragments that serve as coordinates to the Reverse Dimension and a technical blueprint for constructing extractors. Based on this discovery we revived his technology and created the only legitimate Black Market in the world.',
+    'story-ch4-title':'STARBIT: More Than Just a Token',
+    'story-ch4-text':'STARBIT (ruby data crystal) is the result of this unique data transformation. It contains the pure essence from the depths of the reverse internet — code that can rewrite and evolve itself. Satoshi embedded a mechanism into these crystals that has the potential to redefine the very nature of digital ownership.',
+    'story-ch4-text2':'The truth about what happens when a critical mass of STARBITS is collected remains under strict secrecy. Until then, STARBIT is the rarest commodity on the black market — it is the key to a new architecture of the world.',
+    'story-ext-header':'// EXTRACTORS //',
+    'story-ext1-sub':'Signal Mimic',
+    'story-ext1-desc':'Uses a modified frequency found in the wallet code. Broadcasts a signal that simulates the noise of Stranger Minerals. The plant thinks it is merely feeding while the device quietly collects finished STARBITS.',
+    'story-ext2-sub':'Phase Shifter',
+    'story-ext2-desc':'This tool phase-shifts the reality of the extractor. It can remove the crystal from inside the plant in a different time interval, so the plant registers no data loss in the present.',
+    'story-ext3-sub':'Void Harvester',
+    'story-ext3-desc':'The most advanced technology. Creates a microscopic tunnel from dark reverse matter directly to the core of the Glitch-Plant. Enables massive harvesting of Stranger Bits with minimal risk of detection.',
+    'story-classified':'[ CLASSIFIED — STRANGER BITS RESEARCH DIVISION ]',
+  }
+};
+
+// Master translate function - translates EVERYTHING
+function setLang(lang){
+  STATE.lang = lang;
+  const TR = T[lang];
+  document.getElementById('lang-toggle').textContent = lang.toUpperCase();
+
+  // Translate every element with data-t attribute
+  document.querySelectorAll('[data-t]').forEach(el => {
+    const key = el.getAttribute('data-t');
+    if(TR[key] !== undefined) el.textContent = TR[key];
+  });
+
+  // Also handle data-sk/data-en fallback
+  document.querySelectorAll('[data-'+lang+']').forEach(el => {
+    const val = el.getAttribute('data-'+lang);
+    if(val) el.textContent = val;
+  });
+
+  // Lang card indicators
+  const laSk = document.getElementById('la-sk');
+  const laEn = document.getElementById('la-en');
+  if(laSk) laSk.style.opacity = lang==='sk'?'1':'0';
+  if(laEn) laEn.style.opacity = lang==='en'?'1':'0';
+  const lkSk = document.getElementById('lang-sk');
+  const lkEn = document.getElementById('lang-en');
+  if(lkSk) lkSk.style.borderColor = lang==='sk'?'rgba(255,26,26,0.6)':'rgba(255,26,26,0.15)';
+  if(lkEn) lkEn.style.borderColor = lang==='en'?'rgba(255,26,26,0.6)':'rgba(255,26,26,0.15)';
+
+  showToast(lang==='sk'?'✓ Jazyk: Slovenčina':'✓ Language: English','success');
+}
+
+// ═══════════════════════════════════════
+// LIVE STATS ANIMATION
+// ═══════════════════════════════════════
+function initLiveStats(){
+  // Simulate live users online
+  let liveUsers = Math.floor(Math.random() * 50) + 20;
+  let machines = Math.floor(Math.random() * 200) + 100;
+  let mainPool = 24891337;
+  let darkPool = 1284992;
+
+  // Animate counters on load
+  animateCount('sb-total', 0, liveUsers, 1500);
+  animateCount('sb-machines', 0, machines, 1500);
+  animateCount('sb-pool', 0, mainPool, 2000);
+  animateCount('sb-dark', 0, darkPool, 2000);
+
+  // Live users fluctuate
+  setInterval(()=>{
+    const delta = Math.floor(Math.random() * 3) - 1;
+    liveUsers = Math.max(1, liveUsers + delta);
+    document.getElementById('sb-total').textContent = liveUsers.toLocaleString('sk');
+  }, 3000);
+
+  // Pools grow slowly
+  setInterval(()=>{
+    mainPool += Math.floor(Math.random() * 1000);
+    darkPool += Math.floor(Math.random() * 100);
+    document.getElementById('sb-pool').textContent = mainPool.toLocaleString('sk');
+    document.getElementById('sb-dark').textContent = darkPool.toLocaleString('sk');
+  }, 2000);
+
+  // Machines occasionally change
+  setInterval(()=>{
+    const d = Math.random() > 0.7 ? 1 : 0;
+    machines += d;
+    document.getElementById('sb-machines').textContent = machines.toLocaleString('sk');
+  }, 8000);
+}
+
+function animateCount(id, from, to, duration){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const start = performance.now();
+  const update = (time) => {
+    const elapsed = time - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    const value = Math.floor(from + (to - from) * ease);
+    el.textContent = value.toLocaleString('sk');
+    if(progress < 1) requestAnimationFrame(update);
+  };
+  requestAnimationFrame(update);
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  initStars();
+  initCounter();
+  initLiveStats();
+  startWWTimer(); // Timer starts immediately, no wallet needed
+  renderMarket();
+  renderLocks();
+  renderRevNFTs();
+
+  // ESC closes modal
+  document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
+  document.getElementById('modal-bg').addEventListener('click', e => {
+    if(e.target === document.getElementById('modal-bg')) closeModal();
+  });
+});
+</script>
+
+</script>
+</body>
+</html>
